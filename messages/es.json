@@ -1,0 +1,6 @@
+{
+  "dashboard": {
+    "hello": "Hola mundo",
+    "logout": "Cerrar sesión"
+  }
+}

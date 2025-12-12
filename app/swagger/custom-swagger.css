@@ -1,0 +1,37 @@
+/* Fondo general */
+.swagger-ui {
+    background-color: #0d0d0d !important;
+    color: #e5e5e5 !important;
+}
+
+/* Títulos */
+.swagger-ui .title {
+    color: #fafafa !important;
+    font-size: 2rem !important;
+    margin-bottom: 1rem;
+}
+
+/* Secciones colapsables */
+.opblock-tag.no-desc span {
+    color: #ccc !important;
+    font-size: 1.3rem !important;
+}
+
+/* Botones */
+.opblock-summary-control {
+    background: #111 !important;
+    border-radius: 8px !important;
+}
+
+/* Cambiar el color de métodos */
+.opblock.opblock-post {
+    border-color: #22c55e !important;
+}
+
+.opblock.opblock-delete {
+    border-color: #ef4444 !important;
+}
+
+.opblock.opblock-get {
+    border-color: #3b82f6 !important;
+}
