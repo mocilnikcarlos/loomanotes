@@ -1,11 +1,12 @@
 "use client";
 
 import type { ThemeProviderProps } from "next-themes";
-
 import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ToastProvider } from "@heroui/toast";
+import { X } from "lucide-react";
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -25,7 +26,23 @@ export function Providers({ children, themeProps }: ProvidersProps) {
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      <NextThemesProvider {...themeProps}>
+        <ToastProvider
+          toastProps={{
+            radius: "md",
+            variant: "flat",
+            timeout: 3000,
+            hideIcon: true,
+            closeIcon: <X size={16} />,
+            classNames: {
+              base: "px-6 cursor-pointer",
+              closeButton:
+                "opacity-100 absolute right-4 top-1/2 -translate-y-1/2",
+            },
+          }}
+        />
+        {children}
+      </NextThemesProvider>
     </HeroUIProvider>
   );
 }
