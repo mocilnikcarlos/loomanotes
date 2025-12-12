@@ -1,16 +1,27 @@
-import { routes } from "@/utils/routes/route";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getUser } from "@/lib/services/users/getUser";
+import { routes } from "@/utils/routes/route";
+
+const PUBLIC_ROUTES = [routes.auth.login, routes.auth.callback];
+
+const ADMIN_ROUTES = [
+  "/dashboard/admin",
+  "/dashboard/admin/*",
+  "/swagger",
+  "/swagger/*",
+  "/debug",
+  "/debug/*",
+];
 
 export async function updateSession(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
   const response = NextResponse.next({
     request: { headers: request.headers },
   });
 
-  const pathname = request.nextUrl.pathname;
-
-  // 🚫 Rutas a ignorar por el middleware
+  // Ignorar assets internos
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -20,65 +31,42 @@ export async function updateSession(request: NextRequest) {
     return response;
   }
 
-  // Rutas que son explícitamente públicas
-  const isPublic =
-    pathname === routes.auth.login ||
-    pathname === routes.auth.callback ||
-    pathname === "/debug";
-
-  if (isPublic) {
+  // Público real
+  if (PUBLIC_ROUTES.some((r) => pathname.startsWith(r))) {
     return response;
   }
 
+  // Auth Supabase SSR
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
-        },
+        getAll: () => request.cookies.getAll(),
+        setAll: (cookies) =>
+          cookies.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          ),
       },
     }
   );
 
-  let authUser = null;
-  let authError = null;
+  const { data } = await supabase.auth.getUser();
+  const authUser = data?.user;
 
-  try {
-    const { data, error } = await supabase.auth.getUser();
-    authUser = data?.user || null;
-    authError = error;
-  } catch (e) {
-    console.log(
-      "⚠️ MIDDLEWARE ERROR: Fallo al obtener el usuario de Supabase. Dejando pasar la solicitud.",
-      e
-    );
-    return response;
-  }
-
-  if (!authUser && !authError) {
+  if (!authUser) {
     const url = request.nextUrl.clone();
-    url.pathname = routes.auth.login;
+    url.pathname = "auth/callback";
     return NextResponse.redirect(url);
   }
 
-  if (authUser) {
-    const dbUser = await getUser();
-    const adminOnly = ["/swagger", "/debug", "/dashboard/admin"];
+  const dbUser = await getUser(); // { role: "user" | "admin" }
 
-    if (adminOnly.includes(pathname)) {
-      if (!dbUser || dbUser.role !== "admin") {
-        console.log("⛔ Blocked admin route");
-        const url = request.nextUrl.clone();
-        url.pathname = routes.dashboard.root;
-        return NextResponse.redirect(url);
-      }
+  if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
+    if (dbUser?.role !== "admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
     }
   }
 
