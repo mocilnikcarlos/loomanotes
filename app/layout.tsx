@@ -20,7 +20,12 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={clsx("antialiased font-sans", fontComfortaa.variable)}>
+      <body
+        className={clsx(
+          "min-h-screen w-full antialiased font-comfortaa bg-background text-foreground",
+          fontComfortaa.variable
+        )}
+      >
         <NextIntlClientProvider>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
             {children}

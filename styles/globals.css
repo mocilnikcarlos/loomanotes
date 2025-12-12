@@ -1,3 +1,101 @@
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
-@config "../tailwind.config.js"
+html,
+body {
+    height: 100%;
+}
+
+/* Toast – Adaptado a tus tokens */
+:root,
+:root[data-theme="light"] {
+    --heroui-toast-bg: var(--card);
+    --heroui-toast-color: var(--foreground);
+    --heroui-toast-border: var(--border);
+
+    --heroui-toast-close-bg: transparent;
+    --heroui-toast-close-color: var(--subtitle);
+
+    --heroui-toast-title: var(--foreground);
+    --heroui-toast-description: var(--subtitle);
+}
+
+.dark {
+    --heroui-toast-bg: var(--card);
+    --heroui-toast-color: var(--foreground);
+    --heroui-toast-border: var(--border);
+
+    --heroui-toast-close-bg: transparent;
+    --heroui-toast-close-color: var(--subtitle);
+
+    --heroui-toast-title: var(--foreground);
+    --heroui-toast-description: var(--subtitle);
+}
+
+
+/* -----------------------------
+   Theme Tokens (Light)
+-------------------------------- */
+:root {
+    /* Base */
+    --background: #ffffff;
+    --foreground: #111111;
+    --card: #fafafa;
+    --card-hover: #f5f5f5;
+    --border: #e6e6e6;
+    --icon: #5a5a5a;
+    --subtitle: #787878;
+
+    /* Button */
+    --button: #141414;
+    --button-hover: #0a0a0a;
+
+    /* Primary Brand */
+    --primary: #1a73e8;
+    /* SaaS azul Google-ish, limpio */
+    --primary-hover: #1768d2;
+
+    /* Status */
+    --success: #16a34a;
+    --success-bg: #ecfdf5;
+
+    --warning: #d97706;
+    --warning-bg: #fffbea;
+
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+
+    --info: #3b82f6;
+    --info-bg: #eff6ff;
+}
+
+/* -----------------------------
+   Theme Tokens (Dark)
+--------------------------------*/
+.dark {
+    --background: #0B0E0F;
+    --foreground: #f5f5f5;
+    --card: #121619;
+    --card-hover: #242424;
+    --border: #24282B;
+    --icon: #b4b4b4;
+    --subtitle: #969696;
+
+    --button: #25292A;
+    --button-hover: #212525;
+
+    --primary: #4299ff;
+    --primary-hover: #3884e6;
+
+    --success: #22c55e;
+    --success-bg: #052e16;
+
+    --warning: #eab308;
+    --warning-bg: #422006;
+
+    --danger: #f87171;
+    --danger-bg: #431111;
+
+    --info: #60a5fa;
+    --info-bg: #1e3a8a;
+}
