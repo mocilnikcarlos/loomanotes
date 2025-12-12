@@ -47,13 +47,15 @@ body {
     --subtitle: #787878;
 
     /* Button */
-    --button: #141414;
-    --button-hover: #0a0a0a;
+    --button: #1B1D1C;
+    --button-hover: #141414;
 
     /* Primary Brand */
     --primary: #1a73e8;
     /* SaaS azul Google-ish, limpio */
     --primary-hover: #1768d2;
+
+    --pill: #0f2f28;
 
     /* Status */
     --success: #16a34a;
@@ -81,9 +83,11 @@ body {
     --icon: #b4b4b4;
     --subtitle: #969696;
 
-    --button: #25292A;
-    --button-hover: #212525;
+    --button: #1A1E23;
+    --button-hover: #2A2D32;
 
+    --pill: #25272e;
+    
     --primary: #4299ff;
     --primary-hover: #3884e6;
 

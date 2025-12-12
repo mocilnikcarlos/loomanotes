@@ -23,6 +23,8 @@ const config = {
         button: "var(--button)",
         "button-hover": "var(--button-hover)",
 
+        pill: "var(--pill)",
+
         primary: "var(--primary)",
         "primary-hover": "var(--primary-hover)",
 

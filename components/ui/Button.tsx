@@ -24,18 +24,19 @@ export function Button({
   const hasIcon = Boolean(icon);
 
   const baseStyles =
-    "inline-flex items-center justify-center bg-card rounded-md transition-colors font-medium focus:outline-none disabled:opacity-50 cursor-pointer";
+    "inline-flex items-center justify-center bg-card rounded-full transition-colors font-regular focus:outline-none disabled:opacity-50 cursor-pointer";
 
   const sizeStyles = {
-    sm: "h-8 px-3 text-sm",
-    md: "h-10 px-4 text-base",
-    lg: "h-12 px-6 text-lg",
+    sm: "h-8 px-4 text-sm",
+    md: "h-10 px-6 text-base",
+    lg: "h-12 px-8 text-lg",
   }[size];
 
   const variantStyles = {
     primary: "bg-button hover:bg-button-hover text-foreground",
-    secondary: "text-foreground border border-border hover:bg-button/40",
-    ghost: "bg-transparent hover:bg-card-hover text-foreground",
+    secondary:
+      "bg-transparent text-foreground border border-border hover:bg-button-hover",
+    ghost: "bg-transparent hover:bg-button-hover text-foreground",
   }[variant];
 
   return (
