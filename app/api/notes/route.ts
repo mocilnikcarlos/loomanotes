@@ -58,3 +58,30 @@ export const POST = withAuth(
     bodySchema: CreateNoteSchema,
   }
 );
+
+export const GET = withAuth(async ({ req, user }) => {
+  const supabase = createRouteHandlerSupabase(req);
+
+  const { searchParams } = new URL(req.url);
+  const notebookId = searchParams.get("notebook_id");
+
+  let query = supabase
+    .from("notes")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("updated_at", { ascending: false });
+
+  if (notebookId === "null") {
+    query = query.is("notebook_id", null);
+  } else if (notebookId) {
+    query = query.eq("notebook_id", notebookId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    return NextResponse.json({ message: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json(data);
+});

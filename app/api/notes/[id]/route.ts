@@ -42,3 +42,20 @@ export const DELETE = withAuth(async ({ req, params }) => {
 
   return NextResponse.json({ message: "deleted" });
 });
+
+export const GET = withAuth(async ({ req, user, params }) => {
+  const supabase = createRouteHandlerSupabase(req);
+
+  const { data, error } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("id", params.id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (error || !data) {
+    return NextResponse.json({ message: "Note not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(data);
+});

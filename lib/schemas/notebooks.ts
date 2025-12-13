@@ -1,4 +1,5 @@
 import { z } from "@/lib/openapi/zod";
+import { NoteSchema } from "./notes";
 
 // =====================================================
 // NOTEBOOK BASE
@@ -17,6 +18,13 @@ export const NotebookSchema = z.object({
     example: "2024-01-01T00:00:00Z",
   }),
 });
+
+export const NotebookDetailSchema = z.object({
+  notebook: NotebookSchema,
+  notes: z.array(NoteSchema),
+});
+
+export const ListNotebooksResponseSchema = z.array(NotebookSchema);
 
 // =====================================================
 // PARAMS

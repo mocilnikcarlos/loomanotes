@@ -37,3 +37,36 @@ export const DELETE = withAuth(async ({ req, params }) => {
 
   return NextResponse.json({ message: "deleted" });
 });
+
+export const GET = withAuth(async ({ req, user, params }) => {
+  const supabase = createRouteHandlerSupabase(req);
+
+  const { data: notebook, error: notebookError } = await supabase
+    .from("notebooks")
+    .select("*")
+    .eq("id", params.id)
+    .eq("user_id", user.id)
+    .single();
+
+  if (notebookError || !notebook) {
+    return NextResponse.json(
+      { message: "Notebook not found" },
+      { status: 404 }
+    );
+  }
+
+  const { data: notes, error: notesError } = await supabase
+    .from("notes")
+    .select("*")
+    .eq("notebook_id", params.id)
+    .order("updated_at", { ascending: false });
+
+  if (notesError) {
+    return NextResponse.json({ message: notesError.message }, { status: 400 });
+  }
+
+  return NextResponse.json({
+    notebook,
+    notes,
+  });
+});

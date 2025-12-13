@@ -33,3 +33,19 @@ export const POST = withAuth(
     bodySchema: CreateNotebookSchema,
   }
 );
+
+export const GET = withAuth(async ({ req, user }) => {
+  const supabase = createRouteHandlerSupabase(req);
+
+  const { data, error } = await supabase
+    .from("notebooks")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("position", { ascending: true });
+
+  if (error) {
+    return NextResponse.json({ message: error.message }, { status: 400 });
+  }
+
+  return NextResponse.json(data);
+});

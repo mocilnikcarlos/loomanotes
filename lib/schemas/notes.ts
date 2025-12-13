@@ -22,6 +22,8 @@ export const NoteParamsSchema = z.object({
   }),
 });
 
+export const ListNotesResponseSchema = z.array(NoteSchema);
+
 // =====================================================
 // CREATE NOTE
 // =====================================================
