@@ -8,5 +8,8 @@ import "./paths/admin/listUser";
 import "./paths/notes/createNote";
 import "./paths/notes/updateNote";
 import "./paths/notes/deleteNote";
+import "./paths/notebooks/createNotebook";
+import "./paths/notebooks/updateNotebook";
+import "./paths/notebooks/deleteNotebook";
 
 // Y así sucesivamente...
