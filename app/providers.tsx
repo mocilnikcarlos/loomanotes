@@ -28,6 +28,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <HeroUIProvider navigate={router.push}>
       <NextThemesProvider {...themeProps}>
         <ToastProvider
+          placement="top-center"
           toastProps={{
             radius: "md",
             variant: "flat",
@@ -35,15 +36,20 @@ export function Providers({ children, themeProps }: ProvidersProps) {
             hideIcon: true,
             closeIcon: <X size={16} />,
             classNames: {
-              base: "px-6 py-3 bg-card text-foreground border border-border shadow-md",
+              base: `
+                px-6 py-3
+                bg-card text-foreground
+                border border-border
+                shadow-md
+                pointer-events-none
+                mt-3`,
               closeButton:
-                "opacity-100 absolute right-4 top-1/2 -translate-y-1/2 text-icon hover:text-foreground",
+                "pointer-events-auto opacity-100 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer",
               title: "font-semibold text-foreground",
               description: "text-subtitle",
             },
           }}
         />
-
         {children}
       </NextThemesProvider>
     </HeroUIProvider>

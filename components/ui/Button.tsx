@@ -8,7 +8,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: ReactNode;
   iconPosition?: "left" | "right";
   size?: "sm" | "md" | "lg";
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "brand";
+  loading?: boolean;
 }
 
 export function Button({
@@ -17,14 +18,16 @@ export function Button({
   iconPosition = "left",
   size = "md",
   variant = "primary",
+  loading = false,
   className,
+  disabled,
   ...props
 }: ButtonProps) {
   const hasText = Boolean(children);
   const hasIcon = Boolean(icon);
 
   const baseStyles =
-    "inline-flex items-center justify-center bg-card rounded-full transition-colors font-regular focus:outline-none disabled:opacity-50 cursor-pointer";
+    "inline-flex shrink-0 w-fit items-center justify-center rounded-full transition-colors font-regular focus:outline-none disabled:opacity-50 cursor-pointer";
 
   const sizeStyles = {
     sm: "h-8 px-4 text-sm",
@@ -37,33 +40,39 @@ export function Button({
     secondary:
       "bg-transparent text-foreground border border-border hover:bg-button-hover",
     ghost: "bg-transparent hover:bg-button-hover text-foreground",
+    brand: "bg-primary hover:bg-primary-hover text-foreground-secondary",
   }[variant];
 
   return (
     <button
-      className={cn(baseStyles, sizeStyles, variantStyles, className)}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      className={cn(
+        baseStyles,
+        sizeStyles,
+        variantStyles,
+        loading && "cursor-not-allowed",
+        className
+      )}
       {...props}
     >
-      {hasIcon && iconPosition === "left" && (
-        <span
-          className={cn(
-            hasText && "mr-2",
-            "flex items-center justify-center text-foreground"
-          )}
-        >
+      {/* Icon left */}
+      {!loading && hasIcon && iconPosition === "left" && (
+        <span className={cn(hasText && "mr-2", "flex items-center")}>
           {icon}
         </span>
       )}
 
-      {hasText && <span>{children}</span>}
+      {/* Content */}
+      {hasText && (
+        <span className={cn(loading && "opacity-70")}>
+          {loading ? "Cargando…" : children}
+        </span>
+      )}
 
-      {hasIcon && iconPosition === "right" && (
-        <span
-          className={cn(
-            hasText && "ml-2",
-            "flex items-center justify-center text-foreground"
-          )}
-        >
+      {/* Icon right */}
+      {!loading && hasIcon && iconPosition === "right" && (
+        <span className={cn(hasText && "ml-2", "flex items-center")}>
           {icon}
         </span>
       )}

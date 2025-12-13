@@ -28,8 +28,8 @@ export function Pill({
       className={cn(
         "inline-flex items-center rounded-full",
         "bg-pill text-foreground",
-        "border border-white/10",
-        "shadow-[0_0_20px_rgba(47,50,49,0.15)]",
+        "border border-border",
+        "shadow-[0_0_3px_rgba(47,50,49,0.05)]",
         "select-none",
         sizeStyles,
         className

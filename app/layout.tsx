@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import { Metadata } from "next";
 import clsx from "clsx";
 import { Providers } from "./providers";
-import { fontComfortaa } from "@/config/fonts";
+import { fontElms } from "@/config/fonts";
 import { NextIntlClientProvider } from "next-intl";
 
 export const metadata: Metadata = {
@@ -22,8 +22,8 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={clsx(
-          "min-h-screen w-full antialiased font-comfortaa bg-background text-foreground",
-          fontComfortaa.variable
+          "min-h-screen w-full antialiased font-elms_sans bg-background text-foreground",
+          fontElms.variable
         )}
       >
         <NextIntlClientProvider>

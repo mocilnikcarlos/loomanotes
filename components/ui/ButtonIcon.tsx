@@ -11,7 +11,7 @@ interface ButtonIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
 
   /** Variante visual */
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "brand";
 }
 
 export function ButtonIcon({
@@ -35,6 +35,7 @@ export function ButtonIcon({
     secondary:
       "bg-transparent border border-border text-foreground hover:bg-button-hover",
     ghost: "bg-transparent hover:bg-button-hover text-foreground",
+    brand: "bg-primary hover:bg-primary-hover text-foreground-secondary",
   }[variant];
 
   return (

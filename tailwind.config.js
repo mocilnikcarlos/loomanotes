@@ -12,6 +12,7 @@ const config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "foreground-secondary": "var(--foreground-secondary)",
 
         card: "var(--card)",
         "card-hover": "var(--card-hover)",
@@ -24,6 +25,15 @@ const config = {
         "button-hover": "var(--button-hover)",
 
         pill: "var(--pill)",
+
+        input: "var(--input-bg)",
+        "input-border": "var(--input-border)",
+        "input-border-hover": "var(--input-border-hover)",
+        "input-border-focus": "var(--input-border-focus)",
+        "input-error": "var(--input-error)",
+
+        menu: "var(--menu)",
+        "menu-hover": "var(--menu-hover)",
 
         primary: "var(--primary)",
         "primary-hover": "var(--primary-hover)",
@@ -42,7 +52,7 @@ const config = {
       },
 
       fontFamily: {
-        comfortaa: ["var(--font-comfortaa)"],
+        elms_sans: ["var(--font-elms_sans)"],
       },
     },
   },

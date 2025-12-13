@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getUser } from "@/lib/services/users/getUser";
 import UserProvider from "./UserProvider";
 import { routes } from "@/utils/routes/route";
+import { Aside } from "@/components/Dashboard/Aside/Aside";
+import { ButtonSwitchTheme } from "@/components/ui/ButtonSwitchTheme";
 
 export default async function DashboardLayout({
   children,
@@ -15,15 +17,14 @@ export default async function DashboardLayout({
     <UserProvider user={user}>
       <div className="flex h-screen w-full overflow-hidden">
         {/* Aside */}
-        <aside className="w-64 shrink-0 border-r border-border p-4">
-          aside
-        </aside>
+        <Aside />
 
         {/* Main column */}
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header */}
           <header className="h-16 shrink-0 border-b border-border px-6 flex items-center">
             header
+            <ButtonSwitchTheme />
           </header>
 
           {/* Scrollable content */}

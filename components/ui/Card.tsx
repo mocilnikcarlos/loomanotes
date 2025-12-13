@@ -15,9 +15,9 @@ export function Card({ className, noPadding = false, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "relative rounded-4xl border border-border bg-card text-foreground",
+        "relative rounded-4xl border border-border bg-card text-foreground flex w-full flex-col gap-4",
         // shadow fuerte pero controlado (no glow, no cringe)
-        "shadow-[0_10px_30px_-12px_rgba(0,0,0,0.35)] dark:shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]",
+        "shadow-[0_5px_8px_-12px_rgba(0,0,0,0.35)]",
         !noPadding && "p-4",
         className
       )}
