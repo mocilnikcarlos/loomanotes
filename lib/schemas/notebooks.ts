@@ -55,3 +55,17 @@ export const UpdateNotebookSchema = z.object({
 
 export type CreateNotebook = z.infer<typeof CreateNotebookSchema>;
 export type UpdateNotebook = z.infer<typeof UpdateNotebookSchema>;
+
+// =====================================================
+// REORDER
+// =====================================================
+export const ReorderItemSchema = z.object({
+  id: z.string().uuid(),
+  position: z.number().int().min(0),
+});
+
+export const ReorderNotebooksSchema = z.object({
+  items: z.array(ReorderItemSchema).min(1),
+});
+
+export type ReorderNotebooks = z.infer<typeof ReorderNotebooksSchema>;

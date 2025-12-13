@@ -14,11 +14,28 @@ export const POST = withAuth(
 
     const supabase = createRouteHandlerSupabase(req);
 
+    // ============================
+    // CALCULAR POSITION
+    // ============================
+    const { data: last } = await supabase
+      .from("notebooks")
+      .select("position")
+      .eq("user_id", user.id)
+      .order("position", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const nextPosition = (last?.position ?? -1) + 1;
+
+    // ============================
+    // CREATE NOTEBOOK
+    // ============================
     const { data, error } = await supabase
       .from("notebooks")
       .insert({
         user_id: user.id,
         title: body.title,
+        position: nextPosition,
       })
       .select()
       .single();

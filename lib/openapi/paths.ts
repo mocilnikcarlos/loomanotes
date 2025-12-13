@@ -10,10 +10,12 @@ import "./paths/notes/updateNote";
 import "./paths/notes/deleteNote";
 import "./paths/notes/listNotes";
 import "./paths/notes/getNote";
+import "./paths/notes/reorder";
 import "./paths/notebooks/createNotebook";
 import "./paths/notebooks/updateNotebook";
 import "./paths/notebooks/deleteNotebook";
 import "./paths/notebooks/listNotebooks";
 import "./paths/notebooks/getNotebook";
+import "./paths/notebooks/reorder";
 
 // Y así sucesivamente...

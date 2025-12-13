@@ -36,9 +36,6 @@ export const CreateNoteSchema = z.object({
   }),
 });
 
-// =====================================================
-// UPDATE NOTE
-// =====================================================
 export const UpdateNoteSchema = z.object({
   title: z.string().min(1).optional().openapi({
     example: "Título actualizado",
@@ -50,3 +47,18 @@ export const UpdateNoteSchema = z.object({
 
 export type CreateNote = z.infer<typeof CreateNoteSchema>;
 export type UpdateNote = z.infer<typeof UpdateNoteSchema>;
+
+// =====================================================
+// REORDER
+// =====================================================
+export const ReorderItemSchema = z.object({
+  id: z.string().uuid(),
+  position: z.number().int().min(0),
+});
+
+export const ReorderNotesSchema = z.object({
+  notebook_id: z.string().uuid().nullable(), // null = loose notes
+  items: z.array(ReorderItemSchema).min(1),
+});
+
+export type ReorderNotes = z.infer<typeof ReorderNotesSchema>;
