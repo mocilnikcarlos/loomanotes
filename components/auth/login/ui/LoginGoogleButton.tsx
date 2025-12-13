@@ -1,6 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/Button";
 import { createClientSupabase } from "@/lib/supabase/client";
+import { FcGoogle } from "react-icons/fc";
 
 export function LoginGoogleButton() {
   const supabase = createClientSupabase();
@@ -15,11 +17,12 @@ export function LoginGoogleButton() {
   }
 
   return (
-    <button
+    <Button
       onClick={handleLogin}
-      className="px-4 py-2 rounded bg-black text-white"
+      icon={<FcGoogle size={20} />}
+      iconPosition="left"
     >
       Continuar con Google
-    </button>
+    </Button>
   );
 }
