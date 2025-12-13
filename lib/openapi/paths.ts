@@ -17,5 +17,6 @@ import "./paths/notebooks/deleteNotebook";
 import "./paths/notebooks/listNotebooks";
 import "./paths/notebooks/getNotebook";
 import "./paths/notebooks/reorder";
+import "./paths/aside/getAside";
 
 // Y así sucesivamente...
