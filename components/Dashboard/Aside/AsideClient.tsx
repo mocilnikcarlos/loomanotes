@@ -7,6 +7,7 @@ import { AsideSection } from "./ui/AsideSection";
 import { AsideList } from "./ui/AsideList";
 import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { CreateAsideItem } from "./ui/CreateAsideItem";
+import { useDeleteAsideItem } from "@/hooks/aside/useDeleteAsideItem";
 
 type Item = { id: string; title: string; isSkeleton?: boolean };
 
@@ -38,6 +39,18 @@ export function AsideClient({ aside }: { aside: any }) {
       },
     });
 
+  const { deleteItem } = useDeleteAsideItem({
+    onOptimisticDelete(type, id) {
+      if (type === "note") {
+        setNotes((prev) => prev.filter((n) => n.id !== id));
+      }
+
+      if (type === "notebook") {
+        setNotebooks((prev) => prev.filter((n) => n.id !== id));
+      }
+    },
+  });
+
   return (
     <AsideCard>
       <AsideSection>
@@ -49,7 +62,7 @@ export function AsideClient({ aside }: { aside: any }) {
           onConfirm={(name) => confirmCreate("note", name)}
           onCancel={cancelCreate}
         />
-        <AsideList items={notes} />
+        <AsideList items={notes} onDelete={deleteItem} />
       </AsideSection>
 
       <AsideDivider />
@@ -64,7 +77,7 @@ export function AsideClient({ aside }: { aside: any }) {
           onCancel={cancelCreate}
         />
 
-        <AsideList items={notebooks} nested />
+        <AsideList items={notebooks} nested onDelete={deleteItem} />
       </AsideSection>
     </AsideCard>
   );
