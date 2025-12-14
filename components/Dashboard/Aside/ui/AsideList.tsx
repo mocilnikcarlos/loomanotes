@@ -1,37 +1,24 @@
 import Link from "next/link";
 import { NavItem } from "./NavItem";
 
-type NoteItem = {
-  id: string;
-  title: string;
-};
-
-type NotebookItem = {
-  id: string;
-  title: string;
-};
-
-interface AsideListProps {
-  items: NoteItem[] | NotebookItem[];
-  nested?: boolean;
-}
-
-export function AsideList({ items, nested = false }: AsideListProps) {
-  if (!items.length) return null;
-
+export function AsideList({ items, nested = false }: any) {
   return (
     <div className={`flex flex-col gap-1 ${nested ? "pl-2" : ""}`}>
-      {items.map((item) => {
-        const isNotebook = "notes" in item === false;
-
-        const href = isNotebook ? `/notebooks/${item.id}` : `/notes/${item.id}`;
-
-        return (
-          <Link key={item.id} href={href}>
+      {items.map((item: any) =>
+        item.isSkeleton ? (
+          <div
+            key={item.id}
+            className="h-8 rounded-full bg-card animate-pulse"
+          />
+        ) : (
+          <Link
+            key={item.id}
+            href={`/dashboard/${nested ? "notebook" : "note"}/${item.id}`}
+          >
             <NavItem>{item.title}</NavItem>
           </Link>
-        );
-      })}
+        )
+      )}
     </div>
   );
 }

@@ -4,21 +4,34 @@ import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
 import { useState } from "react";
 
-export function useCreateAsideItem() {
-  const router = useRouter();
-  const [creating, setCreating] = useState<"note" | "notebook" | null>(null);
+type Type = "note" | "notebook";
 
-  function startCreate(type: "note" | "notebook") {
+export function useCreateAsideItem(handlers?: {
+  onOptimisticCreate?: (type: Type) => string;
+  onCreated?: (type: Type, item: any, tempId: string) => void;
+}) {
+  const router = useRouter();
+  const [creating, setCreating] = useState<Type | null>(null);
+
+  function startCreate(type: Type) {
     setCreating(type);
   }
 
-  async function confirmCreate(type: "note" | "notebook", name: string) {
+  function cancelCreate() {
+    setCreating(null);
+  }
+
+  async function confirmCreate(type: Type, name: string) {
+    const tempId = handlers?.onOptimisticCreate?.(type);
+
     const res = await fetch(`/api/${type}s`, {
       method: "POST",
       body: JSON.stringify({ title: name }),
     });
 
     const data = await res.json();
+
+    handlers?.onCreated?.(type, data, tempId!);
 
     addToast({
       title: `${type === "note" ? "Nota" : "Carpeta"} creada`,
@@ -28,5 +41,5 @@ export function useCreateAsideItem() {
     setCreating(null);
   }
 
-  return { creating, startCreate, confirmCreate };
+  return { creating, startCreate, confirmCreate, cancelCreate };
 }
