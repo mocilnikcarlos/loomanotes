@@ -1,21 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AsideCard } from "./ui/AsideCard";
 import { AsideDivider } from "./ui/AsideDivider";
 import { AsideSection } from "./ui/AsideSection";
 import { AsideList } from "./ui/AsideList";
-import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { CreateAsideItem } from "./ui/CreateAsideItem";
+
+import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { useDeleteAsideItem } from "@/hooks/aside/useDeleteAsideItem";
 import { useRenameAsideItem } from "@/hooks/aside/useRenameAsideItem";
 
-type Item = { id: string; title: string; isSkeleton?: boolean };
+import { useAsideStore } from "@/store/aside.store";
 
 export function AsideClient({ aside }: { aside: any }) {
-  const [notes, setNotes] = useState<Item[]>(aside.notes);
-  const [notebooks, setNotebooks] = useState<Item[]>(aside.notebooks);
+  /* ============================
+   * INIT STORE DESDE SERVER
+   * ============================ */
+  const initAside = useAsideStore((s) => s.init);
 
+  useEffect(() => {
+    initAside({
+      looseNotes: aside.looseNotes,
+      notebooks: aside.notebooks,
+    });
+  }, [aside, initAside]);
+
+  /* ============================
+   * STORE STATE
+   * ============================ */
+  const notes = useAsideStore((s) => s.looseNotes);
+  const notebooks = useAsideStore((s) => s.notebooks);
+
+  const addTemp = useAsideStore((s) => s.addTemp);
+  const replaceTemp = useAsideStore((s) => s.replaceTemp);
+  const deleteFromStore = useAsideStore((s) => s.deleteItem);
+  const renameInStore = useAsideStore((s) => s.renameItem);
+
+  /* ============================
+   * CREATE
+   * ============================ */
   const { creating, startCreate, confirmCreate, cancelCreate } =
     useCreateAsideItem({
       onOptimisticCreate(type) {
@@ -23,35 +47,30 @@ export function AsideClient({ aside }: { aside: any }) {
           id: `temp-${Date.now()}`,
           title: "Creando...",
           isSkeleton: true,
+          notebook_id: null,
         };
 
-        if (type === "note") setNotes((prev) => [temp, ...prev]);
-        if (type === "notebook") setNotebooks((prev) => [temp, ...prev]);
-
+        addTemp(type, temp);
         return temp.id;
       },
 
       onCreated(type, realItem, tempId) {
-        const replace = (items: Item[]) =>
-          items.map((i) => (i.id === tempId ? realItem : i));
-
-        if (type === "note") setNotes(replace);
-        if (type === "notebook") setNotebooks(replace);
+        replaceTemp(type, tempId, realItem);
       },
     });
 
+  /* ============================
+   * DELETE
+   * ============================ */
   const { deleteItem } = useDeleteAsideItem({
     onOptimisticDelete(type, id) {
-      if (type === "note") {
-        setNotes((prev) => prev.filter((n) => n.id !== id));
-      }
-
-      if (type === "notebook") {
-        setNotebooks((prev) => prev.filter((n) => n.id !== id));
-      }
+      deleteFromStore(type, id);
     },
   });
 
+  /* ============================
+   * RENAME
+   * ============================ */
   const [renaming, setRenaming] = useState<{
     type: "note" | "notebook";
     id: string;
@@ -59,22 +78,18 @@ export function AsideClient({ aside }: { aside: any }) {
 
   const { renameItem } = useRenameAsideItem({
     onOptimisticRename(type, id, title) {
-      if (type === "note") {
-        setNotes((prev) =>
-          prev.map((n) => (n.id === id ? { ...n, title } : n))
-        );
-      }
-
-      if (type === "notebook") {
-        setNotebooks((prev) =>
-          prev.map((n) => (n.id === id ? { ...n, title } : n))
-        );
-      }
+      renameInStore(type, id, title);
     },
   });
 
+  /* ============================
+   * RENDER
+   * ============================ */
   return (
     <AsideCard>
+      {/* ===================== */}
+      {/* NOTES SUELTAS */}
+      {/* ===================== */}
       <AsideSection>
         <CreateAsideItem
           label="Crear nota"
@@ -84,10 +99,11 @@ export function AsideClient({ aside }: { aside: any }) {
           onConfirm={(name) => confirmCreate("note", name)}
           onCancel={cancelCreate}
         />
+
         <AsideList
           items={notes}
-          onDelete={deleteItem}
           renaming={renaming}
+          onDelete={deleteItem}
           onRenameStart={(id) => setRenaming({ type: "note", id })}
           onRenameCancel={() => setRenaming(null)}
           onRenameConfirm={async (type, id, name) => {
@@ -99,6 +115,9 @@ export function AsideClient({ aside }: { aside: any }) {
 
       <AsideDivider />
 
+      {/* ===================== */}
+      {/* NOTEBOOKS */}
+      {/* ===================== */}
       <AsideSection>
         <CreateAsideItem
           label="Crear carpeta"
@@ -111,15 +130,28 @@ export function AsideClient({ aside }: { aside: any }) {
 
         <AsideList
           items={notebooks}
-          nested
-          onDelete={deleteItem}
           renaming={renaming}
+          onDelete={deleteItem}
           onRenameStart={(id) => setRenaming({ type: "notebook", id })}
           onRenameCancel={() => setRenaming(null)}
           onRenameConfirm={async (type, id, name) => {
             await renameItem(type, id, name);
             setRenaming(null);
           }}
+          renderNested={(notebook) => (
+            <AsideList
+              items={notebook.notes}
+              nested
+              renaming={renaming}
+              onDelete={deleteItem}
+              onRenameStart={(id) => setRenaming({ type: "note", id })}
+              onRenameCancel={() => setRenaming(null)}
+              onRenameConfirm={async (type, id, name) => {
+                await renameItem(type, id, name);
+                setRenaming(null);
+              }}
+            />
+          )}
         />
       </AsideSection>
     </AsideCard>

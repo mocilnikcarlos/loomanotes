@@ -12,6 +12,7 @@ export function AsideList({
   onRenameConfirm,
   onRenameCancel,
   renaming,
+  renderNested,
 }: {
   items: any[];
   nested?: boolean;
@@ -24,9 +25,10 @@ export function AsideList({
   ) => Promise<void>;
   onRenameCancel: () => void;
   renaming: { type: "note" | "notebook"; id: string } | null;
+  renderNested?: (item: any) => React.ReactNode;
 }) {
   const pathname = usePathname();
-  const type = nested ? "notebook" : "note";
+  const type = nested ? "note" : "notebook";
 
   return (
     <div className={`flex flex-col gap-1 ${nested ? "pl-2" : ""}`}>

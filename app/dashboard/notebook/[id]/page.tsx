@@ -1,4 +1,5 @@
-// app/dashboard/notebook/[id]/page.tsx
+import NotebookClientPage from "./NotebookClientPage";
+
 export default async function NotebookPage({
   params,
 }: {
@@ -6,10 +7,5 @@ export default async function NotebookPage({
 }) {
   const { id } = await params;
 
-  return (
-    <div>
-      <h1>Notebook</h1>
-      <p>ID: {id}</p>
-    </div>
-  );
+  return <NotebookClientPage id={id} />;
 }
