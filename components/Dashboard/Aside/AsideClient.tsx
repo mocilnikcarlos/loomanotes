@@ -8,6 +8,7 @@ import { AsideList } from "./ui/AsideList";
 import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { CreateAsideItem } from "./ui/CreateAsideItem";
 import { useDeleteAsideItem } from "@/hooks/aside/useDeleteAsideItem";
+import { useRenameAsideItem } from "@/hooks/aside/useRenameAsideItem";
 
 type Item = { id: string; title: string; isSkeleton?: boolean };
 
@@ -51,6 +52,27 @@ export function AsideClient({ aside }: { aside: any }) {
     },
   });
 
+  const [renaming, setRenaming] = useState<{
+    type: "note" | "notebook";
+    id: string;
+  } | null>(null);
+
+  const { renameItem } = useRenameAsideItem({
+    onOptimisticRename(type, id, title) {
+      if (type === "note") {
+        setNotes((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, title } : n))
+        );
+      }
+
+      if (type === "notebook") {
+        setNotebooks((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, title } : n))
+        );
+      }
+    },
+  });
+
   return (
     <AsideCard>
       <AsideSection>
@@ -62,7 +84,17 @@ export function AsideClient({ aside }: { aside: any }) {
           onConfirm={(name) => confirmCreate("note", name)}
           onCancel={cancelCreate}
         />
-        <AsideList items={notes} onDelete={deleteItem} />
+        <AsideList
+          items={notes}
+          onDelete={deleteItem}
+          renaming={renaming}
+          onRenameStart={(id) => setRenaming({ type: "note", id })}
+          onRenameCancel={() => setRenaming(null)}
+          onRenameConfirm={async (type, id, name) => {
+            await renameItem(type, id, name);
+            setRenaming(null);
+          }}
+        />
       </AsideSection>
 
       <AsideDivider />
@@ -77,7 +109,18 @@ export function AsideClient({ aside }: { aside: any }) {
           onCancel={cancelCreate}
         />
 
-        <AsideList items={notebooks} nested onDelete={deleteItem} />
+        <AsideList
+          items={notebooks}
+          nested
+          onDelete={deleteItem}
+          renaming={renaming}
+          onRenameStart={(id) => setRenaming({ type: "notebook", id })}
+          onRenameCancel={() => setRenaming(null)}
+          onRenameConfirm={async (type, id, name) => {
+            await renameItem(type, id, name);
+            setRenaming(null);
+          }}
+        />
       </AsideSection>
     </AsideCard>
   );

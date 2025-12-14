@@ -2,15 +2,28 @@
 
 import { usePathname } from "next/navigation";
 import { AsideNavItem } from "./AsideNavItem";
+import { CreateAsideItem } from "./CreateAsideItem";
 
 export function AsideList({
   items,
   nested = false,
   onDelete,
+  onRenameStart,
+  onRenameConfirm,
+  onRenameCancel,
+  renaming,
 }: {
   items: any[];
   nested?: boolean;
   onDelete: (type: "note" | "notebook", id: string) => void;
+  onRenameStart: (id: string) => void;
+  onRenameConfirm: (
+    type: "note" | "notebook",
+    id: string,
+    name: string
+  ) => Promise<void>;
+  onRenameCancel: () => void;
+  renaming: { type: "note" | "notebook"; id: string } | null;
 }) {
   const pathname = usePathname();
   const type = nested ? "notebook" : "note";
@@ -27,6 +40,19 @@ export function AsideList({
           );
         }
 
+        if (renaming?.type === type && renaming.id === item.id) {
+          return (
+            <CreateAsideItem
+              key={item.id}
+              label=""
+              active
+              onStart={() => {}}
+              onCancel={onRenameCancel}
+              onConfirm={(name) => onRenameConfirm(type, item.id, name)}
+            />
+          );
+        }
+
         const href = `/dashboard/${type}/${item.id}`;
         const active = pathname === href;
 
@@ -37,9 +63,7 @@ export function AsideList({
             title={item.title}
             href={href}
             active={active}
-            onRename={() => {
-              console.log("rename", type, item.id);
-            }}
+            onRename={() => onRenameStart(item.id)}
             onDelete={() => onDelete(type, item.id)}
           />
         );
