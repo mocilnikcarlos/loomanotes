@@ -2,11 +2,21 @@ import { ListNotesResponseSchema } from "@/lib/schemas/notes";
 import { getBaseUrl } from "@/lib/api/getBaseUrl";
 import { headers } from "next/headers";
 
-export async function getNotes() {
+type GetNotesParams = {
+  notebook_id?: string | null;
+};
+
+export async function getNotes(params?: GetNotesParams) {
   const baseUrl = await getBaseUrl();
   const h = await headers();
 
-  const res = await fetch(`${baseUrl}/api/notes`, {
+  let url = `${baseUrl}/api/notes`;
+
+  if (params?.notebook_id !== undefined) {
+    url += `?notebook_id=${params.notebook_id}`;
+  }
+
+  const res = await fetch(url, {
     cache: "no-store",
     headers: {
       cookie: h.get("cookie") ?? "",

@@ -5,33 +5,32 @@ import { Menu, MenuItem } from "@/components/ui/Menu";
 import { NavItem } from "./NavItem";
 import { Pencil, Trash } from "lucide-react";
 
-interface AsideNavItemProps {
-  id: string;
-  title: string;
-  href: string;
-  onRename: () => void;
-  onDelete: () => void;
-  active?: boolean;
-}
-
 export function AsideNavItem({
-  id,
   title,
   href,
+  active,
+  icon,
   onRename,
   onDelete,
-  active,
-}: AsideNavItemProps) {
+}: {
+  title: string;
+  href: string;
+  active?: boolean;
+  icon?: React.ReactNode;
+  onRename: () => void;
+  onDelete: () => void;
+}) {
   return (
     <Menu
       openOn="context"
       position="right"
       trigger={
-        <div>
-          <Link href={href}>
-            <NavItem active={active}>{title}</NavItem>
-          </Link>
-        </div>
+        <Link href={href}>
+          <NavItem active={active}>
+            {icon && <span className="mr-2 text-icon">{icon}</span>}
+            {title}
+          </NavItem>
+        </Link>
       }
     >
       <MenuItem icon={<Pencil size={14} />} onClick={onRename}>

@@ -102,6 +102,7 @@ export function AsideClient({ aside }: { aside: any }) {
 
         <AsideList
           items={notes}
+          type="note"
           renaming={renaming}
           onDelete={deleteItem}
           onRenameStart={(id) => setRenaming({ type: "note", id })}
@@ -130,6 +131,7 @@ export function AsideClient({ aside }: { aside: any }) {
 
         <AsideList
           items={notebooks}
+          type="notebook"
           renaming={renaming}
           onDelete={deleteItem}
           onRenameStart={(id) => setRenaming({ type: "notebook", id })}
@@ -141,6 +143,7 @@ export function AsideClient({ aside }: { aside: any }) {
           renderNested={(notebook) => (
             <AsideList
               items={notebook.notes}
+              type="note"
               nested
               renaming={renaming}
               onDelete={deleteItem}

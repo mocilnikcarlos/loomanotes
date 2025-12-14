@@ -12,7 +12,7 @@ export function NavItem({ children, active, onClick }: NavItemProps) {
       }`}
       onClick={onClick}
     >
-      <span>{children}</span>
+      <span className="flex items-center">{children}</span>
     </button>
   );
 }
