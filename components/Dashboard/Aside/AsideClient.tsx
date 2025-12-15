@@ -141,19 +141,25 @@ export function AsideClient({ aside }: { aside: any }) {
             setRenaming(null);
           }}
           renderNested={(notebook) => (
-            <AsideList
-              items={notebook.notes}
-              type="note"
-              nested
-              renaming={renaming}
-              onDelete={deleteItem}
-              onRenameStart={(id) => setRenaming({ type: "note", id })}
-              onRenameCancel={() => setRenaming(null)}
-              onRenameConfirm={async (type, id, name) => {
-                await renameItem(type, id, name);
-                setRenaming(null);
-              }}
-            />
+            <div className="relative ml-3 pl-3">
+              {/* Línea vertical */}
+              <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
+
+              {/* Lista de notas */}
+              <AsideList
+                items={notebook.notes}
+                type="note"
+                nested
+                renaming={renaming}
+                onDelete={deleteItem}
+                onRenameStart={(id) => setRenaming({ type: "note", id })}
+                onRenameCancel={() => setRenaming(null)}
+                onRenameConfirm={async (type, id, name) => {
+                  await renameItem(type, id, name);
+                  setRenaming(null);
+                }}
+              />
+            </div>
           )}
         />
       </AsideSection>

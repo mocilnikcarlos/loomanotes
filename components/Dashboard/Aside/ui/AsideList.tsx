@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AsideNavItem } from "./AsideNavItem";
 import { CreateAsideItem } from "./CreateAsideItem";
 import { Folder, FolderOpen, FileText } from "lucide-react";
+import { useEffect } from "react";
 
 export function AsideList({
   items,
@@ -34,6 +35,18 @@ export function AsideList({
   const pathname = usePathname();
 
   const [open, setOpen] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (type !== "notebook") return;
+
+    items.forEach((item) => {
+      const href = `/dashboard/notebook/${item.id}`;
+
+      if (pathname === href) {
+        setOpen((prev) => ({ ...prev, [item.id]: true }));
+      }
+    });
+  }, [pathname, items, type]);
 
   function toggle(id: string) {
     setOpen((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -66,7 +79,7 @@ export function AsideList({
 
         const href = `/dashboard/${type}/${item.id}`;
         const active = pathname === href;
-        const isOpen = open[item.id] ?? true;
+        const isOpen = open[item.id] ?? false;
 
         const Icon = type === "note" ? FileText : isOpen ? FolderOpen : Folder;
 
@@ -81,7 +94,6 @@ export function AsideList({
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
-                      e.preventDefault();
                       toggle(item.id);
                     }}
                   >

@@ -97,12 +97,20 @@ export function Menu({
       ...(openOn === "context"
         ? {
             onContextMenu: (e: React.MouseEvent) => {
+              const target = e.target as HTMLElement;
+              if (target.closest("[data-menu-ignore]")) return;
+
               e.preventDefault();
               openMenu();
             },
           }
         : {
-            onClick: () => (open ? closeMenu() : openMenu()),
+            onClick: (e: React.MouseEvent) => {
+              const target = e.target as HTMLElement;
+              if (target.closest("[data-menu-ignore]")) return;
+
+              open ? closeMenu() : openMenu();
+            },
           }),
     });
   }

@@ -6,13 +6,15 @@ interface NavItemProps {
 
 export function NavItem({ children, active, onClick }: NavItemProps) {
   return (
-    <button
-      className={`flex items-center gap-2 text-foreground rounded-full w-full px-6 py-2 text-sm transition-colors cursor-pointer ${
-        active ? "bg-button " : "hover:bg-button-hover"
-      }`}
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      className={`flex items-center gap-2 text-foreground rounded-full w-full px-4 py-3 text-sm transition-colors cursor-pointer select-none ${
+        active ? "bg-button" : "hover:bg-button-hover"
+      }`}
     >
-      <span className="flex items-center">{children}</span>
-    </button>
+      <span className="flex items-center truncate">{children}</span>
+    </div>
   );
 }
