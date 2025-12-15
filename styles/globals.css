@@ -1,3 +1,160 @@
+@config "../tailwind.config.js";
 @import "tailwindcss";
 
-@config "../tailwind.config.js"
+html,
+body {
+    height: 100%;
+}
+
+/* Toast: disable hover movement but keep animations */
+[data-react-aria-top-layer] [role="alertdialog"] {
+    --tw-translate-x: 0 !important;
+    --tw-translate-y: 0 !important;
+}
+
+/* Toast – Adaptado a tus tokens */
+:root,
+:root[data-theme="light"] {
+    --heroui-toast-bg: var(--card);
+    --heroui-toast-color: var(--foreground);
+    --heroui-toast-border: var(--border);
+
+    --heroui-toast-close-bg: transparent;
+    --heroui-toast-close-color: var(--subtitle);
+
+    --heroui-toast-title: var(--foreground);
+    --heroui-toast-description: var(--subtitle);
+}
+
+.dark {
+    --heroui-toast-bg: var(--card);
+    --heroui-toast-color: var(--foreground);
+    --heroui-toast-border: var(--border);
+
+    --heroui-toast-close-bg: transparent;
+    --heroui-toast-close-color: var(--subtitle);
+
+    --heroui-toast-title: var(--foreground);
+    --heroui-toast-description: var(--subtitle);
+}
+
+
+/* -----------------------------
+   Theme Tokens (Light)
+-------------------------------- */
+.light {
+    /* Base */
+    --background: #ffffff;
+    /* gris claro neutro */
+    --foreground: #626164;
+    --foreground-secondary: #e9e9e9;
+
+    /* Surfaces */
+    --card: #FDFDFD;
+    --card-hover: #f0f0f0;
+    --border: #EBEBEB;
+
+    /* Text */
+    --title: #111111;
+    --subtitle: #7C7C7C;
+    --icon: #6b7280;
+
+    /* Interactive (neutros) */
+    --button: #F4F6FA;
+    --button-hover: #F1f1f3;
+
+    --pill: #F1F1F3;
+
+    /* Inputs */
+    --input-bg: #ffffff;
+    --input-border: var(--border);
+    --input-border-hover: var(--primary-hover);
+    --input-border-focus: var(--primary);
+
+    --input-text: var(--foreground);
+    --input-placeholder: #8a8f98;
+    --input-error: var(--danger);
+
+    /* Menu / overlays */
+    --menu: #ffffff;
+    --menu-hover: #f2f2f2;
+
+    /* ACCENT BASE (mismo tono, ajusta percepción) */
+    --primary: #8fa63e;
+    --primary-hover: #7f9436;
+
+/* STATES – LIGHT (más saturados, pero elegantes) */
+    --success: #63b537;
+    --success-bg: #edf8e6;
+
+    --warning: #f0a13a;
+    /* más ámbar, más punch */
+    --warning-bg: #fff7db;
+    /* fondo casi blanco cálido */
+
+    --danger: #e24a3b;
+    /* rojo más puro, menos marrón */
+    --danger-bg: #fdeceb;
+
+    --info: #4f86b3;
+    /* azul limpio, no grisáceo */
+    --info-bg: #eef4f9;
+}
+/* -----------------------------
+   Theme Tokens (Dark)
+--------------------------------*/
+.dark {
+    /* Base */
+    --background: #111111;
+    /* negro carbón */
+    --foreground: #e6e9ed;
+    --foreground-secondary: #121617;
+    /* blanco sucio */
+
+    /* Surfaces */
+    --card: #1A1A1A;
+    /* grafito */
+    --card-hover: #181c22;
+    --border: #2e2e2e;
+
+    /* Text */
+    --subtitle: #ffffff;
+    --subtitle: #9aa0a6;
+    --icon: #8f96a3;
+
+    /* Interactive (neutros) */
+    --button: #303030;
+    --button-hover: #363636;
+
+    --pill: #141414;
+
+    /* Inputs */
+    --input-bg: #181818;
+    --input-border: var(--border);
+    --input-border-hover: var(--primary-hover);
+    --input-border-focus: var(--primary);
+
+    --input-text: var(--foreground);
+    --input-placeholder: #7f8791;
+    --input-error: var(--danger);
+
+    --menu: #181818;
+    --menu-hover: #141414;
+
+    /* ACCENT BASE */
+    --primary: #b9d256;
+    --primary-hover: #A4B84B;
+
+    /* STATES – DARK (más limpios, más profundos) */
+    --success: #8fbf3f;
+    --success-bg: #121a0c;
+
+    --warning: #d4c24a;
+    --warning-bg: #1c1a0b;
+
+    --danger: #e06a55;
+    --danger-bg: #1e1210;
+
+    --info: #7fa6b8;
+    --info-bg: #121a1e;
+}

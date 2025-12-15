@@ -1,6 +1,7 @@
-import { Comfortaa } from "next/font/google";
+import { Elms_Sans } from "next/font/google";
 
-export const fontComfortaa = Comfortaa({
+export const fontElms = Elms_Sans({
   subsets: ["latin"],
-  variable: "--font-comfortaa",
+  variable: "--font-elms_sans",
+  fallback: [],
 });
