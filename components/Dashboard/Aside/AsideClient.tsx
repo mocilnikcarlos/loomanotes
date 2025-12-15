@@ -17,6 +17,11 @@ import { DragDropContext } from "@hello-pangea/dnd";
 
 export function AsideClient({ aside }: { aside: any }) {
   /* ============================
+   * DRAG STATE GLOBAL
+   * ============================ */
+  const [isDraggingNote, setIsDraggingNote] = useState(false);
+
+  /* ============================
    * INIT STORE DESDE SERVER
    * ============================ */
   const initAside = useAsideStore((s) => s.init);
@@ -124,24 +129,29 @@ export function AsideClient({ aside }: { aside: any }) {
   };
 
   const handleDragEnd = async (result: any) => {
-    const { source, destination, draggableId } = result;
+    const { source, destination, draggableId, type } = result;
 
     if (!destination) return;
 
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
+    // 🚫 Una nota NO puede ir a "notebooks"
+    if (type === "note" && destination.droppableId === "notebooks") {
       return;
     }
 
-    const parseNotebook = (id: string) =>
-      id === "loose-notes" ? null : id.replace("notebook:", "");
+    const parseNotebook = (id: string) => {
+      if (id === "loose-notes") return null;
+      if (id.startsWith("notebook:")) return id.replace("notebook:", "");
+      return null;
+    };
 
     const fromNotebookId = parseNotebook(source.droppableId);
     const toNotebookId = parseNotebook(destination.droppableId);
 
-    // 1️⃣ Optimistic UI
+    // 🚫 destino inválido
+    if (type === "note" && toNotebookId === undefined) {
+      return;
+    }
+
     moveNote({
       noteId: draggableId,
       fromNotebookId,
@@ -149,18 +159,12 @@ export function AsideClient({ aside }: { aside: any }) {
       toIndex: destination.index,
     });
 
-    // 2️⃣ Persistencia backend
     await fetch("/api/notes/reorder", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         notebook_id: toNotebookId,
-        items: [
-          {
-            id: draggableId,
-            position: destination.index,
-          },
-        ],
+        items: [{ id: draggableId, position: destination.index }],
       }),
     });
   };
@@ -169,7 +173,17 @@ export function AsideClient({ aside }: { aside: any }) {
    * RENDER
    * ============================ */
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
+    <DragDropContext
+      onDragStart={(start) => {
+        if (start.type === "note") {
+          setIsDraggingNote(true);
+        }
+      }}
+      onDragEnd={(result) => {
+        setIsDraggingNote(false);
+        handleDragEnd(result);
+      }}
+    >
       <AsideCard>
         {/* ===================== */}
         {/* NOTES SUELTAS */}
@@ -218,7 +232,9 @@ export function AsideClient({ aside }: { aside: any }) {
           <AsideList
             items={notebooks}
             type="notebook"
+            droppableId="notebooks"
             isDragDisabled
+            isDraggingNote={isDraggingNote}
             renaming={renaming}
             onDelete={deleteItem}
             onRenameStart={(id) => setRenaming({ type: "notebook", id })}
@@ -229,15 +245,12 @@ export function AsideClient({ aside }: { aside: any }) {
             }}
             renderNested={(notebook) => (
               <div className="relative ml-3 pl-3">
-                {/* Línea vertical */}
-                <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
+                <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
 
-                {/* Lista de notas */}
                 <AsideList
                   items={notebook.notes}
                   type="note"
                   droppableId={`notebook:${notebook.id}`}
-                  isDragDisabled={false}
                   nested
                   renaming={renaming}
                   onDelete={deleteItem}

@@ -1,19 +1,27 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { AsideNavItem } from "./AsideNavItem";
 import { CreateAsideItem } from "./CreateAsideItem";
 import { Folder, FolderOpen, FileText } from "lucide-react";
 
+type Item = {
+  id: string;
+  title: string;
+  isSkeleton?: boolean;
+  notes?: any[]; // Asegura que `notes` siempre sea un array (vacío si no existe)
+};
+
 type Props = {
-  items: any[];
+  items: Item[]; // Cambio aquí, especificamos que `items` es un array de `Item`
   type: "note" | "notebook";
   nested?: boolean;
 
   droppableId?: string;
   isDragDisabled?: boolean;
+  isDraggingNote?: boolean;
 
   onDelete: (type: "note" | "notebook", id: string) => void;
   onRenameStart: (id: string) => void;
@@ -29,11 +37,12 @@ type Props = {
 };
 
 export function AsideList({
-  items,
+  items = [], // Default vacío, por si `items` es undefined
   type,
   nested = false,
   droppableId,
   isDragDisabled,
+  isDraggingNote = false,
   onDelete,
   onRenameStart,
   onRenameConfirm,
@@ -42,8 +51,13 @@ export function AsideList({
   renderNested,
 }: Props) {
   const pathname = usePathname();
-  const [open, setOpen] = useState<Record<string, boolean>>({});
 
+  const [open, setOpen] = useState<Record<string, boolean>>({});
+  const expandTimers = useRef<Record<string, NodeJS.Timeout>>({});
+
+  /* ============================
+   * AUTO OPEN POR URL
+   * ============================ */
   useEffect(() => {
     if (type !== "notebook") return;
 
@@ -54,25 +68,53 @@ export function AsideList({
     });
   }, [pathname, items, type]);
 
+  /* ============================
+   * CLEANUP TIMERS
+   * ============================ */
+  useEffect(() => {
+    return () => {
+      Object.values(expandTimers.current).forEach(clearTimeout);
+    };
+  }, []);
+
   function toggle(id: string) {
     setOpen((prev) => ({ ...prev, [id]: !prev[id] }));
   }
 
-  const content = (provided?: any) => (
+  function scheduleExpand(id: string) {
+    if (expandTimers.current[id]) return;
+
+    expandTimers.current[id] = setTimeout(() => {
+      setOpen((prev) => ({ ...prev, [id]: true }));
+    }, 200);
+  }
+
+  function cancelExpand(id: string) {
+    const timer = expandTimers.current[id];
+    if (timer) {
+      clearTimeout(timer);
+      delete expandTimers.current[id];
+    }
+  }
+
+  /* ============================
+   * LIST CONTENT
+   * ============================ */
+  const renderContent = (provided?: any) => (
     <div
       ref={provided?.innerRef}
       {...provided?.droppableProps}
       className={`flex flex-col gap-1 ${nested ? "pl-2" : ""}`}
     >
       {items.map((item, index) => {
-        if (item.isSkeleton) {
-          return (
-            <div
-              key={item.id}
-              className="h-8 rounded-full bg-card animate-pulse"
-            />
-          );
-        }
+        const isOpen = open[item.id] ?? false;
+        const href = `/dashboard/${type}/${item.id}`;
+        const active = pathname === href;
+
+        const Icon = type === "note" ? FileText : isOpen ? FolderOpen : Folder;
+
+        const shouldAutoExpand =
+          type === "notebook" && isDraggingNote && !nested;
 
         if (renaming?.type === type && renaming.id === item.id) {
           return (
@@ -87,43 +129,6 @@ export function AsideList({
           );
         }
 
-        const href = `/dashboard/${type}/${item.id}`;
-        const active = pathname === href;
-        const isOpen = open[item.id] ?? false;
-
-        const Icon = type === "note" ? FileText : isOpen ? FolderOpen : Folder;
-
-        const row = (
-          <>
-            <AsideNavItem
-              title={item.title}
-              href={href}
-              active={active}
-              icon={
-                !nested ? (
-                  <span
-                    data-toggle
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggle(item.id);
-                    }}
-                  >
-                    <Icon size={16} />
-                  </span>
-                ) : (
-                  <Icon size={16} />
-                )
-              }
-              onRename={() => onRenameStart(item.id)}
-              onDelete={() => onDelete(type, item.id)}
-            />
-
-            {!nested && isOpen && renderNested?.(item)}
-          </>
-        );
-
-        if (!droppableId) return <div key={item.id}>{row}</div>;
-
         return (
           <Draggable
             key={item.id}
@@ -136,8 +141,51 @@ export function AsideList({
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
+                onMouseEnter={() => {
+                  if (shouldAutoExpand && !isOpen) {
+                    scheduleExpand(item.id);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (shouldAutoExpand) {
+                    cancelExpand(item.id);
+                  }
+                }}
               >
-                {row}
+                <AsideNavItem
+                  title={item.title}
+                  href={href}
+                  active={active}
+                  icon={
+                    !nested ? (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggle(item.id);
+                        }}
+                      >
+                        <Icon size={16} />
+                      </span>
+                    ) : (
+                      <Icon size={16} />
+                    )
+                  }
+                  onRename={() => onRenameStart(item.id)}
+                  onDelete={() => onDelete(type, item.id)}
+                />
+
+                {/* 👇 Nested SIEMPRE montado */}
+                {!nested && renderNested && (
+                  <div
+                    className={`transition-all overflow-hidden ${
+                      isOpen
+                        ? "max-h-[1000px] opacity-100"
+                        : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    {renderNested(item)}
+                  </div>
+                )}
               </div>
             )}
           </Draggable>
@@ -149,12 +197,12 @@ export function AsideList({
   );
 
   if (!droppableId) {
-    return content();
+    return renderContent();
   }
 
   return (
-    <Droppable droppableId={droppableId}>
-      {(provided) => content(provided)}
+    <Droppable droppableId={droppableId} type={type}>
+      {(provided) => renderContent(provided)}
     </Droppable>
   );
 }

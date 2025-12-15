@@ -1,5 +1,6 @@
 "use client";
 
+import { Input } from "@/components/ui/Input";
 import { useEffect, useRef, useState } from "react";
 
 export function CreateAsideItem({
@@ -66,7 +67,7 @@ export function CreateAsideItem({
   }
 
   return (
-    <input
+    <Input
       ref={ref}
       autoFocus
       disabled={submitting}
