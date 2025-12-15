@@ -14,6 +14,13 @@ type Notebook = {
   isSkeleton?: boolean;
 };
 
+type MoveNotePayload = {
+  noteId: string;
+  fromNotebookId: string | null;
+  toNotebookId: string | null;
+  toIndex: number;
+};
+
 type AsideState = {
   looseNotes: Note[];
   notebooks: Notebook[];
@@ -27,6 +34,8 @@ type AsideState = {
   renameItem: (type: "note" | "notebook", id: string, title: string) => void;
 
   addNote: (note: Note) => void;
+
+  moveNote: (payload: MoveNotePayload) => void;
 };
 
 export const useAsideStore = create<AsideState>((set) => ({
@@ -115,6 +124,52 @@ export const useAsideStore = create<AsideState>((set) => ({
             ? { ...nb, notes: [...nb.notes, note] }
             : nb
         ),
+      };
+    });
+  },
+
+  moveNote({ noteId, fromNotebookId, toNotebookId, toIndex }) {
+    set((state) => {
+      let note: Note | undefined;
+
+      // 1️⃣ sacar la nota de origen
+      if (fromNotebookId === null) {
+        const idx = state.looseNotes.findIndex((n) => n.id === noteId);
+        if (idx === -1) return state;
+
+        note = state.looseNotes[idx];
+        state.looseNotes.splice(idx, 1);
+      } else {
+        const notebook = state.notebooks.find((n) => n.id === fromNotebookId);
+        if (!notebook) return state;
+
+        const idx = notebook.notes.findIndex((n) => n.id === noteId);
+        if (idx === -1) return state;
+
+        note = notebook.notes[idx];
+        notebook.notes.splice(idx, 1);
+      }
+
+      if (!note) return state;
+
+      // 2️⃣ actualizar notebook_id
+      note = { ...note, notebook_id: toNotebookId };
+
+      // 3️⃣ insertar en destino
+      if (toNotebookId === null) {
+        state.looseNotes.splice(toIndex, 0, note);
+      } else {
+        const targetNotebook = state.notebooks.find(
+          (n) => n.id === toNotebookId
+        );
+        if (!targetNotebook) return state;
+
+        targetNotebook.notes.splice(toIndex, 0, note);
+      }
+
+      return {
+        looseNotes: [...state.looseNotes],
+        notebooks: [...state.notebooks],
       };
     });
   },

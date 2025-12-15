@@ -13,11 +13,14 @@ import { useRenameAsideItem } from "@/hooks/aside/useRenameAsideItem";
 
 import { useAsideStore } from "@/store/aside.store";
 
+import { DragDropContext } from "@hello-pangea/dnd";
+
 export function AsideClient({ aside }: { aside: any }) {
   /* ============================
    * INIT STORE DESDE SERVER
    * ============================ */
   const initAside = useAsideStore((s) => s.init);
+  const moveNote = useAsideStore((s) => s.moveNote);
 
   useEffect(() => {
     initAside({
@@ -82,87 +85,174 @@ export function AsideClient({ aside }: { aside: any }) {
     },
   });
 
+  const reorderNotes = (startIndex: number, endIndex: number) => {
+    const reordered = [...notes];
+    const [moved] = reordered.splice(startIndex, 1);
+    reordered.splice(endIndex, 0, moved);
+
+    return reordered;
+  };
+
+  const reorderNotebooks = (startIndex: number, endIndex: number) => {
+    const reordered = [...notebooks];
+    const [moved] = reordered.splice(startIndex, 1);
+    reordered.splice(endIndex, 0, moved);
+
+    return reordered;
+  };
+
+  const reorderBackend = async (result: any) => {
+    const { destination, source, draggableId } = result;
+
+    if (source.droppableId === "loose-notes") {
+      // Llamar al endpoint de reorder de notas sueltas
+      await fetch(`/api/notes/reorder`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          items: [{ id: draggableId, position: destination.index }],
+        }),
+      });
+    } else if (source.droppableId === "notebooks") {
+      // Llamar al endpoint de reorder de notebooks
+      await fetch(`/api/notebooks/reorder`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          items: [{ id: draggableId, position: destination.index }],
+        }),
+      });
+    }
+  };
+
+  const handleDragEnd = async (result: any) => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) return;
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    const parseNotebook = (id: string) =>
+      id === "loose-notes" ? null : id.replace("notebook:", "");
+
+    const fromNotebookId = parseNotebook(source.droppableId);
+    const toNotebookId = parseNotebook(destination.droppableId);
+
+    // 1️⃣ Optimistic UI
+    moveNote({
+      noteId: draggableId,
+      fromNotebookId,
+      toNotebookId,
+      toIndex: destination.index,
+    });
+
+    // 2️⃣ Persistencia backend
+    await fetch("/api/notes/reorder", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        notebook_id: toNotebookId,
+        items: [
+          {
+            id: draggableId,
+            position: destination.index,
+          },
+        ],
+      }),
+    });
+  };
+
   /* ============================
    * RENDER
    * ============================ */
   return (
-    <AsideCard>
-      {/* ===================== */}
-      {/* NOTES SUELTAS */}
-      {/* ===================== */}
-      <AsideSection>
-        <CreateAsideItem
-          label="Crear nota"
-          active={creating === "note"}
-          disabled={creating === "notebook"}
-          onStart={() => startCreate("note")}
-          onConfirm={(name) => confirmCreate("note", name)}
-          onCancel={cancelCreate}
-        />
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <AsideCard>
+        {/* ===================== */}
+        {/* NOTES SUELTAS */}
+        {/* ===================== */}
+        <AsideSection>
+          <CreateAsideItem
+            label="Crear nota"
+            active={creating === "note"}
+            disabled={creating === "notebook"}
+            onStart={() => startCreate("note")}
+            onConfirm={(name) => confirmCreate("note", name)}
+            onCancel={cancelCreate}
+          />
 
-        <AsideList
-          items={notes}
-          type="note"
-          renaming={renaming}
-          onDelete={deleteItem}
-          onRenameStart={(id) => setRenaming({ type: "note", id })}
-          onRenameCancel={() => setRenaming(null)}
-          onRenameConfirm={async (type, id, name) => {
-            await renameItem(type, id, name);
-            setRenaming(null);
-          }}
-        />
-      </AsideSection>
+          <AsideList
+            items={notes}
+            type="note"
+            droppableId="loose-notes"
+            isDragDisabled={false}
+            renaming={renaming}
+            onDelete={deleteItem}
+            onRenameStart={(id) => setRenaming({ type: "note", id })}
+            onRenameCancel={() => setRenaming(null)}
+            onRenameConfirm={async (type, id, name) => {
+              await renameItem(type, id, name);
+              setRenaming(null);
+            }}
+          />
+        </AsideSection>
 
-      <AsideDivider />
+        <AsideDivider />
 
-      {/* ===================== */}
-      {/* NOTEBOOKS */}
-      {/* ===================== */}
-      <AsideSection>
-        <CreateAsideItem
-          label="Crear carpeta"
-          active={creating === "notebook"}
-          disabled={creating === "note"}
-          onStart={() => startCreate("notebook")}
-          onConfirm={(name) => confirmCreate("notebook", name)}
-          onCancel={cancelCreate}
-        />
+        {/* ===================== */}
+        {/* NOTEBOOKS */}
+        {/* ===================== */}
+        <AsideSection>
+          <CreateAsideItem
+            label="Crear carpeta"
+            active={creating === "notebook"}
+            disabled={creating === "note"}
+            onStart={() => startCreate("notebook")}
+            onConfirm={(name) => confirmCreate("notebook", name)}
+            onCancel={cancelCreate}
+          />
 
-        <AsideList
-          items={notebooks}
-          type="notebook"
-          renaming={renaming}
-          onDelete={deleteItem}
-          onRenameStart={(id) => setRenaming({ type: "notebook", id })}
-          onRenameCancel={() => setRenaming(null)}
-          onRenameConfirm={async (type, id, name) => {
-            await renameItem(type, id, name);
-            setRenaming(null);
-          }}
-          renderNested={(notebook) => (
-            <div className="relative ml-3 pl-3">
-              {/* Línea vertical */}
-              <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
+          <AsideList
+            items={notebooks}
+            type="notebook"
+            isDragDisabled
+            renaming={renaming}
+            onDelete={deleteItem}
+            onRenameStart={(id) => setRenaming({ type: "notebook", id })}
+            onRenameCancel={() => setRenaming(null)}
+            onRenameConfirm={async (type, id, name) => {
+              await renameItem(type, id, name);
+              setRenaming(null);
+            }}
+            renderNested={(notebook) => (
+              <div className="relative ml-3 pl-3">
+                {/* Línea vertical */}
+                <div className="absolute left-3 top-0 bottom-0 w-px bg-border" />
 
-              {/* Lista de notas */}
-              <AsideList
-                items={notebook.notes}
-                type="note"
-                nested
-                renaming={renaming}
-                onDelete={deleteItem}
-                onRenameStart={(id) => setRenaming({ type: "note", id })}
-                onRenameCancel={() => setRenaming(null)}
-                onRenameConfirm={async (type, id, name) => {
-                  await renameItem(type, id, name);
-                  setRenaming(null);
-                }}
-              />
-            </div>
-          )}
-        />
-      </AsideSection>
-    </AsideCard>
+                {/* Lista de notas */}
+                <AsideList
+                  items={notebook.notes}
+                  type="note"
+                  droppableId={`notebook:${notebook.id}`}
+                  isDragDisabled={false}
+                  nested
+                  renaming={renaming}
+                  onDelete={deleteItem}
+                  onRenameStart={(id) => setRenaming({ type: "note", id })}
+                  onRenameCancel={() => setRenaming(null)}
+                  onRenameConfirm={async (type, id, name) => {
+                    await renameItem(type, id, name);
+                    setRenaming(null);
+                  }}
+                />
+              </div>
+            )}
+          />
+        </AsideSection>
+      </AsideCard>
+    </DragDropContext>
   );
 }

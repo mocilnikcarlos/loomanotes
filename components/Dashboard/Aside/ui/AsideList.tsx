@@ -1,26 +1,20 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
 import { AsideNavItem } from "./AsideNavItem";
 import { CreateAsideItem } from "./CreateAsideItem";
 import { Folder, FolderOpen, FileText } from "lucide-react";
-import { useEffect } from "react";
 
-export function AsideList({
-  items,
-  type,
-  nested = false,
-  onDelete,
-  onRenameStart,
-  onRenameConfirm,
-  onRenameCancel,
-  renaming,
-  renderNested,
-}: {
+type Props = {
   items: any[];
   type: "note" | "notebook";
   nested?: boolean;
+
+  droppableId?: string;
+  isDragDisabled?: boolean;
+
   onDelete: (type: "note" | "notebook", id: string) => void;
   onRenameStart: (id: string) => void;
   onRenameConfirm: (
@@ -29,20 +23,32 @@ export function AsideList({
     name: string
   ) => Promise<void>;
   onRenameCancel: () => void;
+
   renaming: { type: "note" | "notebook"; id: string } | null;
   renderNested?: (item: any) => React.ReactNode;
-}) {
-  const pathname = usePathname();
+};
 
+export function AsideList({
+  items,
+  type,
+  nested = false,
+  droppableId,
+  isDragDisabled,
+  onDelete,
+  onRenameStart,
+  onRenameConfirm,
+  onRenameCancel,
+  renaming,
+  renderNested,
+}: Props) {
+  const pathname = usePathname();
   const [open, setOpen] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (type !== "notebook") return;
 
     items.forEach((item) => {
-      const href = `/dashboard/notebook/${item.id}`;
-
-      if (pathname === href) {
+      if (pathname === `/dashboard/notebook/${item.id}`) {
         setOpen((prev) => ({ ...prev, [item.id]: true }));
       }
     });
@@ -52,9 +58,13 @@ export function AsideList({
     setOpen((prev) => ({ ...prev, [id]: !prev[id] }));
   }
 
-  return (
-    <div className={`flex flex-col gap-1 ${nested ? "pl-2" : ""}`}>
-      {items.map((item) => {
+  const content = (provided?: any) => (
+    <div
+      ref={provided?.innerRef}
+      {...provided?.droppableProps}
+      className={`flex flex-col gap-1 ${nested ? "pl-2" : ""}`}
+    >
+      {items.map((item, index) => {
         if (item.isSkeleton) {
           return (
             <div
@@ -83,8 +93,8 @@ export function AsideList({
 
         const Icon = type === "note" ? FileText : isOpen ? FolderOpen : Folder;
 
-        return (
-          <div key={item.id} className="flex flex-col">
+        const row = (
+          <>
             <AsideNavItem
               title={item.title}
               href={href}
@@ -92,6 +102,7 @@ export function AsideList({
               icon={
                 !nested ? (
                   <span
+                    data-toggle
                     onClick={(e) => {
                       e.stopPropagation();
                       toggle(item.id);
@@ -108,9 +119,42 @@ export function AsideList({
             />
 
             {!nested && isOpen && renderNested?.(item)}
-          </div>
+          </>
+        );
+
+        if (!droppableId) return <div key={item.id}>{row}</div>;
+
+        return (
+          <Draggable
+            key={item.id}
+            draggableId={item.id}
+            index={index}
+            isDragDisabled={isDragDisabled}
+          >
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+              >
+                {row}
+              </div>
+            )}
+          </Draggable>
         );
       })}
+
+      {provided?.placeholder}
     </div>
+  );
+
+  if (!droppableId) {
+    return content();
+  }
+
+  return (
+    <Droppable droppableId={droppableId}>
+      {(provided) => content(provided)}
+    </Droppable>
   );
 }
