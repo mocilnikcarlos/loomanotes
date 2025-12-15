@@ -15,7 +15,19 @@ import { useAsideStore } from "@/store/aside.store";
 
 import { DragDropContext } from "@hello-pangea/dnd";
 
+import { useUser } from "@/context/user/UserContext";
+import { useRouter } from "next/navigation";
+import { NavGroup } from "./ui/NavGroup";
+
 export function AsideClient({ aside }: { aside: any }) {
+  const router = useRouter();
+  /* ============================
+   * USER CONTEXT
+   * ============================ */
+  const user = useUser();
+  const isPremium = user?.plan === "premium";
+  const isFree = user?.plan === "free";
+
   /* ============================
    * DRAG STATE GLOBAL
    * ============================ */
@@ -44,6 +56,18 @@ export function AsideClient({ aside }: { aside: any }) {
   const replaceTemp = useAsideStore((s) => s.replaceTemp);
   const deleteFromStore = useAsideStore((s) => s.deleteItem);
   const renameInStore = useAsideStore((s) => s.renameItem);
+
+  /* ============================
+   * BUSINESS MODEL
+   * ============================ */
+  const canCreateNote = isPremium;
+  const canCreateNotebook = isPremium;
+
+  const noteCtaLabel = canCreateNote ? "Crear nota" : "Actualizá tu plan";
+
+  const notebookCtaLabel = canCreateNotebook
+    ? "Crear carpeta"
+    : "Actualizá tu plan";
 
   /* ============================
    * CREATE
@@ -189,29 +213,38 @@ export function AsideClient({ aside }: { aside: any }) {
         {/* NOTES SUELTAS */}
         {/* ===================== */}
         <AsideSection>
-          <CreateAsideItem
-            label="Crear nota"
-            active={creating === "note"}
-            disabled={creating === "notebook"}
-            onStart={() => startCreate("note")}
-            onConfirm={(name) => confirmCreate("note", name)}
-            onCancel={cancelCreate}
-          />
+          <NavGroup title="Notas">
+            <CreateAsideItem
+              label={noteCtaLabel}
+              active={creating === "note"}
+              disabled={creating === "notebook"}
+              onStart={() => {
+                if (!canCreateNote) {
+                  router.push("/update");
+                  return;
+                }
 
-          <AsideList
-            items={notes}
-            type="note"
-            droppableId="loose-notes"
-            isDragDisabled={false}
-            renaming={renaming}
-            onDelete={deleteItem}
-            onRenameStart={(id) => setRenaming({ type: "note", id })}
-            onRenameCancel={() => setRenaming(null)}
-            onRenameConfirm={async (type, id, name) => {
-              await renameItem(type, id, name);
-              setRenaming(null);
-            }}
-          />
+                startCreate("note");
+              }}
+              onConfirm={(name) => confirmCreate("note", name)}
+              onCancel={cancelCreate}
+            />
+
+            <AsideList
+              items={notes}
+              type="note"
+              droppableId="loose-notes"
+              isDragDisabled={false}
+              renaming={renaming}
+              onDelete={deleteItem}
+              onRenameStart={(id) => setRenaming({ type: "note", id })}
+              onRenameCancel={() => setRenaming(null)}
+              onRenameConfirm={async (type, id, name) => {
+                await renameItem(type, id, name);
+                setRenaming(null);
+              }}
+            />
+          </NavGroup>
         </AsideSection>
 
         <AsideDivider />
@@ -220,50 +253,59 @@ export function AsideClient({ aside }: { aside: any }) {
         {/* NOTEBOOKS */}
         {/* ===================== */}
         <AsideSection>
-          <CreateAsideItem
-            label="Crear carpeta"
-            active={creating === "notebook"}
-            disabled={creating === "note"}
-            onStart={() => startCreate("notebook")}
-            onConfirm={(name) => confirmCreate("notebook", name)}
-            onCancel={cancelCreate}
-          />
+          <NavGroup title="Carpetas">
+            <CreateAsideItem
+              label={notebookCtaLabel}
+              active={creating === "notebook"}
+              disabled={creating === "note"}
+              onStart={() => {
+                if (!canCreateNotebook) {
+                  router.push("/update");
+                  return;
+                }
 
-          <AsideList
-            items={notebooks}
-            type="notebook"
-            droppableId="notebooks"
-            isDragDisabled
-            isDraggingNote={isDraggingNote}
-            renaming={renaming}
-            onDelete={deleteItem}
-            onRenameStart={(id) => setRenaming({ type: "notebook", id })}
-            onRenameCancel={() => setRenaming(null)}
-            onRenameConfirm={async (type, id, name) => {
-              await renameItem(type, id, name);
-              setRenaming(null);
-            }}
-            renderNested={(notebook) => (
-              <div className="relative ml-3 pl-3">
-                <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
+                startCreate("notebook");
+              }}
+              onConfirm={(name) => confirmCreate("notebook", name)}
+              onCancel={cancelCreate}
+            />
 
-                <AsideList
-                  items={notebook.notes}
-                  type="note"
-                  droppableId={`notebook:${notebook.id}`}
-                  nested
-                  renaming={renaming}
-                  onDelete={deleteItem}
-                  onRenameStart={(id) => setRenaming({ type: "note", id })}
-                  onRenameCancel={() => setRenaming(null)}
-                  onRenameConfirm={async (type, id, name) => {
-                    await renameItem(type, id, name);
-                    setRenaming(null);
-                  }}
-                />
-              </div>
-            )}
-          />
+            <AsideList
+              items={notebooks}
+              type="notebook"
+              droppableId="notebooks"
+              isDragDisabled
+              isDraggingNote={isDraggingNote}
+              renaming={renaming}
+              onDelete={deleteItem}
+              onRenameStart={(id) => setRenaming({ type: "notebook", id })}
+              onRenameCancel={() => setRenaming(null)}
+              onRenameConfirm={async (type, id, name) => {
+                await renameItem(type, id, name);
+                setRenaming(null);
+              }}
+              renderNested={(notebook) => (
+                <div className="relative ml-3 pl-3">
+                  <div className="absolute left-2 top-0 bottom-0 w-px bg-border" />
+
+                  <AsideList
+                    items={notebook.notes}
+                    type="note"
+                    droppableId={`notebook:${notebook.id}`}
+                    nested
+                    renaming={renaming}
+                    onDelete={deleteItem}
+                    onRenameStart={(id) => setRenaming({ type: "note", id })}
+                    onRenameCancel={() => setRenaming(null)}
+                    onRenameConfirm={async (type, id, name) => {
+                      await renameItem(type, id, name);
+                      setRenaming(null);
+                    }}
+                  />
+                </div>
+              )}
+            />
+          </NavGroup>
         </AsideSection>
       </AsideCard>
     </DragDropContext>

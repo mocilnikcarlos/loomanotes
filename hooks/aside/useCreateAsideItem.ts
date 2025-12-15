@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
 import { useState } from "react";
+import { useUser } from "@/context/user/UserContext";
 
 type Type = "note" | "notebook";
 
@@ -12,6 +13,7 @@ export function useCreateAsideItem(handlers?: {
 }) {
   const router = useRouter();
   const [creating, setCreating] = useState<Type | null>(null);
+  const user = useUser();
 
   function startCreate(type: Type) {
     setCreating(type);
@@ -22,6 +24,16 @@ export function useCreateAsideItem(handlers?: {
   }
 
   async function confirmCreate(type: Type, name: string) {
+    if (type === "notebook" && user?.plan !== "premium") {
+      addToast({
+        title: "Función premium",
+        description: "Actualizá tu plan para usar carpetas",
+        color: "warning",
+      });
+      setCreating(null);
+      return;
+    }
+
     const tempId = handlers?.onOptimisticCreate?.(type);
 
     const res = await fetch(`/api/${type}s`, {

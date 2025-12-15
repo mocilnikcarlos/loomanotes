@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/Input";
+import { Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export function CreateAsideItem({
@@ -48,13 +49,13 @@ export function CreateAsideItem({
     return (
       <div
         onClick={!disabled ? onStart : undefined}
-        className={`px-6 py-2 text-sm ${
+        className={`flex items-center gap-2 text-foreground rounded-full w-full px-4 py-3 text-sm transition-colors cursor-pointer select-none hover:bg-button-hover ${
           disabled
             ? "cursor-not-allowed text-muted"
             : "cursor-pointer text-subtitle hover:text-foreground"
         }`}
       >
-        + {label}
+        <Plus size={14} /> <span className="text-foreground">{label}</span>
       </div>
     );
   }
