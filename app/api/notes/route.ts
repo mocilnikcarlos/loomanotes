@@ -90,7 +90,7 @@ export const GET = withAuth(async ({ req, user }) => {
     .from("notes")
     .select("*")
     .eq("user_id", user.id)
-    .order("updated_at", { ascending: false });
+    .order("position", { ascending: true });
 
   if (notebookId === "null") {
     query = query.is("notebook_id", null);

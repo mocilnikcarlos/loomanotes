@@ -40,10 +40,10 @@ export const useAsideStore = create<AsideState>((set) => ({
   addTemp(type, temp) {
     set((state) => {
       if (type === "note") {
-        return { looseNotes: [temp, ...state.looseNotes] };
+        return { looseNotes: [...state.looseNotes, temp] };
       }
 
-      return { notebooks: [temp, ...state.notebooks] };
+      return { notebooks: [...state.notebooks, temp] };
     });
   },
 
@@ -106,13 +106,13 @@ export const useAsideStore = create<AsideState>((set) => ({
   addNote(note) {
     set((state) => {
       if (!note.notebook_id) {
-        return { looseNotes: [note, ...state.looseNotes] };
+        return { looseNotes: [...state.looseNotes, note] };
       }
 
       return {
         notebooks: state.notebooks.map((nb) =>
           nb.id === note.notebook_id
-            ? { ...nb, notes: [note, ...nb.notes] }
+            ? { ...nb, notes: [...nb.notes, note] }
             : nb
         ),
       };
