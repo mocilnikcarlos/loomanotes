@@ -15,18 +15,13 @@ import { useAsideStore } from "@/store/aside.store";
 
 import { DragDropContext } from "@hello-pangea/dnd";
 
-import { useUser } from "@/context/user/UserContext";
+import { usePlanCapabilities } from "@/lib/plan/usePlanCapabilities";
+
 import { useRouter } from "next/navigation";
 import { NavGroup } from "./ui/NavGroup";
 
 export function AsideClient({ aside }: { aside: any }) {
   const router = useRouter();
-  /* ============================
-   * USER CONTEXT
-   * ============================ */
-  const user = useUser();
-  const isPremium = user?.plan === "premium";
-  const isFree = user?.plan === "free";
 
   /* ============================
    * DRAG STATE GLOBAL
@@ -60,11 +55,11 @@ export function AsideClient({ aside }: { aside: any }) {
   /* ============================
    * BUSINESS MODEL
    * ============================ */
-  const canCreateNote = isPremium;
-  const canCreateNotebook = isPremium;
+  const { canCreateNote, canCreateNotebook } = usePlanCapabilities({
+    looseNotesCount: notes.length,
+  });
 
   const noteCtaLabel = canCreateNote ? "Crear nota" : "Actualizá tu plan";
-
   const notebookCtaLabel = canCreateNotebook
     ? "Crear carpeta"
     : "Actualizá tu plan";
@@ -73,23 +68,32 @@ export function AsideClient({ aside }: { aside: any }) {
    * CREATE
    * ============================ */
   const { creating, startCreate, confirmCreate, cancelCreate } =
-    useCreateAsideItem({
-      onOptimisticCreate(type) {
-        const temp = {
-          id: `temp-${Date.now()}`,
-          title: "Creando...",
-          isSkeleton: true,
-          notebook_id: null,
-        };
-
-        addTemp(type, temp);
-        return temp.id;
+    useCreateAsideItem(
+      {
+        looseNotesCount: notes.length, // 👈 CLAVE
       },
+      {
+        onOptimisticCreate(type) {
+          const temp = {
+            id: `temp-${Date.now()}`,
+            title: "Creando...",
+            isSkeleton: true,
+            notebook_id: null,
+          };
 
-      onCreated(type, realItem, tempId) {
-        replaceTemp(type, tempId, realItem);
-      },
-    });
+          addTemp(type, temp);
+          return temp.id;
+        },
+
+        onCreated(type, realItem, tempId) {
+          replaceTemp(type, tempId, realItem);
+        },
+
+        onOptimisticRollback(type, tempId) {
+          deleteFromStore(type, tempId);
+        },
+      }
+    );
 
   /* ============================
    * DELETE

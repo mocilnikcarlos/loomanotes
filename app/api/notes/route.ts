@@ -11,10 +11,27 @@ export const POST = withAuth(
     // PLAN RULES
     // ============================
     if (user.plan === "free") {
-      return NextResponse.json(
-        { message: "Upgrade required to create notes" },
-        { status: 403 }
-      );
+      // 🚫 no puede crear notas dentro de carpetas
+      if (body.notebook_id) {
+        return NextResponse.json(
+          { message: "Upgrade required to use notebooks" },
+          { status: 403 }
+        );
+      }
+
+      // 🔢 límite de 3 notas sueltas
+      const { count } = await supabase
+        .from("notes")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .is("notebook_id", null);
+
+      if ((count ?? 0) >= 3) {
+        return NextResponse.json(
+          { message: "Free plan note limit reached" },
+          { status: 403 }
+        );
+      }
     }
 
     // ============================
