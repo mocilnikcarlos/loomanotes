@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu, MenuItem } from "@/components/ui/Menu";
-import { NavItem } from "./NavItem";
+import { NavItem } from "@/components/dashboard/aside/ui/NavItem";
 import { Pencil, Trash } from "lucide-react";
 import {
   Modal,

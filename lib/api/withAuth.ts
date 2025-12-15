@@ -29,7 +29,7 @@ export type RouteParams<T extends Record<string, string> = DefaultParams> = {
 // ------------------------
 export function withAuth<
   BodySchema extends ZodSchema | undefined = undefined,
-  Params extends Record<string, string> = DefaultParams
+  Params extends Record<string, string> = DefaultParams,
 >(
   handler: (args: {
     req: Request;
@@ -76,17 +76,14 @@ export function withAuth<
     }
 
     // 4. BODY
-    let parsedBody: InferBody<BodySchema> = undefined as InferBody<BodySchema>;
+    let parsedBody = undefined as InferBody<BodySchema>;
 
-    if (options.bodySchema) {
+    if (options.bodySchema && req.method !== "GET") {
       try {
         const json = await req.json();
         parsedBody = options.bodySchema.parse(json) as InferBody<BodySchema>;
-      } catch (error) {
-        return NextResponse.json(
-          { message: "Invalid body", error: `${error}` },
-          { status: 400 }
-        );
+      } catch {
+        return NextResponse.json({ message: "Invalid body" }, { status: 400 });
       }
     }
 

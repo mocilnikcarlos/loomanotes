@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AsideCard } from "./ui/AsideCard";
-import { AsideDivider } from "./ui/AsideDivider";
-import { AsideSection } from "./ui/AsideSection";
-import { AsideList } from "./ui/AsideList";
-import { CreateAsideItem } from "./ui/CreateAsideItem";
+import { AsideCard } from "@/components/dashboard/aside/ui/AsideCard";
+import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
+import { AsideSection } from "@/components/dashboard/aside/ui/AsideSection";
+import { AsideList } from "@/components/dashboard/aside/ui/AsideList";
+import { CreateAsideItem } from "@/components/dashboard/aside/ui/CreateAsideItem";
+import { NavGroup } from "@/components/dashboard/aside/ui/NavGroup";
 
 import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { useDeleteAsideItem } from "@/hooks/aside/useDeleteAsideItem";
@@ -18,7 +19,6 @@ import { DragDropContext } from "@hello-pangea/dnd";
 import { usePlanCapabilities } from "@/lib/plan/usePlanCapabilities";
 
 import { useRouter } from "next/navigation";
-import { NavGroup } from "./ui/NavGroup";
 
 export function AsideClient({ aside }: { aside: any }) {
   const router = useRouter();
