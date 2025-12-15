@@ -1,5 +1,27 @@
 # Changelog
 
+# [0.4.0](/compare/v0.3.0...v0.4.0) (2025-12-15)
+
+
+### Bug Fixes
+
+* **root:** drag and drop 058915a
+* **root:** fix create note when the user is free 3def86d
+* **root:** open and close folder and open notebook when the user nav to url a22344c
+* **root:** order created note and notebook 3f92877
+
+
+### Features
+
+* **root:** added function delete nav item c11dffd
+* **root:** added function renaming navitem 9329c99
+* **root:** added funtions on button create item 88b5e6a
+* **root:** added icon en row and notes to notebook ee31773
+* **root:** added new structure to aside component c33383d
+* **root:** added zustand + notebook and note pages dinamic 9110afe
+* **root:** create drag and drop function 1ef4871
+* **root:** permisson user 73a902c
+
 # [0.3.0](/compare/v0.2.0...v0.3.0) (2025-12-13)
 
 

@@ -11,7 +11,7 @@ export const POST = withAuth(
     // PLAN RULES
     // ============================
     if (user.plan === "free") {
-      // no notebooks
+      // 🚫 no puede crear notas dentro de carpetas
       if (body.notebook_id) {
         return NextResponse.json(
           { message: "Upgrade required to use notebooks" },
@@ -19,7 +19,7 @@ export const POST = withAuth(
         );
       }
 
-      // max 3 loose notes
+      // 🔢 límite de 3 notas sueltas
       const { count } = await supabase
         .from("notes")
         .select("*", { count: "exact", head: true })
@@ -90,7 +90,7 @@ export const GET = withAuth(async ({ req, user }) => {
     .from("notes")
     .select("*")
     .eq("user_id", user.id)
-    .order("updated_at", { ascending: false });
+    .order("position", { ascending: true });
 
   if (notebookId === "null") {
     query = query.is("notebook_id", null);
