@@ -1,4 +1,6 @@
 // app/dashboard/note/[id]/page.tsx
+import NotePageClient from "./NotePageClient";
+
 export default async function NotePage({
   params,
 }: {
@@ -6,10 +8,5 @@ export default async function NotePage({
 }) {
   const { id } = await params;
 
-  return (
-    <div>
-      <h1>Note</h1>
-      <p>ID: {id}</p>
-    </div>
-  );
+  return <NotePageClient id={id} />;
 }

@@ -3,7 +3,7 @@ import type { z } from "zod";
 import { NoteSchema } from "@/lib/schemas/notes";
 import { NotebookSchema } from "@/lib/schemas/notebooks";
 
-type Note = z.infer<typeof NoteSchema> & {
+export type Note = z.infer<typeof NoteSchema> & {
   isSkeleton?: boolean;
 };
 
