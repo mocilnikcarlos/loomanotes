@@ -12,6 +12,24 @@ body {
     --tw-translate-y: 0 !important;
 }
 
+@keyframes brand-flash {
+    0% {
+        box-shadow: 0 0 0 0 rgba(185, 210, 86, 0);
+    }
+
+    30% {
+        box-shadow: 0 0 24px 0 rgba(185, 210, 86, 0.25);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(185, 210, 86, 0);
+    }
+}
+
+.animate-brand-flash {
+    animation: brand-flash 700ms ease-out;
+}
+
 /* Toast – Adaptado a tus tokens */
 :root,
 :root[data-theme="light"] {

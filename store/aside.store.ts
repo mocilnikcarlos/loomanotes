@@ -34,10 +34,13 @@ type AsideState = {
   addNote: (note: Note) => void;
 
   moveNote: (payload: MoveNotePayload) => void;
+  highlightedNoteId: string | null;
+  highlightNote: (id: string) => void;
 };
 
 export const useAsideStore = create<AsideState>((set) => ({
   initialized: false,
+  highlightedNoteId: null,
   looseNotes: [],
   notebooks: [],
 
@@ -53,6 +56,15 @@ export const useAsideStore = create<AsideState>((set) => ({
     });
   },
 
+  highlightNote(id) {
+    set({ highlightedNoteId: id });
+
+    setTimeout(() => {
+      set((state) =>
+        state.highlightedNoteId === id ? { highlightedNoteId: null } : state
+      );
+    }, 400);
+  },
   addTemp(type, temp) {
     set((state) => {
       if (type === "note") {

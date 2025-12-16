@@ -12,16 +12,23 @@ interface NoteCardProps {
   id: string;
   title: string;
   created_at: string;
+  highlighted?: boolean;
 }
 
-export function NoteCard({ id, title, created_at }: NoteCardProps) {
+export function NoteCard({
+  id,
+  title,
+  created_at,
+  highlighted,
+}: NoteCardProps) {
   return (
     <Link href={`/dashboard/note/${id}`} className="block">
       <Card
         rounded="xl"
         className={cn(
           "h-full cursor-pointer transition-colors",
-          "hover:bg-card-hover hover:border-primary"
+          "hover:bg-card-hover hover:border-primary",
+          highlighted && "animate-brand-flash"
         )}
       >
         <div className="flex h-full flex-col gap-3">
@@ -35,7 +42,14 @@ export function NoteCard({ id, title, created_at }: NoteCardProps) {
               })}
             </Pill>
 
-            <ButtonIcon icon={<Share2 size={16} />} variant="ghost" />
+            <ButtonIcon
+              icon={<Share2 size={16} />}
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            />
           </div>
 
           {/* Title */}

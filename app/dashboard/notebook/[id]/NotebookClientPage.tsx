@@ -6,15 +6,21 @@ import { NoteCard } from "@/components/notebooks/ui/NoteCard";
 import { Header } from "@/components/ui/Header";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/layout/Section";
+import { useEffect } from "react";
+
+const useNotebookNotes = (id: string) =>
+  useAsideStore((s) => {
+    const notebook = s.notebooks.find((n) => n.id === id);
+    return notebook ? notebook.notes : null;
+  });
 
 export default function NotebookClientPage({ id }: { id: string }) {
   const router = useRouter();
 
-  const notes = useAsideStore(
-    (s) => s.notebooks.find((n) => n.id === id)?.notes ?? []
-  );
+  const notes = useNotebookNotes(id);
 
   const addNote = useAsideStore((s) => s.addNote);
+  const highlightedId = useAsideStore((s) => s.highlightedNoteId);
 
   async function createNote() {
     const res = await fetch("/api/notes", {
@@ -29,6 +35,16 @@ export default function NotebookClientPage({ id }: { id: string }) {
     const note = await res.json();
     addNote(note);
     router.push(`/dashboard/note/${note.id}`);
+  }
+
+  useEffect(() => {
+    if (notes === null) {
+      router.replace("/dashboard");
+    }
+  }, [notes, router]);
+
+  if (notes === null) {
+    return null;
   }
 
   return (
@@ -55,6 +71,7 @@ export default function NotebookClientPage({ id }: { id: string }) {
               id={note.id}
               title={note.title}
               created_at={note.created_at}
+              highlighted={note.id === highlightedId}
             />
           ))}
         </div>
