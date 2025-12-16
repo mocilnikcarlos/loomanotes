@@ -51,7 +51,7 @@ body {
 
     /* Surfaces */
     --card: #FDFDFD;
-    --card-hover: #f0f0f0;
+    --card-hover: #f9f4fa;
     --border: #EBEBEB;
 
     /* Text */
@@ -114,7 +114,7 @@ body {
     /* Surfaces */
     --card: #1A1A1A;
     /* grafito */
-    --card-hover: #181c22;
+    --card-hover: #1F1F1F;
     --border: #2e2e2e;
 
     /* Text */

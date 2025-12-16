@@ -1,15 +1,13 @@
 import { create } from "zustand";
+import type { z } from "zod";
+import { NoteSchema } from "@/lib/schemas/notes";
+import { NotebookSchema } from "@/lib/schemas/notebooks";
 
-type Note = {
-  id: string;
-  title: string;
-  notebook_id: string | null;
+type Note = z.infer<typeof NoteSchema> & {
   isSkeleton?: boolean;
 };
 
-type Notebook = {
-  id: string;
-  title: string;
+type Notebook = z.infer<typeof NotebookSchema> & {
   notes: Note[];
   isSkeleton?: boolean;
 };
@@ -22,9 +20,9 @@ type MoveNotePayload = {
 };
 
 type AsideState = {
+  initialized: boolean;
   looseNotes: Note[];
   notebooks: Notebook[];
-
   init: (data: { looseNotes: Note[]; notebooks: Notebook[] }) => void;
 
   addTemp: (type: "note" | "notebook", temp: any) => void;
@@ -39,11 +37,20 @@ type AsideState = {
 };
 
 export const useAsideStore = create<AsideState>((set) => ({
+  initialized: false,
   looseNotes: [],
   notebooks: [],
 
   init(data) {
-    set(data);
+    set((state) => {
+      if (state.initialized) return state;
+
+      return {
+        initialized: true,
+        looseNotes: data.looseNotes,
+        notebooks: data.notebooks,
+      };
+    });
   },
 
   addTemp(type, temp) {
@@ -132,15 +139,21 @@ export const useAsideStore = create<AsideState>((set) => ({
     set((state) => {
       let note: Note | undefined;
 
-      // 1️⃣ sacar la nota de origen
+      const looseNotes = [...state.looseNotes];
+      const notebooks = state.notebooks.map((n) => ({
+        ...n,
+        notes: [...n.notes],
+      }));
+
+      // 1️⃣ sacar de origen
       if (fromNotebookId === null) {
-        const idx = state.looseNotes.findIndex((n) => n.id === noteId);
+        const idx = looseNotes.findIndex((n) => n.id === noteId);
         if (idx === -1) return state;
 
-        note = state.looseNotes[idx];
-        state.looseNotes.splice(idx, 1);
+        note = looseNotes[idx];
+        looseNotes.splice(idx, 1);
       } else {
-        const notebook = state.notebooks.find((n) => n.id === fromNotebookId);
+        const notebook = notebooks.find((n) => n.id === fromNotebookId);
         if (!notebook) return state;
 
         const idx = notebook.notes.findIndex((n) => n.id === noteId);
@@ -153,24 +166,19 @@ export const useAsideStore = create<AsideState>((set) => ({
       if (!note) return state;
 
       // 2️⃣ actualizar notebook_id
-      note = { ...note, notebook_id: toNotebookId };
+      const movedNote = { ...note, notebook_id: toNotebookId };
 
       // 3️⃣ insertar en destino
       if (toNotebookId === null) {
-        state.looseNotes.splice(toIndex, 0, note);
+        looseNotes.splice(toIndex, 0, movedNote);
       } else {
-        const targetNotebook = state.notebooks.find(
-          (n) => n.id === toNotebookId
-        );
-        if (!targetNotebook) return state;
+        const target = notebooks.find((n) => n.id === toNotebookId);
+        if (!target) return state;
 
-        targetNotebook.notes.splice(toIndex, 0, note);
+        target.notes.splice(toIndex, 0, movedNote);
       }
 
-      return {
-        looseNotes: [...state.looseNotes],
-        notebooks: [...state.notebooks],
-      };
+      return { looseNotes, notebooks };
     });
   },
 }));
