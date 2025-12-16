@@ -7,6 +7,7 @@ import { Header } from "@/components/ui/Header";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/layout/Section";
 import { useEffect } from "react";
+import { OnlyPremium } from "@/lib/guards/OnlyPremium";
 
 const useNotebookNotes = (id: string) =>
   useAsideStore((s) => {
@@ -53,9 +54,11 @@ export default function NotebookClientPage({ id }: { id: string }) {
       <div className="flex items-center justify-between">
         <Header title="Notas" size="h3" />
 
-        <Button variant="brand" onClick={createNote}>
-          Crear nota
-        </Button>
+        <OnlyPremium>
+          <Button variant="brand" onClick={createNote}>
+            Crear nota
+          </Button>
+        </OnlyPremium>
       </div>
 
       {/* Gallery */}

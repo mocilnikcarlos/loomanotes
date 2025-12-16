@@ -15,8 +15,6 @@ import { useRenameAsideItem } from "@/hooks/aside/useRenameAsideItem";
 
 import { useAsideStore } from "@/store/aside.store";
 
-import { DragDropContext } from "@hello-pangea/dnd";
-
 import { usePlanCapabilities } from "@/lib/plan/usePlanCapabilities";
 
 import { useRouter } from "next/navigation";

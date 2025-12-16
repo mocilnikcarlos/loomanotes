@@ -17,10 +17,9 @@ export default function SwaggerPage() {
         withCredentials={true}
         persistAuthorization={true}
         docExpansion="none"
-        requestInterceptor={(req) => {
+        requestInterceptor={(req: any) => {
           req.withCredentials = true;
 
-          // Si querés seguir usando Bearer opcional:
           const token = localStorage.getItem("token");
           if (token) {
             req.headers["Authorization"] = `Bearer ${token}`;
@@ -28,7 +27,7 @@ export default function SwaggerPage() {
 
           return req;
         }}
-        onComplete={(ui) => {
+        onComplete={(ui: any) => {
           const token = localStorage.getItem("token");
           if (token) ui.preauthorizeApiKey("bearerAuth", token);
         }}

@@ -6,6 +6,7 @@ import type { UserResponse } from "@/lib/schemas/user";
 import { UserRoleEnum, UserPlanEnum } from "@/lib/schemas/user";
 import type { ZodSchema } from "zod";
 import { z } from "zod";
+import type { NextRequest } from "next/server";
 
 // ------------------------
 // TIPOS
@@ -18,10 +19,10 @@ type Options<BodySchema extends ZodSchema | undefined = undefined> = {
 
 type InferBody<T> = T extends ZodSchema ? z.infer<T> : undefined;
 
-type DefaultParams = Record<string, never>;
+type DefaultParams = Record<string, string>;
 
 export type RouteParams<T extends Record<string, string> = DefaultParams> = {
-  params: T;
+  params: Promise<T>;
 };
 
 // ------------------------
@@ -32,15 +33,16 @@ export function withAuth<
   Params extends Record<string, string> = DefaultParams,
 >(
   handler: (args: {
-    req: Request;
+    req: NextRequest;
     user: UserResponse;
     body: InferBody<BodySchema>;
     params: Params;
   }) => Promise<Response>,
+
   options: Options<BodySchema> = {}
 ) {
   return async function (
-    req: Request,
+    req: NextRequest,
     context: RouteParams<Params>
   ): Promise<Response> {
     const params = (await context?.params) ?? ({} as Params);

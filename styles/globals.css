@@ -6,12 +6,6 @@ body {
     height: 100%;
 }
 
-/* Toast: disable hover movement but keep animations */
-[data-react-aria-top-layer] [role="alertdialog"] {
-    --tw-translate-x: 0 !important;
-    --tw-translate-y: 0 !important;
-}
-
 @keyframes brand-flash {
     0% {
         box-shadow: 0 0 0 0 rgba(185, 210, 86, 0);

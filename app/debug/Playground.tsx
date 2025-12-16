@@ -27,7 +27,7 @@ export default function Playground() {
 
   return (
     <Section>
-      <Card>
+      <Card rounded="4xl">
         <div className=" flex flex-col items-center gap-4">
           <Header size="h1" title="Contenido de la card" />
           <Header size="h2" title="Contenido de la card" />
@@ -204,7 +204,7 @@ export default function Playground() {
           />
         </div>
       </Card>
-      <Card>
+      <Card rounded="4xl">
         OTRO CONTENIDO CARD
         <Button variant="ghost" onClick={() => setIsModalOpen(true)}>
           Abrir modal

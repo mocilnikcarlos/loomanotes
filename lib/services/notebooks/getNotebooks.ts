@@ -1,22 +1,31 @@
+// lib/services/notebooks/getNotebooks.ts
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { ListNotebooksResponseSchema } from "@/lib/schemas/notebooks";
-import { getBaseUrl } from "@/lib/api/getBaseUrl";
-import { headers } from "next/headers";
 
 export async function getNotebooks() {
-  const baseUrl = await getBaseUrl();
-  const h = await headers();
+  const cookieStore = await cookies();
 
-  const res = await fetch(`${baseUrl}/api/notebooks`, {
-    cache: "no-store",
-    headers: {
-      cookie: h.get("cookie") ?? "",
-    },
-  });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
+        },
+      },
+    }
+  );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch notebooks");
+  const { data, error } = await supabase
+    .from("notebooks")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(`getNotebooks error: ${error.message}`);
   }
 
-  const json = await res.json();
-  return ListNotebooksResponseSchema.parse(json);
+  return ListNotebooksResponseSchema.parse(data);
 }
