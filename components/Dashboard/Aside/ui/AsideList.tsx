@@ -3,9 +3,9 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Droppable, Draggable } from "@hello-pangea/dnd";
-import { AsideNavItem } from "./AsideNavItem";
-import { CreateAsideItem } from "./CreateAsideItem";
+import { AsideNavItem } from "@/components/dashboard/aside/ui/AsideNavItem";
 import { Folder, FolderOpen, FileText } from "lucide-react";
+import { CreateAsideItem } from "@/components/dashboard/aside/ui/CreateAsideItem";
 
 type Item = {
   id: string;

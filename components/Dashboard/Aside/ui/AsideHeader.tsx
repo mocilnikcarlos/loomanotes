@@ -1,3 +1,5 @@
+"use client";
+
 export function AsideHeader() {
   return (
     <div className="mb-4">

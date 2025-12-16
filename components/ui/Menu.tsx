@@ -3,7 +3,6 @@
 import { cn } from "@/utils/cn";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { cloneElement, isValidElement } from "react";
 
 interface MenuProps {
   trigger?: ReactNode;
@@ -91,28 +90,35 @@ export function Menu({
   /** Trigger */
   let triggerElement: ReactNode = null;
 
-  if (trigger && isValidElement(trigger)) {
-    triggerElement = cloneElement(trigger, {
-      ref: triggerRef,
-      ...(openOn === "context"
-        ? {
-            onContextMenu: (e: React.MouseEvent) => {
-              const target = e.target as HTMLElement;
-              if (target.closest("[data-menu-ignore]")) return;
+  if (trigger) {
+    triggerElement = (
+      <div
+        ref={triggerRef}
+        onContextMenu={
+          openOn === "context"
+            ? (e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest("[data-menu-ignore]")) return;
 
-              e.preventDefault();
-              openMenu();
-            },
-          }
-        : {
-            onClick: (e: React.MouseEvent) => {
-              const target = e.target as HTMLElement;
-              if (target.closest("[data-menu-ignore]")) return;
+                e.preventDefault();
+                openMenu();
+              }
+            : undefined
+        }
+        onClick={
+          openOn === "click"
+            ? (e) => {
+                const target = e.target as HTMLElement;
+                if (target.closest("[data-menu-ignore]")) return;
 
-              open ? closeMenu() : openMenu();
-            },
-          }),
-    });
+                open ? closeMenu() : openMenu();
+              }
+            : undefined
+        }
+      >
+        {trigger}
+      </div>
+    );
   }
 
   return (

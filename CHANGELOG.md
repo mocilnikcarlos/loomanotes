@@ -1,5 +1,20 @@
 # Changelog
 
+# [0.5.0](/compare/v0.4.0...v0.5.0) (2025-12-16)
+
+
+### Bug Fixes
+
+* **root:** proxy + aside d4589ce
+
+
+### Features
+
+* **root:** create galery note on notebookpage + fix store aa1c116
+* **root:** create notes effect + fix build + fix service + wrapper OnlyPremium ca0c0eb
+* **root:** page notebook + notepage header e4301e9
+* **root:** reorder card + debounce on asideclient + general fix 2fca080
+
 # [0.4.0](/compare/v0.3.0...v0.4.0) (2025-12-15)
 
 

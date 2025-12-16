@@ -14,5 +14,5 @@ export default async function AdminLayout({
     redirect(routes.dashboard.root); // adentro, pibe
   }
 
-  return {children};
+  return <>{children}</>;
 }
