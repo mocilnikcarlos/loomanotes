@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.7.0](/compare/v0.6.0...v0.7.0) (2025-12-17)
+
+
+### Features
+
+* **root:** added note download endpoint + jszip + slugify c0aa707
+
 # [0.6.0](/compare/v0.5.0...v0.6.0) (2025-12-17)
 
 
