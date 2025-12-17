@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Menu, MenuItem } from "@/components/ui/Menu";
-import { NavItem } from "./NavItem";
+import { NavItem } from "@/components/dashboard/aside/ui/NavItem";
 import { Pencil, Trash } from "lucide-react";
 import {
   Modal,
@@ -77,7 +77,12 @@ export function AsideNavItem({
           subtitle="Esta acción no se puede deshacer"
         />
 
-        <ModalBody>¿Seguro que querés eliminar {title}?</ModalBody>
+        <ModalBody>
+          <p className="break-words whitespace-pre-wrap">
+            ¿Seguro que querés eliminar{" "}
+            <span className="font-medium">{title}</span>?
+          </p>
+        </ModalBody>
 
         <ModalFooter
           cancelText="Cancelar"

@@ -1,3 +1,5 @@
+"use client";
+
 interface NavGroupProps {
   title: string;
   children: React.ReactNode;

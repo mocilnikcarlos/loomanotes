@@ -85,7 +85,7 @@ export function CreateAsideItem({
           onCancel();
         }
       }}
-      className="w-full rounded-full px-4 py-2 text-sm bg-background border disabled:opacity-50"
+      className="w-full border-none bg-button"
       placeholder="Nombre..."
     />
   );

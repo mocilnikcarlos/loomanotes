@@ -1,3 +1,5 @@
+"use client";
+
 interface NavItemProps {
   children: React.ReactNode;
   active?: boolean;

@@ -1,11 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { AsideCard } from "./ui/AsideCard";
-import { AsideDivider } from "./ui/AsideDivider";
-import { AsideSection } from "./ui/AsideSection";
-import { AsideList } from "./ui/AsideList";
-import { CreateAsideItem } from "./ui/CreateAsideItem";
+import { AsideCard } from "@/components/dashboard/aside/ui/AsideCard";
+import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
+import { AsideSection } from "@/components/dashboard/aside/ui/AsideSection";
+import { AsideList } from "@/components/dashboard/aside/ui/AsideList";
+import { CreateAsideItem } from "@/components/dashboard/aside/ui/CreateAsideItem";
+import { NavGroup } from "@/components/dashboard/aside/ui/NavGroup";
 
 import { useCreateAsideItem } from "@/hooks/aside/useCreateAsideItem";
 import { useDeleteAsideItem } from "@/hooks/aside/useDeleteAsideItem";
@@ -13,12 +15,30 @@ import { useRenameAsideItem } from "@/hooks/aside/useRenameAsideItem";
 
 import { useAsideStore } from "@/store/aside.store";
 
-import { DragDropContext } from "@hello-pangea/dnd";
-
 import { usePlanCapabilities } from "@/lib/plan/usePlanCapabilities";
 
 import { useRouter } from "next/navigation";
-import { NavGroup } from "./ui/NavGroup";
+
+const AsideDndProvider = dynamic(
+  () => import("./AsideDndProvider").then((m) => m.AsideDndProvider),
+  { ssr: false }
+);
+
+let reorderTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function persistReorder(payload: any) {
+  if (reorderTimeout) {
+    clearTimeout(reorderTimeout);
+  }
+
+  reorderTimeout = setTimeout(() => {
+    fetch("/api/notes/reorder", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  }, 300);
+}
 
 export function AsideClient({ aside }: { aside: any }) {
   const router = useRouter();
@@ -33,6 +53,7 @@ export function AsideClient({ aside }: { aside: any }) {
    * ============================ */
   const initAside = useAsideStore((s) => s.init);
   const moveNote = useAsideStore((s) => s.moveNote);
+  const highlightNote = useAsideStore((s) => s.highlightNote);
 
   useEffect(() => {
     initAside({
@@ -118,50 +139,11 @@ export function AsideClient({ aside }: { aside: any }) {
     },
   });
 
-  const reorderNotes = (startIndex: number, endIndex: number) => {
-    const reordered = [...notes];
-    const [moved] = reordered.splice(startIndex, 1);
-    reordered.splice(endIndex, 0, moved);
-
-    return reordered;
-  };
-
-  const reorderNotebooks = (startIndex: number, endIndex: number) => {
-    const reordered = [...notebooks];
-    const [moved] = reordered.splice(startIndex, 1);
-    reordered.splice(endIndex, 0, moved);
-
-    return reordered;
-  };
-
-  const reorderBackend = async (result: any) => {
-    const { destination, source, draggableId } = result;
-
-    if (source.droppableId === "loose-notes") {
-      // Llamar al endpoint de reorder de notas sueltas
-      await fetch(`/api/notes/reorder`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          items: [{ id: draggableId, position: destination.index }],
-        }),
-      });
-    } else if (source.droppableId === "notebooks") {
-      // Llamar al endpoint de reorder de notebooks
-      await fetch(`/api/notebooks/reorder`, {
-        method: "PATCH",
-        body: JSON.stringify({
-          items: [{ id: draggableId, position: destination.index }],
-        }),
-      });
-    }
-  };
-
   const handleDragEnd = async (result: any) => {
     const { source, destination, draggableId, type } = result;
 
     if (!destination) return;
 
-    // 🚫 Una nota NO puede ir a "notebooks"
     if (type === "note" && destination.droppableId === "notebooks") {
       return;
     }
@@ -175,11 +157,11 @@ export function AsideClient({ aside }: { aside: any }) {
     const fromNotebookId = parseNotebook(source.droppableId);
     const toNotebookId = parseNotebook(destination.droppableId);
 
-    // 🚫 destino inválido
     if (type === "note" && toNotebookId === undefined) {
       return;
     }
 
+    // 1️⃣ mover en el store (optimista)
     moveNote({
       noteId: draggableId,
       fromNotebookId,
@@ -187,13 +169,15 @@ export function AsideClient({ aside }: { aside: any }) {
       toIndex: destination.index,
     });
 
-    await fetch("/api/notes/reorder", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        notebook_id: toNotebookId,
-        items: [{ id: draggableId, position: destination.index }],
-      }),
+    // ✨ SOLO si cambia de carpeta
+    if (fromNotebookId !== toNotebookId) {
+      highlightNote(draggableId);
+    }
+
+    // 3️⃣ persistir backend
+    persistReorder({
+      notebook_id: toNotebookId,
+      items: [{ id: draggableId, position: destination.index }],
     });
   };
 
@@ -201,7 +185,7 @@ export function AsideClient({ aside }: { aside: any }) {
    * RENDER
    * ============================ */
   return (
-    <DragDropContext
+    <AsideDndProvider
       onDragStart={(start) => {
         if (start.type === "note") {
           setIsDraggingNote(true);
@@ -312,6 +296,6 @@ export function AsideClient({ aside }: { aside: any }) {
           </NavGroup>
         </AsideSection>
       </AsideCard>
-    </DragDropContext>
+    </AsideDndProvider>
   );
 }

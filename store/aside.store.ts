@@ -1,15 +1,13 @@
 import { create } from "zustand";
+import type { z } from "zod";
+import { NoteSchema } from "@/lib/schemas/notes";
+import { NotebookSchema } from "@/lib/schemas/notebooks";
 
-type Note = {
-  id: string;
-  title: string;
-  notebook_id: string | null;
+export type Note = z.infer<typeof NoteSchema> & {
   isSkeleton?: boolean;
 };
 
-type Notebook = {
-  id: string;
-  title: string;
+type Notebook = z.infer<typeof NotebookSchema> & {
   notes: Note[];
   isSkeleton?: boolean;
 };
@@ -22,8 +20,14 @@ type MoveNotePayload = {
 };
 
 type AsideState = {
+  initialized: boolean;
   looseNotes: Note[];
   notebooks: Notebook[];
+
+  favorites: Set<string>;
+  setFavorites: (ids: string[]) => void;
+  isFavorite: (id: string) => boolean;
+  toggleFavorite: (id: string) => Promise<void>;
 
   init: (data: { looseNotes: Note[]; notebooks: Notebook[] }) => void;
 
@@ -36,16 +40,84 @@ type AsideState = {
   addNote: (note: Note) => void;
 
   moveNote: (payload: MoveNotePayload) => void;
+  highlightedNoteId: string | null;
+  highlightNote: (id: string) => void;
 };
 
-export const useAsideStore = create<AsideState>((set) => ({
+export const useAsideStore = create<AsideState>((set, get) => ({
+  initialized: false,
+  highlightedNoteId: null,
   looseNotes: [],
   notebooks: [],
 
-  init(data) {
-    set(data);
+  favorites: new Set(),
+
+  setFavorites(ids) {
+    set({ favorites: new Set(ids) });
   },
 
+  isFavorite(id) {
+    return get().favorites.has(id);
+  },
+
+  async toggleFavorite(noteId: string) {
+    const isFav = get().favorites.has(noteId);
+
+    try {
+      if (isFav) {
+        const res = await fetch(
+          `/api/favorites?entity_type=note&entity_id=${noteId}`,
+          { method: "DELETE" }
+        );
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.delete(noteId);
+        set({ favorites: next });
+      } else {
+        const res = await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entity_type: "note",
+            entity_id: noteId,
+          }),
+        });
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.add(noteId);
+        set({ favorites: next });
+      }
+    } catch {
+      // Sin rollback.
+      // Supabase es la verdad.
+    }
+  },
+
+  init(data) {
+    set((state) => {
+      if (state.initialized) return state;
+
+      return {
+        initialized: true,
+        looseNotes: data.looseNotes,
+        notebooks: data.notebooks,
+      };
+    });
+  },
+
+  highlightNote(id) {
+    set({ highlightedNoteId: id });
+
+    setTimeout(() => {
+      set((state) =>
+        state.highlightedNoteId === id ? { highlightedNoteId: null } : state
+      );
+    }, 400);
+  },
   addTemp(type, temp) {
     set((state) => {
       if (type === "note") {
@@ -132,15 +204,21 @@ export const useAsideStore = create<AsideState>((set) => ({
     set((state) => {
       let note: Note | undefined;
 
-      // 1️⃣ sacar la nota de origen
+      const looseNotes = [...state.looseNotes];
+      const notebooks = state.notebooks.map((n) => ({
+        ...n,
+        notes: [...n.notes],
+      }));
+
+      // 1️⃣ sacar de origen
       if (fromNotebookId === null) {
-        const idx = state.looseNotes.findIndex((n) => n.id === noteId);
+        const idx = looseNotes.findIndex((n) => n.id === noteId);
         if (idx === -1) return state;
 
-        note = state.looseNotes[idx];
-        state.looseNotes.splice(idx, 1);
+        note = looseNotes[idx];
+        looseNotes.splice(idx, 1);
       } else {
-        const notebook = state.notebooks.find((n) => n.id === fromNotebookId);
+        const notebook = notebooks.find((n) => n.id === fromNotebookId);
         if (!notebook) return state;
 
         const idx = notebook.notes.findIndex((n) => n.id === noteId);
@@ -153,24 +231,19 @@ export const useAsideStore = create<AsideState>((set) => ({
       if (!note) return state;
 
       // 2️⃣ actualizar notebook_id
-      note = { ...note, notebook_id: toNotebookId };
+      const movedNote = { ...note, notebook_id: toNotebookId };
 
       // 3️⃣ insertar en destino
       if (toNotebookId === null) {
-        state.looseNotes.splice(toIndex, 0, note);
+        looseNotes.splice(toIndex, 0, movedNote);
       } else {
-        const targetNotebook = state.notebooks.find(
-          (n) => n.id === toNotebookId
-        );
-        if (!targetNotebook) return state;
+        const target = notebooks.find((n) => n.id === toNotebookId);
+        if (!target) return state;
 
-        targetNotebook.notes.splice(toIndex, 0, note);
+        target.notes.splice(toIndex, 0, movedNote);
       }
 
-      return {
-        looseNotes: [...state.looseNotes],
-        notebooks: [...state.notebooks],
-      };
+      return { looseNotes, notebooks };
     });
   },
 }));

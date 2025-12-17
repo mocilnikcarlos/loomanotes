@@ -40,7 +40,7 @@ export const DELETE = withAuth(
 
 export const PATCH = withAuth(
   async ({ params, body }) => {
-    const userId = params.id;
+    const { id: userId } = params;
     const payload = body as AdminUpdateUser;
 
     if (!userId) {

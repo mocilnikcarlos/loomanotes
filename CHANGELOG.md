@@ -1,5 +1,47 @@
 # Changelog
 
+# [0.8.0](/compare/v0.6.0...v0.8.0) (2025-12-17)
+
+
+### Bug Fixes
+
+* **root:** comment endpoint f3f4698
+
+
+### Features
+
+* **root:** added note download endpoint + jszip + slugify c0aa707
+
+# [0.7.0](/compare/v0.6.0...v0.7.0) (2025-12-17)
+
+
+### Features
+
+* **root:** added note download endpoint + jszip + slugify c0aa707
+
+# [0.6.0](/compare/v0.5.0...v0.6.0) (2025-12-17)
+
+
+### Features
+
+* **root:** added favorite + fix text wrap 1dde528
+* **root:** added table + RSL + endpoint + schema + path + store e506562
+
+# [0.5.0](/compare/v0.4.0...v0.5.0) (2025-12-16)
+
+
+### Bug Fixes
+
+* **root:** proxy + aside d4589ce
+
+
+### Features
+
+* **root:** create galery note on notebookpage + fix store aa1c116
+* **root:** create notes effect + fix build + fix service + wrapper OnlyPremium ca0c0eb
+* **root:** page notebook + notepage header e4301e9
+* **root:** reorder card + debounce on asideclient + general fix 2fca080
+
 # [0.4.0](/compare/v0.3.0...v0.4.0) (2025-12-15)
 
 
