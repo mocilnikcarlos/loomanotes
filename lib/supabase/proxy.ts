@@ -56,14 +56,14 @@ export async function updateSession(request: NextRequest) {
 
   if (!authUser) {
     const url = request.nextUrl.clone();
-    url.pathname = routes.auth.login;
+    url.pathname = "auth/callback";
     return NextResponse.redirect(url);
   }
 
-  const role = authUser.user_metadata?.role;
+  const dbUser = await getUser(); // { role: "user" | "admin" }
 
   if (ADMIN_ROUTES.some((r) => pathname.startsWith(r))) {
-    if (role !== "admin") {
+    if (dbUser?.role !== "admin") {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       return NextResponse.redirect(url);

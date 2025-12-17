@@ -18,5 +18,8 @@ import "./paths/notebooks/listNotebooks";
 import "./paths/notebooks/getNotebook";
 import "./paths/notebooks/reorder";
 import "./paths/aside/getAside";
+import "./paths/favorites/createFavorite";
+import "./paths/favorites/deleteFavorite";
+import "./paths/favorites/listFavorites";
 
 // Y así sucesivamente...
