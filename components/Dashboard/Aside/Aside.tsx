@@ -1,4 +1,3 @@
-// components/Dashboard/Aside/Aside.tsx
 import { getAside } from "@/lib/services/aside/getAside";
 import { AsideClient } from "@/components/dashboard/aside/AsideClient";
 import { AsideHeader } from "@/components/dashboard/aside/ui/AsideHeader";

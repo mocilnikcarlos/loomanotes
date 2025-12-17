@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { withAuth } from "@/lib/api/withAuth";
 import { createRouteHandlerSupabase } from "@/lib/supabase/route";
 import { CreateFavoriteSchema } from "@/lib/schemas/favorites";
+import { DeleteFavoriteParamsSchema } from "@/lib/schemas/favorites";
 
 export const GET = withAuth(async ({ req, user }) => {
   const supabase = createRouteHandlerSupabase(req);
@@ -58,15 +59,17 @@ export const DELETE = withAuth(async ({ req, user }) => {
   const supabase = createRouteHandlerSupabase(req);
 
   const { searchParams } = new URL(req.url);
-  const entity_type = searchParams.get("entity_type");
-  const entity_id = searchParams.get("entity_id");
 
-  if (!entity_type || !entity_id) {
-    return NextResponse.json(
-      { message: "Missing entity_type or entity_id" },
-      { status: 400 }
-    );
+  const parsed = DeleteFavoriteParamsSchema.safeParse({
+    entity_type: searchParams.get("entity_type"),
+    entity_id: searchParams.get("entity_id"),
+  });
+
+  if (!parsed.success) {
+    return NextResponse.json({ message: "Invalid params" }, { status: 400 });
   }
+
+  const { entity_type, entity_id } = parsed.data;
 
   const { error } = await supabase
     .from("favorites")

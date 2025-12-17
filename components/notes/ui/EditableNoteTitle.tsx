@@ -54,7 +54,8 @@ export function EditableNoteTitle({
   return (
     <div
       className={cn(
-        "relative pb-3",
+        "relative w-full pb-3",
+        "px-0", // ⚠️ padding vive acá, no en los hijos
         "after:absolute after:left-0 after:bottom-0 after:h-[1px] after:w-full",
         "after:bg-primary after:origin-left after:scale-x-0",
         "after:transition-transform after:duration-200 after:ease-out",
@@ -88,16 +89,26 @@ export function EditableNoteTitle({
             }
           }}
           className={cn(
-            "appearance-none p-0 m-0 w-full",
-            "text-3xl font-light leading-9.5 text-title",
-            "border-none outline-none focus:outline-none",
-            "focus:ring-0 focus:ring-offset-0",
-            "resize-none overflow-hidden box-border"
+            "w-full",
+            "appearance-none",
+            "p-0 m-0", // 🔑 NO padding interno
+            "bg-transparent",
+            "text-3xl font-light text-title leading-tight",
+            "whitespace-pre-wrap break-words",
+            "border-none outline-none resize-none",
+            "box-border", // 🔑 MISMO box-model que el wrapper
+            "overflow-hidden"
           )}
         />
       ) : (
         <h1
-          className="text-3xl font-light text-title leading-tight cursor-text p-0 m-0"
+          className={cn(
+            "w-full",
+            "text-3xl font-light text-title leading-tight",
+            "cursor-text",
+            "whitespace-pre-wrap break-words",
+            "bg-transparent"
+          )}
           onClick={() => setEditing(true)}
         >
           {value}

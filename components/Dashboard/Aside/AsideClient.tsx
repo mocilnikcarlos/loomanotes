@@ -139,22 +139,6 @@ export function AsideClient({ aside }: { aside: any }) {
     },
   });
 
-  const reorderNotes = (startIndex: number, endIndex: number) => {
-    const reordered = [...notes];
-    const [moved] = reordered.splice(startIndex, 1);
-    reordered.splice(endIndex, 0, moved);
-
-    return reordered;
-  };
-
-  const reorderNotebooks = (startIndex: number, endIndex: number) => {
-    const reordered = [...notebooks];
-    const [moved] = reordered.splice(startIndex, 1);
-    reordered.splice(endIndex, 0, moved);
-
-    return reordered;
-  };
-
   const handleDragEnd = async (result: any) => {
     const { source, destination, draggableId, type } = result;
 

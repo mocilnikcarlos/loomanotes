@@ -5,48 +5,97 @@ import { useAsideStore } from "@/store/aside.store";
 
 export default function FavoriteDebug() {
   const [noteId, setNoteId] = useState("");
-
   const favorites = useAsideStore((s) => s.favorites);
-  const toggleFavorite = useAsideStore((s) => s.toggleFavorite);
-  const isFavorite = useAsideStore((s) => s.isFavorite);
+  const setFavorites = useAsideStore((s) => s.setFavorites);
+
+  async function addFavorite() {
+    if (!noteId) return;
+
+    const res = await fetch("/api/favorites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        entity_type: "note",
+        entity_id: noteId,
+      }),
+    });
+
+    if (!res.ok) {
+      console.error("POST failed");
+      return;
+    }
+
+    // feedback local para debug
+    setFavorites([...Array.from(favorites), noteId]);
+  }
+
+  async function removeFavorite() {
+    if (!noteId) return;
+
+    const res = await fetch(
+      `/api/favorites?entity_type=note&entity_id=${noteId}`,
+      { method: "DELETE" }
+    );
+
+    if (!res.ok) {
+      console.error("DELETE failed");
+      return;
+    }
+
+    // feedback local para debug
+    const next = new Set(favorites);
+    next.delete(noteId);
+    setFavorites(Array.from(next));
+  }
 
   return (
     <div className="space-y-4 border rounded p-4">
-      <h2 className="text-lg font-medium">⭐ Favorite Debug</h2>
+      <h2 className="text-lg font-medium">⭐ Favorite Debug (Happy Path)</h2>
 
       {/* INPUT */}
+      <input
+        value={noteId}
+        onChange={(e) => setNoteId(e.target.value)}
+        placeholder="note id (uuid)"
+        className="border px-2 py-1 rounded w-full"
+      />
+
+      {/* ACTIONS */}
       <div className="flex gap-2">
-        <input
-          value={noteId}
-          onChange={(e) => setNoteId(e.target.value)}
-          placeholder="note id (uuid)"
-          className="border px-2 py-1 rounded w-full"
-        />
+        <button
+          onClick={addFavorite}
+          disabled={!noteId}
+          className="px-3 py-1 rounded bg-green-600 text-white"
+        >
+          Agregar favorito (POST)
+        </button>
 
         <button
-          onClick={() => toggleFavorite(noteId)}
+          onClick={removeFavorite}
           disabled={!noteId}
-          className="px-3 py-1 rounded bg-primary text-primary-foreground"
+          className="px-3 py-1 rounded bg-red-600 text-white"
         >
-          Toggle
+          Eliminar favorito (DELETE)
         </button>
+      </div>
+
+      {/* STORE */}
+      <div>
+        <h3 className="text-sm font-medium">Store favorites (debug)</h3>
+        <pre className="text-xs bg-muted p-2 rounded">
+          {JSON.stringify(Array.from(favorites), null, 2)}
+        </pre>
       </div>
 
       {/* STATUS */}
       {noteId && (
         <div className="text-sm">
-          Estado actual:{" "}
-          <strong>{isFavorite(noteId) ? "⭐ favorita" : "no favorita"}</strong>
+          Este ID en el store está:{" "}
+          <strong>
+            {favorites.has(noteId) ? "⭐ favorito" : "no favorito"}
+          </strong>
         </div>
       )}
-
-      {/* STORE DUMP */}
-      <div>
-        <h3 className="text-sm font-medium">Store favorites</h3>
-        <pre className="text-xs bg-muted p-2 rounded">
-          {JSON.stringify(Array.from(favorites), null, 2)}
-        </pre>
-      </div>
     </div>
   );
 }

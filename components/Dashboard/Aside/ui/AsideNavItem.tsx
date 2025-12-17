@@ -77,7 +77,12 @@ export function AsideNavItem({
           subtitle="Esta acción no se puede deshacer"
         />
 
-        <ModalBody>¿Seguro que querés eliminar {title}?</ModalBody>
+        <ModalBody>
+          <p className="break-words whitespace-pre-wrap">
+            ¿Seguro que querés eliminar{" "}
+            <span className="font-medium">{title}</span>?
+          </p>
+        </ModalBody>
 
         <ModalFooter
           cancelText="Cancelar"

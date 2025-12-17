@@ -60,26 +60,23 @@ export const useAsideStore = create<AsideState>((set, get) => ({
     return get().favorites.has(id);
   },
 
-  async toggleFavorite(noteId) {
-    const favorites = new Set(get().favorites);
-    const isFav = favorites.has(noteId);
-
-    // optimistic update
-    if (isFav) {
-      favorites.delete(noteId);
-    } else {
-      favorites.add(noteId);
-    }
-
-    set({ favorites });
+  async toggleFavorite(noteId: string) {
+    const isFav = get().favorites.has(noteId);
 
     try {
       if (isFav) {
-        await fetch(`/api/favorites?entity_type=note&entity_id=${noteId}`, {
-          method: "DELETE",
-        });
+        const res = await fetch(
+          `/api/favorites?entity_type=note&entity_id=${noteId}`,
+          { method: "DELETE" }
+        );
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.delete(noteId);
+        set({ favorites: next });
       } else {
-        await fetch("/api/favorites", {
+        const res = await fetch("/api/favorites", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -87,14 +84,16 @@ export const useAsideStore = create<AsideState>((set, get) => ({
             entity_id: noteId,
           }),
         });
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.add(noteId);
+        set({ favorites: next });
       }
     } catch {
-      // rollback simple
-      const rollback = new Set(get().favorites);
-      if (isFav) rollback.add(noteId);
-      else rollback.delete(noteId);
-
-      set({ favorites: rollback });
+      // Sin rollback.
+      // Supabase es la verdad.
     }
   },
 
