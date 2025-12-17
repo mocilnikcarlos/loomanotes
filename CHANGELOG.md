@@ -1,5 +1,13 @@
 # Changelog
 
+# [0.6.0](/compare/v0.5.0...v0.6.0) (2025-12-17)
+
+
+### Features
+
+* **root:** added favorite + fix text wrap 1dde528
+* **root:** added table + RSL + endpoint + schema + path + store e506562
+
 # [0.5.0](/compare/v0.4.0...v0.5.0) (2025-12-16)
 
 
