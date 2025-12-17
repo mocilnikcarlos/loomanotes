@@ -23,6 +23,12 @@ type AsideState = {
   initialized: boolean;
   looseNotes: Note[];
   notebooks: Notebook[];
+
+  favorites: Set<string>;
+  setFavorites: (ids: string[]) => void;
+  isFavorite: (id: string) => boolean;
+  toggleFavorite: (id: string) => Promise<void>;
+
   init: (data: { looseNotes: Note[]; notebooks: Notebook[] }) => void;
 
   addTemp: (type: "note" | "notebook", temp: any) => void;
@@ -38,11 +44,58 @@ type AsideState = {
   highlightNote: (id: string) => void;
 };
 
-export const useAsideStore = create<AsideState>((set) => ({
+export const useAsideStore = create<AsideState>((set, get) => ({
   initialized: false,
   highlightedNoteId: null,
   looseNotes: [],
   notebooks: [],
+
+  favorites: new Set(),
+
+  setFavorites(ids) {
+    set({ favorites: new Set(ids) });
+  },
+
+  isFavorite(id) {
+    return get().favorites.has(id);
+  },
+
+  async toggleFavorite(noteId: string) {
+    const isFav = get().favorites.has(noteId);
+
+    try {
+      if (isFav) {
+        const res = await fetch(
+          `/api/favorites?entity_type=note&entity_id=${noteId}`,
+          { method: "DELETE" }
+        );
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.delete(noteId);
+        set({ favorites: next });
+      } else {
+        const res = await fetch("/api/favorites", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            entity_type: "note",
+            entity_id: noteId,
+          }),
+        });
+
+        if (!res.ok) throw new Error();
+
+        const next = new Set(get().favorites);
+        next.add(noteId);
+        set({ favorites: next });
+      }
+    } catch {
+      // Sin rollback.
+      // Supabase es la verdad.
+    }
+  },
 
   init(data) {
     set((state) => {
