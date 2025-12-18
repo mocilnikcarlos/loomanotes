@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.9.0](/compare/v0.8.0...v0.9.0) (2025-12-18)
+
+
+### Features
+
+* **root:** added text of the i18n 39da9a2
+
 # [0.8.0](/compare/v0.6.0...v0.8.0) (2025-12-17)
 
 
