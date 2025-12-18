@@ -21,5 +21,10 @@ import "./paths/aside/getAside";
 import "./paths/favorites/createFavorite";
 import "./paths/favorites/deleteFavorite";
 import "./paths/favorites/listFavorites";
+import "./paths/blocks/createBlock";
+import "./paths/blocks/listBlocks";
+import "./paths/blocks/updateBlock";
+import "./paths/blocks/deleteBlock";
+import "./paths/blocks/reorderBlock";
 
 // Y así sucesivamente...
