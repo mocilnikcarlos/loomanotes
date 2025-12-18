@@ -22,7 +22,6 @@ import { Badge } from "@/components/ui/Badge";
 import { Header } from "@/components/ui/Header";
 
 export default function Playground() {
-  const { t } = useT();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -47,7 +46,7 @@ export default function Playground() {
             title="Contenido de la card"
             subtitle="Con subtitulo"
           />
-          <span>{t("dashboard.hello")}</span>
+          <span>Hola mundo</span>
         </div>
         <LogoutButton />
 

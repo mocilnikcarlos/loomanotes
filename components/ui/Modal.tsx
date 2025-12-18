@@ -50,7 +50,7 @@ export function Modal({ open, onClose, children, className }: ModalProps) {
           variant="ghost"
           aria-label="Cerrar modal"
           onClick={onClose}
-          className="absolute right-3 top-3"
+          className="absolute right-5 top-5"
         />
 
         {children}

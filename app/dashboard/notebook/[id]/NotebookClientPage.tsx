@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/layout/Section";
 import { useEffect } from "react";
 import { OnlyPremium } from "@/lib/guards/OnlyPremium";
+import { useT } from "@/hooks/utils/useT";
 
 const useNotebookNotes = (id: string) =>
   useAsideStore((s) => {
@@ -22,13 +23,14 @@ export default function NotebookClientPage({ id }: { id: string }) {
 
   const addNote = useAsideStore((s) => s.addNote);
   const highlightedId = useAsideStore((s) => s.highlightedNoteId);
+  const { t } = useT();
 
   async function createNote() {
     const res = await fetch("/api/notes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: "Nueva nota",
+        title: t("dashboard.notebook.placeholder"),
         notebook_id: id,
       }),
     });
@@ -52,20 +54,18 @@ export default function NotebookClientPage({ id }: { id: string }) {
     <Section className="flex flex-col gap-6 w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <Header title="Notas" size="h3" />
+        <Header title={t("dashboard.notebook.title")} size="h3" />
 
         <OnlyPremium>
           <Button variant="brand" onClick={createNote}>
-            Crear nota
+            {t("dashboard.notebook.buttonNewNote")}
           </Button>
         </OnlyPremium>
       </div>
 
       {/* Gallery */}
       {notes.length === 0 ? (
-        <p className="text-sm text-subtitle">
-          Todavía no hay notas en esta notebook.
-        </p>
+        <p className="text-sm text-subtitle">{t("dashboard.notebook.empty")}</p>
       ) : (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {notes.map((note) => (

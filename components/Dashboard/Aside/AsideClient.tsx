@@ -18,6 +18,7 @@ import { useAsideStore } from "@/store/aside.store";
 import { usePlanCapabilities } from "@/lib/plan/usePlanCapabilities";
 
 import { useRouter } from "next/navigation";
+import { useT } from "@/hooks/utils/useT";
 
 const AsideDndProvider = dynamic(
   () => import("./AsideDndProvider").then((m) => m.AsideDndProvider),
@@ -42,7 +43,7 @@ function persistReorder(payload: any) {
 
 export function AsideClient({ aside }: { aside: any }) {
   const router = useRouter();
-
+  const { t } = useT();
   /* ============================
    * DRAG STATE GLOBAL
    * ============================ */
@@ -80,10 +81,12 @@ export function AsideClient({ aside }: { aside: any }) {
     looseNotesCount: notes.length,
   });
 
-  const noteCtaLabel = canCreateNote ? "Crear nota" : "Actualizá tu plan";
+  const noteCtaLabel = canCreateNote
+    ? t("aside.actions.buttonCrateNote")
+    : t("aside.actions.updatePlan");
   const notebookCtaLabel = canCreateNotebook
-    ? "Crear carpeta"
-    : "Actualizá tu plan";
+    ? t("aside.actions.buttonCrateNotebook")
+    : t("aside.actions.updatePlan");
 
   /* ============================
    * CREATE
@@ -97,7 +100,7 @@ export function AsideClient({ aside }: { aside: any }) {
         onOptimisticCreate(type) {
           const temp = {
             id: `temp-${Date.now()}`,
-            title: "Creando...",
+            title: t("aside.actions.skeletonState"),
             isSkeleton: true,
             notebook_id: null,
           };
@@ -201,7 +204,7 @@ export function AsideClient({ aside }: { aside: any }) {
         {/* NOTES SUELTAS */}
         {/* ===================== */}
         <AsideSection>
-          <NavGroup title="Notas">
+          <NavGroup title={t("aside.section.group.noteTitle")}>
             <CreateAsideItem
               label={noteCtaLabel}
               active={creating === "note"}
@@ -241,7 +244,7 @@ export function AsideClient({ aside }: { aside: any }) {
         {/* NOTEBOOKS */}
         {/* ===================== */}
         <AsideSection>
-          <NavGroup title="Carpetas">
+          <NavGroup title={t("aside.section.group.notebookTitle")}>
             <CreateAsideItem
               label={notebookCtaLabel}
               active={creating === "notebook"}
