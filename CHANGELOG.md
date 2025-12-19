@@ -1,5 +1,14 @@
 # Changelog
 
+# [0.10.0](/compare/v0.9.0...v0.10.0) (2025-12-19)
+
+
+### Features
+
+* **root:** added tiptap eba81bf
+* **root:** change tiptap to BlockNote c3c1652
+* **root:** fix style a8a5520
+
 # [0.9.0](/compare/v0.8.0...v0.9.0) (2025-12-18)
 
 
