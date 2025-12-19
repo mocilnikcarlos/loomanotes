@@ -1,6 +1,48 @@
 {
   "dashboard": {
-    "hello": "Hola mundo",
-    "logout": "Cerrar sesión"
+    "notebook": {
+      "title": "Notas",
+      "empty": "Todavía no hay notas creadas.",
+      "buttonNewNote": "Nueva nota",
+      "placeholder": "Mi nota"
+    },
+    "note": {
+      "tooltipDownload": "Descargar nota",
+      "tooltipFavorite": "Agregar a favoritos"
+    }
+  },
+  "auth": {
+    "login": {
+      "buttonLogin": "Continuar con Google"
+    },
+    "logout": {
+      "buttonLogout": "Cerrar sesión"
+    }
+  },
+  "aside": {
+    "actions": {
+      "buttonCrateNote": "Crear nota",
+      "buttonCrateNotebook": "Crear carpeta",
+      "updatePlan": "Acualizá tu plan",
+      "skeletonState": "Creando..."
+    },
+    "section": {
+      "group": {
+        "noteTitle": "Notas",
+        "notebookTitle": "Carpetas",
+        "inputNaming": "¿Qué nombre tendrá?"
+      },
+      "menuItem": {
+        "rename": "Renombrar",
+        "delete": "Eliminar"
+      },
+      "modal": {
+        "title": "Eliminar",
+        "subtitle": "Esta acción no se puede deshacer",
+        "body": "¿Seguro que querés eliminar",
+        "buttonCancel": "Cancelar",
+        "buttonDelete": "Eliminar"
+      }
+    }
   }
 }

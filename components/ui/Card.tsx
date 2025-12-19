@@ -29,7 +29,7 @@ export function Card({
         "relative border border-border bg-card text-foreground flex w-full flex-col gap-4",
         roundedMap[rounded],
         "shadow-[0_5px_8px_-12px_rgba(0,0,0,0.35)]",
-        !noPadding && "p-4",
+        !noPadding && "p-6",
         className
       )}
       {...props}

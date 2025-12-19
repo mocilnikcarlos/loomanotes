@@ -1,6 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/Input";
+import { useT } from "@/hooks/utils/useT";
 import { Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -22,6 +23,7 @@ export function CreateAsideItem({
   const [value, setValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
+  const { t } = useT();
 
   // 🔑 Reset interno cuando se desactiva
   useEffect(() => {
@@ -86,7 +88,7 @@ export function CreateAsideItem({
         }
       }}
       className="w-full border-none bg-button"
-      placeholder="Nombre..."
+      placeholder={t("aside.section.group.inputNaming")}
     />
   );
 }
