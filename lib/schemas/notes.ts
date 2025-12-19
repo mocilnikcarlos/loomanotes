@@ -62,3 +62,15 @@ export const ReorderNotesSchema = z.object({
 });
 
 export type ReorderNotes = z.infer<typeof ReorderNotesSchema>;
+
+// =====================================================
+// UPDATE NOTE CONTENT (BlockNote)
+// =====================================================
+export const UpdateNoteContentSchema = z.object({
+  content: z.any().openapi({
+    example: [],
+    description: "BlockNote editor.document JSON",
+  }),
+});
+
+export type UpdateNoteContent = z.infer<typeof UpdateNoteContentSchema>;

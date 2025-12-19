@@ -54,6 +54,10 @@ const config = {
       fontFamily: {
         elms_sans: ["var(--font-elms_sans)"],
       },
+
+      backgroundImage: {
+        bg_image: "url('../public/bg.jpg')",
+      },
     },
   },
   darkMode: "class",

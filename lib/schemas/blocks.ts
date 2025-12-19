@@ -79,3 +79,4 @@ export const ReorderBlocksSchema = z.object({
 export type CreateBlock = z.infer<typeof CreateBlockSchema>;
 export type UpdateBlock = z.infer<typeof UpdateBlockSchema>;
 export type ReorderBlocks = z.infer<typeof ReorderBlocksSchema>;
+export type Block = z.infer<typeof BlockSchema>;
