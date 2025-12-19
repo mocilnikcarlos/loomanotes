@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo } from "react";
 import debounce from "lodash/debounce";
-
 import { useCreateBlockNote, useEditorChange } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
-
 import type { Block } from "@blocknote/core";
-import "@/styles/blocknote.css";
+import { loomaSchema } from "@/lib/blocknote/schema";
+
+import "@blocknote/mantine/style.css";
+import "@/styles/looma-editor-clean.css";
 
 type CanvasProps = {
   noteId: string;
@@ -16,10 +17,15 @@ type CanvasProps = {
 
 export function Canvas({ noteId, initialContent }: CanvasProps) {
   const editor = useCreateBlockNote({
-    initialContent:
-      initialContent && initialContent.length > 0
-        ? initialContent
-        : [{ type: "paragraph" }],
+    schema: loomaSchema,
+    initialContent: initialContent?.length
+      ? initialContent
+      : [{ type: "paragraph" }],
+    dictionary: {
+      placeholders: {
+        default: "Escribe tu nota...",
+      },
+    } as any,
   });
 
   const save = useMemo(
@@ -36,16 +42,27 @@ export function Canvas({ noteId, initialContent }: CanvasProps) {
   );
 
   useEditorChange((editor) => {
-    save(editor.document);
+    if (editor) {
+      save(editor.document);
+    }
   }, editor);
 
   useEffect(() => {
     return () => save.cancel();
   }, [save]);
 
+  if (!editor) return null;
+
   return (
-    <div className="looma-editor">
-      <BlockNoteView editor={editor} />
-    </div>
+    <BlockNoteView
+      editor={editor}
+      sideMenu={false}
+      slashMenu={false}
+      formattingToolbar={false}
+      linkToolbar={false}
+      filePanel={false}
+      tableHandles={false}
+      className="looma-editor--clean text-foreground"
+    />
   );
 }
