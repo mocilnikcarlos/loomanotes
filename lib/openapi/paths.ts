@@ -7,6 +7,7 @@ import "./paths/admin/updateUser";
 import "./paths/admin/listUser";
 import "./paths/notes/createNote";
 import "./paths/notes/updateNote";
+import "./paths/notes/updateNoteContent";
 import "./paths/notes/deleteNote";
 import "./paths/notes/listNotes";
 import "./paths/notes/getNote";
@@ -21,10 +22,5 @@ import "./paths/aside/getAside";
 import "./paths/favorites/createFavorite";
 import "./paths/favorites/deleteFavorite";
 import "./paths/favorites/listFavorites";
-import "./paths/blocks/createBlock";
-import "./paths/blocks/listBlocks";
-import "./paths/blocks/updateBlock";
-import "./paths/blocks/deleteBlock";
-import "./paths/blocks/reorderBlock";
 
 // Y así sucesivamente...
