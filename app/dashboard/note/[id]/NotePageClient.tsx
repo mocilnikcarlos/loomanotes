@@ -5,7 +5,7 @@ import { useAsideStore } from "@/store/aside.store";
 import { HeaderNote } from "@/components/notes/ui/HeaderNote";
 import { useEffect, useState } from "react";
 import type { Note } from "@/store/aside.store";
-import { Canvas } from "@/components/notes/Canvas";
+import Tiptap from "@/components/notes/Tiptap";
 
 export default function NotePageClient({ id }: { id: string }) {
   const [note, setNote] = useState<Note | null>(null);
@@ -67,8 +67,7 @@ export default function NotePageClient({ id }: { id: string }) {
         onDraftChange={draftRename}
         onCommitTitle={commitRename}
       />
-
-      <Canvas noteId={note.id} initialContent={note.content} />
+      <Tiptap noteId={note.id} initialContent={note.content} />
     </Section>
   );
 }
