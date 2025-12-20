@@ -184,7 +184,10 @@ body {
 }
 /* NO borrar - columna de mirror */
 
+.ProseMirror:focus {
+    outline: none;
+}
 
-.editor-canvas .ProseMirror>* {
-    max-width: 720px;
+.ProseMirror-focused {
+    outline: none;
 }

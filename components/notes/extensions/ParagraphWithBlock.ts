@@ -3,7 +3,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import { BlockView } from "./ui/BlockView";
 
 export const ParagraphWithBlock = Paragraph.extend({
-  draggable: true, // permite drag del nodo
+  draggable: false,
   addNodeView() {
     return ReactNodeViewRenderer(BlockView);
   },
