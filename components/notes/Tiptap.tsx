@@ -23,7 +23,7 @@ export default function Tiptap({ noteId, initialContent }: Props) {
       ParagraphWithBlock,
       Dropcursor,
     ],
-    content: "<p></p>",
+    content: initialContent ?? "<p></p>",
     immediatelyRender: false,
     onUpdate,
   });

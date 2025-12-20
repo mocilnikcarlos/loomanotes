@@ -1,7 +1,7 @@
 "use client";
 
-import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import { Grab } from "lucide-react";
 
 export function BlockView() {
@@ -10,12 +10,12 @@ export function BlockView() {
       className="looma-block flex items-start gap-2"
       data-type="block"
     >
-      {/* HANDLE (no editable) */}
+      {/* HANDLE */}
       <div data-drag-handle contentEditable={false}>
-        <ButtonIcon variant="ghost" icon={<Grab size={14} />} />
+        <ButtonIcon variant="ghost" icon={<Grab size={14} />} tabIndex={-1} />
       </div>
 
-      {/* CONTENIDO */}
+      {/* EDITABLE CONTENT */}
       <NodeViewContent className="flex-1" />
     </NodeViewWrapper>
   );
