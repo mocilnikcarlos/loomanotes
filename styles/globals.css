@@ -172,15 +172,13 @@ body {
 }
 
 
-.paragraph-block {
-    padding: 4px 0;
+.editor-canvas .ProseMirror {
+    width: 100%;
+    padding-left: 96px;
+    padding-right: 96px;
 }
 
-.drag-handle {
-    width: 16px;
-    color: rgba(255, 255, 255, 0.4);
-}
-
-.drag-handle:hover {
-    color: white;
+/* Columna visual */
+.editor-canvas .ProseMirror>* {
+    max-width: 720px;
 }

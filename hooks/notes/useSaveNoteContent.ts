@@ -51,14 +51,6 @@ export function useSaveNoteContent(noteId: string) {
       return true;
     });
 
-    if (normalized.length !== json.content.length) {
-      editor.commands.setContent({
-        type: "doc",
-        content: normalized,
-      });
-      return;
-    }
-
     saveRef.current(editor);
   }, []);
 

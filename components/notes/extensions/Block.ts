@@ -8,8 +8,9 @@ export const Block = Node.create({
   group: "block",
 
   content: "paragraph", // 🔴 CLAVE: NO block+
-
   draggable: true,
+  isolating: true,
+  defining: true,
 
   parseHTML() {
     return [{ tag: "div[data-type='block']" }];
