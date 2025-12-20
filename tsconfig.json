@@ -29,8 +29,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "types",
-    "components/notes/Loomatoolbar.tss"
+    "types"
   ],
   "exclude": ["node_modules"]
 }
