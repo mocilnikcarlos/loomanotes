@@ -5,7 +5,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Dropcursor from "@tiptap/extension-dropcursor";
 
 import { useSaveNoteContent } from "@/hooks/notes/useSaveNoteContent";
-import { Block } from "./extensions/Block"; // ⬅️ NUEVO
+import { ParagraphWithBlock } from "./extensions/ParagraphWithBlock";
 
 type Props = {
   noteId: string;
@@ -15,42 +15,15 @@ type Props = {
 export default function Tiptap({ noteId, initialContent }: Props) {
   const { onUpdate } = useSaveNoteContent(noteId);
 
-  function wrapWithBlocks(content: any) {
-    if (!content?.content) return content;
-
-    return {
-      type: "doc",
-      content: content.content.map((node: any) => {
-        if (node.type === "block") return node;
-
-        return {
-          type: "block",
-          content: [node],
-        };
-      }),
-    };
-  }
-
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Block,
-      Dropcursor.configure({
-        color: "rgba(255,255,255,0.4)",
-        width: 2,
+      StarterKit.configure({
+        paragraph: false,
       }),
+      ParagraphWithBlock,
+      Dropcursor,
     ],
-    content: initialContent
-      ? wrapWithBlocks(initialContent)
-      : {
-          type: "doc",
-          content: [
-            {
-              type: "block",
-              content: [{ type: "paragraph" }],
-            },
-          ],
-        },
+    content: "<p></p>",
     immediatelyRender: false,
     onUpdate,
   });
@@ -58,7 +31,7 @@ export default function Tiptap({ noteId, initialContent }: Props) {
   if (!editor) return null;
 
   return (
-    <div className="p-4">
+    <div id="editor-drag-ghost-root">
       <EditorContent editor={editor} />
     </div>
   );

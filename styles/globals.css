@@ -171,7 +171,7 @@ body {
     --info-bg: #121a1e;
 }
 
-
+/* NO borrar - columna de mirror */
 .editor-canvas .ProseMirror {
     width: 100%;
     padding-left: 96px;
@@ -179,6 +179,12 @@ body {
 }
 
 /* Columna visual */
+.editor-canvas .ProseMirror>* {
+    max-width: 720px;
+}
+/* NO borrar - columna de mirror */
+
+
 .editor-canvas .ProseMirror>* {
     max-width: 720px;
 }
