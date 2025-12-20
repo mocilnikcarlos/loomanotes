@@ -31,6 +31,34 @@ export function useSaveNoteContent(noteId: string) {
   );
 
   const onUpdate = useCallback(({ editor }: { editor: Editor }) => {
+    const json = editor.getJSON();
+
+    if (!json.content || json.content.length === 0) {
+      editor.commands.setContent({
+        type: "doc",
+        content: [{ type: "paragraph" }],
+      });
+      return;
+    }
+
+    // 🔴 NORMALIZACIÓN CLAVE
+    const normalized = json.content.filter((block, index, arr) => {
+      // eliminar párrafos vacíos intermedios
+      if (block.type === "paragraph" && !block.content?.length) {
+        // permitir solo si es el último
+        return index === arr.length - 1;
+      }
+      return true;
+    });
+
+    if (normalized.length !== json.content.length) {
+      editor.commands.setContent({
+        type: "doc",
+        content: normalized,
+      });
+      return;
+    }
+
     saveRef.current(editor);
   }, []);
 
