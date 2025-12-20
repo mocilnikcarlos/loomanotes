@@ -44,7 +44,6 @@ export default function Tiptap({ noteId, initialContent }: Props) {
               tabIndex={-1}
             />
           </DragHandle>
-
           <EditorContent editor={editor} />
         </>
       )}

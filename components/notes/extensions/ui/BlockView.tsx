@@ -1,11 +1,12 @@
 "use client";
 
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import "@/styles/globals.css";
 
 export function BlockView() {
   return (
-    <NodeViewWrapper className="looma-block flex items-center gap-2">
-      <NodeViewContent className="flex-1 py-2" />
+    <NodeViewWrapper className="flex items-center">
+      <NodeViewContent className="flex-1" />
     </NodeViewWrapper>
   );
 }

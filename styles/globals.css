@@ -4,6 +4,9 @@
 html,
 body {
     height: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
 
 @keyframes brand-flash {
@@ -174,15 +177,20 @@ body {
 /* NO borrar - columna de mirror */
 .editor-canvas .ProseMirror {
     width: 100%;
-    padding-left: 96px;
-    padding-right: 96px;
+    padding-left: 80px;
+    padding-right: 80px;
 }
 
 /* Columna visual */
 .editor-canvas .ProseMirror>* {
-    max-width: 720px;
+    max-width: 790px;
 }
 /* NO borrar - columna de mirror */
+
+.ProseMirror {
+    min-height: 100%;
+    padding-bottom: 40vh;
+}
 
 .ProseMirror:focus {
     outline: none;
@@ -190,4 +198,8 @@ body {
 
 .ProseMirror-focused {
     outline: none;
+}
+
+.node-paragraph {
+    padding: 24px 0;
 }
