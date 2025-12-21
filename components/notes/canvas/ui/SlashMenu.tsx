@@ -11,7 +11,7 @@ export function SlashMenu({ items, command }: Props) {
     <>
       {items.map((item) => (
         <BlockMenuItem
-          key={item.type}
+          key={item.id}
           icon={item.icon}
           title={item.title}
           description={item.description}

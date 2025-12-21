@@ -8,6 +8,7 @@ import type { Editor } from "@tiptap/core";
 import { BlockInsertMenu } from "./BlockInsertMenu";
 import { offset, shift } from "@floating-ui/dom";
 import { useRef } from "react";
+import { findParentNodeClosestToPos } from "@tiptap/core";
 
 type Props = {
   editor: Editor;

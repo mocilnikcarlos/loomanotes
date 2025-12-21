@@ -11,6 +11,7 @@ export const ParagraphWithBlock = Paragraph.extend({
 });
 
 export const HeadingWithBlock = Heading.extend({
+  draggable: false,
   addNodeView() {
     return ReactNodeViewRenderer(BlockView);
   },

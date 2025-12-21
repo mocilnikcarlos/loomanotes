@@ -22,7 +22,7 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
     >
       {BLOCKS.map((block) => (
         <BlockMenuItem
-          key={block.type}
+          key={block.id}
           icon={block.icon}
           title={block.title}
           description={block.description}
