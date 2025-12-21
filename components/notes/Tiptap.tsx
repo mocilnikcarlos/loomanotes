@@ -4,8 +4,12 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { Dropcursor } from "@tiptap/extensions";
 import { useSaveNoteContent } from "@/hooks/notes/useSaveNoteContent";
-import { ParagraphWithBlock } from "./extensions/ParagraphWithBlock";
+import {
+  ParagraphWithBlock,
+  HeadingWithBlock,
+} from "./extensions/ParagraphWithBlock";
 import { AsideBlockMenu } from "./AsideBlockMenu";
+import "@/styles/looma-blocks.css";
 
 type Props = {
   noteId: string;
@@ -19,8 +23,10 @@ export default function Tiptap({ noteId, initialContent }: Props) {
     extensions: [
       StarterKit.configure({
         paragraph: false,
+        heading: false,
       }),
       ParagraphWithBlock,
+      HeadingWithBlock,
       Dropcursor,
     ],
     content: initialContent ?? "<p></p>",
@@ -34,14 +40,6 @@ export default function Tiptap({ noteId, initialContent }: Props) {
     <>
       {editor && (
         <div id="editor-drag-ghost-root">
-          {/* <DragHandle editor={editor}>
-            <ButtonIcon
-              variant="ghost"
-              className="cursor-grab"
-              icon={<GripVertical size={14} />}
-              tabIndex={-1}
-            />
-          </DragHandle> */}
           <AsideBlockMenu editor={editor} />
           <EditorContent editor={editor} />
         </div>

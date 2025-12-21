@@ -199,7 +199,3 @@ body {
 .ProseMirror-focused {
     outline: none;
 }
-
-.node-paragraph {
-    padding: 10px 0;
-}

@@ -1,0 +1,23 @@
+@config "../tailwind.config.js";
+@import "tailwindcss";
+
+.node-paragraph,
+.node-heading {
+    padding: 10px 0;
+}
+
+.looma-block {
+    position: relative;
+}
+
+.looma-block[data-type="heading"][data-level="1"] {
+    font-size: 2.25rem;
+}
+
+.looma-block[data-type="heading"][data-level="2"] {
+    font-size: 1.75rem;
+}
+
+.looma-block[data-type="heading"][data-level="3"] {
+    font-size: 1.4rem;
+}
