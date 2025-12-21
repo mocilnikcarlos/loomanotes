@@ -9,6 +9,11 @@ interface MenuProps {
   openOn?: "click" | "context";
   position?: "top" | "bottom" | "left" | "right";
   children: ReactNode;
+
+  /** NUEVO (opcional, no rompe usos existentes) */
+  open?: boolean;
+  coords?: { top: number; left: number };
+  onOpenChange?: (open: boolean) => void;
 }
 
 export function Menu({
@@ -16,30 +21,57 @@ export function Menu({
   openOn = "click",
   position = "bottom",
   children,
+  open,
+  coords: externalCoords,
+  onOpenChange,
 }: MenuProps) {
-  const [open, setOpen] = useState(false);
+  /** Estado interno (modo no controlado, como antes) */
+  const [internalOpen, setInternalOpen] = useState(false);
   const [rendered, setRendered] = useState(false);
+
+  /** Modo controlado vs no controlado */
+  const isControlled = typeof open === "boolean";
+  const actualOpen = isControlled ? open : internalOpen;
 
   const triggerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
   const [coords, setCoords] = useState({ top: 0, left: 0 });
-  const [positioned, setPositioned] = useState(false);
 
   const GAP = 8;
 
+  /** Abrir menú */
   const openMenu = () => {
-    setRendered(true);
-    requestAnimationFrame(() => setOpen(true));
+    if (isControlled) {
+      onOpenChange?.(true);
+    } else {
+      setRendered(true);
+      requestAnimationFrame(() => setInternalOpen(true));
+    }
   };
 
+  /** Cerrar menú */
   const closeMenu = () => {
-    setOpen(false);
-    setTimeout(() => setRendered(false), 150);
+    if (isControlled) {
+      onOpenChange?.(false);
+    } else {
+      setInternalOpen(false);
+      setTimeout(() => setRendered(false), 150);
+    }
   };
 
   /** Posicionamiento */
   useEffect(() => {
-    if (!open || !triggerRef.current || !menuRef.current) return;
+    if (!actualOpen || !menuRef.current) return;
+
+    /** 🔹 Caso slash menu (coords externos) */
+    if (externalCoords) {
+      setCoords(externalCoords);
+      return;
+    }
+
+    /** 🔹 Caso clásico (trigger) */
+    if (!triggerRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const menuRect = menuRef.current.getBoundingClientRect();
@@ -64,11 +96,11 @@ export function Menu({
     };
 
     setCoords(map[position]);
-  }, [open, position]);
+  }, [actualOpen, position, externalCoords]);
 
   /** Click fuera */
   useEffect(() => {
-    if (!open) return;
+    if (!actualOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -85,9 +117,9 @@ export function Menu({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  }, [actualOpen]);
 
-  /** Trigger */
+  /** Trigger (NO cambia respecto a tu versión original) */
   let triggerElement: ReactNode = null;
 
   if (trigger) {
@@ -111,7 +143,7 @@ export function Menu({
                 const target = e.target as HTMLElement;
                 if (target.closest("[data-menu-ignore]")) return;
 
-                open ? closeMenu() : openMenu();
+                actualOpen ? closeMenu() : openMenu();
               }
             : undefined
         }
@@ -125,15 +157,15 @@ export function Menu({
     <>
       {triggerElement}
 
-      {rendered &&
+      {(rendered || isControlled) &&
         createPortal(
           <div
             ref={menuRef}
-            data-state={open ? "open" : "closed"}
+            data-state={actualOpen ? "open" : "closed"}
             className={cn(
               "fixed z-50 min-w-[180px] rounded-xl border border-border bg-menu p-2 shadow-lg",
               "transition-[opacity,transform] duration-150 ease-out",
-              open ? "visible" : "invisible",
+              actualOpen ? "visible" : "invisible",
               "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
               "data-[state=open]:opacity-100 data-[state=open]:scale-100"
             )}
@@ -147,6 +179,7 @@ export function Menu({
   );
 }
 
+/** MenuItem (sin cambios) */
 interface MenuItemProps {
   icon?: ReactNode;
   children: ReactNode;

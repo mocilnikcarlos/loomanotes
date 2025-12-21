@@ -1,11 +1,10 @@
 "use client";
 
-import { Section } from "@/components/ui/layout/Section";
 import { useAsideStore } from "@/store/aside.store";
 import { HeaderNote } from "@/components/notes/ui/HeaderNote";
 import { useEffect, useState } from "react";
 import type { Note } from "@/store/aside.store";
-import Tiptap from "@/components/notes/Tiptap";
+import Tiptap from "@/components/notes/canvas/Tiptap";
 import { EditorCanvas } from "@/components/ui/layout/EditorCanvas";
 
 export default function NotePageClient({ id }: { id: string }) {
@@ -69,7 +68,6 @@ export default function NotePageClient({ id }: { id: string }) {
         onCommitTitle={commitRename}
       />
 
-      {/* 👇 NUEVO: canvas del editor */}
       <EditorCanvas>
         <Tiptap noteId={note.id} initialContent={note.content} />
       </EditorCanvas>

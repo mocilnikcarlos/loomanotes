@@ -8,8 +8,10 @@ import {
   ParagraphWithBlock,
   HeadingWithBlock,
 } from "./extensions/ParagraphWithBlock";
-import { AsideBlockMenu } from "./AsideBlockMenu";
+import { AsideBlockMenu } from "./ui/AsideBlockMenu";
 import "@/styles/looma-blocks.css";
+import { SlashCommand } from "./extensions/SlashCommand";
+import { SlashMenuOverlay } from "./ui/SlashMenuOverlay";
 
 type Props = {
   noteId: string;
@@ -27,6 +29,7 @@ export default function Tiptap({ noteId, initialContent }: Props) {
       }),
       ParagraphWithBlock,
       HeadingWithBlock,
+      SlashCommand,
       Dropcursor,
     ],
     content: initialContent ?? "<p></p>",
@@ -40,6 +43,7 @@ export default function Tiptap({ noteId, initialContent }: Props) {
     <>
       {editor && (
         <div id="editor-drag-ghost-root">
+          <SlashMenuOverlay editor={editor} />
           <AsideBlockMenu editor={editor} />
           <EditorContent editor={editor} />
         </div>

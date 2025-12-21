@@ -19,7 +19,6 @@ export function AsideBlockMenu({ editor }: Props) {
 
   return (
     <DragHandle
-      className="bg-danger"
       editor={editor}
       computePositionConfig={{
         placement: "left",

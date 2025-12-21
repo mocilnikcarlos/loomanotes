@@ -6,6 +6,11 @@
     padding: 10px 0;
 }
 
+.slash-menu-container {
+    position: fixed;
+    z-index: 50;
+}
+
 .looma-block {
     position: relative;
 }

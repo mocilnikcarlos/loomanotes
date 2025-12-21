@@ -3,8 +3,9 @@
 import { Plus } from "lucide-react";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import type { Editor } from "@tiptap/core";
-import { Menu, MenuItem } from "@/components/ui/Menu";
+import { Menu } from "@/components/ui/Menu";
 import { BLOCKS } from "@/config/blocks.config";
+import { BlockMenuItem } from "./BlockMenuItem";
 
 type BlockInsertMenuProps = {
   editor: Editor;
@@ -20,9 +21,12 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
       }
     >
       {BLOCKS.map((block) => (
-        <MenuItem
+        <BlockMenuItem
           key={block.type}
-          onClick={() => {
+          icon={block.icon}
+          title={block.title}
+          description={block.description}
+          onSelect={() => {
             if (insertPos == null) return;
 
             editor
@@ -31,9 +35,7 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
               .insertContentAt(insertPos, block.insert())
               .run();
           }}
-        >
-          {block.label}
-        </MenuItem>
+        />
       ))}
     </Menu>
   );

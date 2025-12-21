@@ -66,6 +66,7 @@
     "@tiptap/pm": "^3.0.0",
     "@tiptap/react": "^3.0.0",
     "@tiptap/starter-kit": "^3.0.0",
+    "@tiptap/suggestion": "^3.14.0",
     "@types/lodash": "^4.17.21",
     "clsx": "2.1.1",
     "framer-motion": "11.18.2",
@@ -83,6 +84,7 @@
     "swagger-ui": "^5.31.0",
     "swagger-ui-dist": "^5.31.0",
     "swagger-ui-react": "^5.31.0",
+    "tippy.js": "^6.3.7",
     "zod-openapi": "^5.4.5",
     "zustand": "^5.0.9"
   },
