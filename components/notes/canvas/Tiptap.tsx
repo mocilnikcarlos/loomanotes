@@ -7,6 +7,7 @@ import { useSaveNoteContent } from "@/hooks/notes/useSaveNoteContent";
 import {
   ParagraphWithBlock,
   HeadingWithBlock,
+  BulletListWithBlock,
 } from "./extensions/ParagraphWithBlock";
 import { AsideBlockMenu } from "./ui/AsideBlockMenu";
 import "@/styles/looma-blocks.css";
@@ -26,9 +27,11 @@ export default function Tiptap({ noteId, initialContent }: Props) {
       StarterKit.configure({
         paragraph: false,
         heading: false,
+        bulletList: false,
       }),
       ParagraphWithBlock,
       HeadingWithBlock,
+      BulletListWithBlock,
       SlashCommand,
       Dropcursor,
     ],

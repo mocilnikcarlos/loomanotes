@@ -2,16 +2,21 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import { BlockView } from "../nodeview/BlockView";
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
+import { BulletList } from "@tiptap/extension-list";
 
 export const ParagraphWithBlock = Paragraph.extend({
-  draggable: false,
   addNodeView() {
     return ReactNodeViewRenderer(BlockView);
   },
 });
 
 export const HeadingWithBlock = Heading.extend({
-  draggable: false,
+  addNodeView() {
+    return ReactNodeViewRenderer(BlockView);
+  },
+});
+
+export const BulletListWithBlock = BulletList.extend({
   addNodeView() {
     return ReactNodeViewRenderer(BlockView);
   },

@@ -6,6 +6,7 @@ import type { Editor } from "@tiptap/core";
 import { Menu } from "@/components/ui/Menu";
 import { BLOCKS } from "@/config/blocks.config";
 import { BlockMenuItem } from "./BlockMenuItem";
+import { useState } from "react";
 
 type BlockInsertMenuProps = {
   editor: Editor;
@@ -13,9 +14,12 @@ type BlockInsertMenuProps = {
 };
 
 export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
+  const [open, setOpen] = useState(false);
   return (
     <Menu
       position="right"
+      open={open}
+      onOpenChange={setOpen}
       trigger={
         <ButtonIcon variant="ghost" icon={<Plus size={14} />} tabIndex={-1} />
       }
@@ -34,6 +38,8 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
               .focus()
               .insertContentAt(insertPos, block.insert())
               .run();
+
+            setOpen(false);
           }}
         />
       ))}
