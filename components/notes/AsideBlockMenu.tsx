@@ -19,6 +19,7 @@ export function AsideBlockMenu({ editor }: Props) {
 
   return (
     <DragHandle
+      className="bg-danger"
       editor={editor}
       computePositionConfig={{
         placement: "left",
@@ -28,11 +29,16 @@ export function AsideBlockMenu({ editor }: Props) {
       onNodeChange={({ node, pos }) => {
         if (!node || pos == null) {
           activeNodeRef.current = null;
+          setInsertPos(null);
           return;
         }
 
+        // DOM real (para posicionar el aside)
         const dom = editor.view.nodeDOM(pos) as HTMLElement | null;
         activeNodeRef.current = dom;
+
+        // POSICIÓN DE INSERCIÓN REAL (clave)
+        setInsertPos(pos + node.nodeSize);
       }}
       getReferencedVirtualElement={() => {
         const dom = activeNodeRef.current;

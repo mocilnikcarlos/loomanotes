@@ -1,6 +1,7 @@
 "use client";
 
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import "@/styles/looma-blocks.css";
 
 export function BlockView({ node }: any) {
   return (
