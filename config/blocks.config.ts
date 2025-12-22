@@ -5,6 +5,7 @@ import {
   Heading3,
   List,
   MessageSquareQuote,
+  Minus,
 } from "lucide-react";
 
 export const BLOCKS = [
@@ -87,5 +88,14 @@ export const BLOCKS = [
         },
       ],
     }),
+  },
+  {
+    id: "divider",
+    type: "horizontalRule",
+    title: "Separador",
+    description: "Agregá una línea divisoria",
+    label: "Divider",
+    icon: Minus,
+    insert: () => [{ type: "horizontalRule" }, { type: "paragraph" }],
   },
 ];

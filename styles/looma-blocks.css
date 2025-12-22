@@ -80,3 +80,21 @@
     border-left: 0.25em solid var(--primary);
     border-right: 0.25em solid var(--primary);
 }
+
+.ProseMirror hr {
+    border: none;
+    height: 1px;
+    margin: 2rem 0;
+
+    background-image: linear-gradient(to right,
+            transparent,
+            rgba(185, 210, 86, 0.6) 20%,
+            var(--primary) 50%,
+            rgba(185, 210, 86, 0.6) 80%,
+            transparent);
+}
+
+.ProseMirror hr+p.is-empty {
+    min-height: 0;
+    margin-top: 0;
+}
