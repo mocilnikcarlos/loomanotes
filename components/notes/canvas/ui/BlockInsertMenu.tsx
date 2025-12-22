@@ -20,6 +20,7 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
       position="right"
       open={open}
       onOpenChange={setOpen}
+      className="max-h-[320px] max-w-[320px] overflow-y-auto overflow-x-hidden overscroll-contain"
       trigger={
         <ButtonIcon variant="ghost" icon={<Plus size={14} />} tabIndex={-1} />
       }

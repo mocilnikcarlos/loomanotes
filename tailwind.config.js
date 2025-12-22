@@ -36,6 +36,7 @@ const config = {
         "menu-hover": "var(--menu-hover)",
 
         primary: "var(--primary)",
+        "primary-soft": "var(--primary-soft)",
         "primary-hover": "var(--primary-hover)",
 
         success: "var(--success)",

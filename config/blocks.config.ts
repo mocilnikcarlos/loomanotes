@@ -4,6 +4,7 @@ import {
   Heading2,
   Heading3,
   List,
+  MessageSquareQuote,
 } from "lucide-react";
 
 export const BLOCKS = [
@@ -58,7 +59,7 @@ export const BLOCKS = [
     id: "bulletList",
     type: "bulletList",
     title: "Lista de puntos",
-    description: "Crea una lista con viñetas",
+    description: "Creá una lista con viñetas",
     label: "List",
     icon: List,
     insert: () => ({
@@ -67,6 +68,22 @@ export const BLOCKS = [
         {
           type: "listItem",
           content: [{ type: "paragraph" }],
+        },
+      ],
+    }),
+  },
+  {
+    id: "blockquote",
+    type: "blockquote",
+    title: "Cita",
+    description: "Creá un bloque de cita",
+    label: "Blockquote",
+    icon: MessageSquareQuote,
+    insert: () => ({
+      type: "blockquote",
+      content: [
+        {
+          type: "paragraph",
         },
       ],
     }),

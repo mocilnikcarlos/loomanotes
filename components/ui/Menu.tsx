@@ -9,11 +9,10 @@ interface MenuProps {
   openOn?: "click" | "context";
   position?: "top" | "bottom" | "left" | "right";
   children: ReactNode;
-
-  /** NUEVO (opcional, no rompe usos existentes) */
   open?: boolean;
   coords?: { top: number; left: number };
   onOpenChange?: (open: boolean) => void;
+  className?: string;
 }
 
 export function Menu({
@@ -24,6 +23,7 @@ export function Menu({
   open,
   coords: externalCoords,
   onOpenChange,
+  className,
 }: MenuProps) {
   /** Estado interno (modo no controlado, como antes) */
   const [internalOpen, setInternalOpen] = useState(false);
@@ -167,7 +167,8 @@ export function Menu({
               "transition-[opacity,transform] duration-150 ease-out",
               actualOpen ? "visible" : "invisible",
               "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
-              "data-[state=open]:opacity-100 data-[state=open]:scale-100"
+              "data-[state=open]:opacity-100 data-[state=open]:scale-100",
+              className
             )}
             style={{ top: coords.top, left: coords.left }}
           >
@@ -185,21 +186,31 @@ interface MenuItemProps {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export function MenuItem({ icon, children, onClick, disabled }: MenuItemProps) {
+export function MenuItem({
+  icon,
+  children,
+  onClick,
+  disabled,
+  className,
+}: MenuItemProps) {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-foreground cursor-pointer",
+        "flex w-full min-w-0 items-center gap-2 rounded-lg px-3 py-2",
+        "text-sm text-foreground cursor-pointer",
         "hover:bg-button-hover transition-colors",
-        disabled && "opacity-50 cursor-not-allowed"
+        "overflow-hidden",
+        disabled && "opacity-50 cursor-not-allowed",
+        className
       )}
     >
-      {icon && <span className="text-icon">{icon}</span>}
-      <span>{children}</span>
+      {icon && <span className="text-icon shrink-0">{icon}</span>}
+      {children}
     </button>
   );
 }

@@ -1,18 +1,17 @@
 @config "../tailwind.config.js";
 @import "tailwindcss";
 
-
-.slash-menu-container {
-    position: fixed;
-    z-index: 50;
+.ProseMirror {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
-.looma-block {
-    position: relative;
-}
 .node-paragraph,
-.node-heading{
-    padding: 6px 0;
+.node-heading,
+.node-bulletList,
+.node-blockquote{
+    padding: 8px 0;
 }
 
 .looma-block[data-type="heading"][data-level="1"] {
@@ -68,4 +67,16 @@
 
 .looma-block[data-type="bulletList"] li::marker {
     color: var(--primary);
+}
+
+
+.looma-block[data-type="blockquote"] {
+    background-color: var(--card);
+    padding: 8px 24px;
+    margin: 0.5rem 0;
+    color: var(--subtitle);
+    border-radius: 24px;
+    font-style: italic;
+    border-left: 0.25em solid var(--primary);
+    border-right: 0.25em solid var(--primary);
 }

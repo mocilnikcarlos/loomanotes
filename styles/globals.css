@@ -96,6 +96,7 @@ body {
 
     /* ACCENT BASE (mismo tono, ajusta percepción) */
     --primary: #8fa63e;
+    --primary-soft: rgba(143, 166, 62, 0.15);
     --primary-hover: #7f9436;
 
 /* STATES – LIGHT (más saturados, pero elegantes) */
@@ -158,6 +159,7 @@ body {
 
     /* ACCENT BASE */
     --primary: #b9d256;
+    --primary-soft: rgba(185, 210, 86, 0.15);
     --primary-hover: #A4B84B;
 
     /* STATES – DARK (más limpios, más profundos) */
