@@ -5,45 +5,66 @@
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere;
+    position: relative;
 }
 
-.node-paragraph,
-.node-heading,
+/* .node-paragraph,
+.node-heading, 
 .node-bulletList,
 .node-blockquote{
-    padding: 8px 0;
+    padding: 5px 0;
+} */
+
+[data-type="paragraph"] {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .looma-block[data-type="heading"][data-level="1"] {
-    font-size: 2.25rem;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .looma-block[data-type="heading"][data-level="2"] {
-    font-size: 1.75rem;
+    font-size: 21px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .looma-block[data-type="heading"][data-level="3"] {
-    font-size: 1.4rem;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 /* Nivel 1 */
 .looma-block[data-type="bulletList"] {
     margin: 0;
-    padding-left: 1.25em;
+    padding-left: 25px;
+}
+
+
+
+/* Nivel 1 */
+.looma-block[data-type="bulletList"] [data-type="paragraph"]{
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 /* Nivel 2 */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] {
-    margin: 0;
-    padding-left: 1.5em;
+.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] [data-type="paragraph"]{
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 /* Nivel 3 (nietos) */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] {
-    margin: 0;
-    padding-left: 1.75em;
+.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] [data-type="paragraph"]{
+    margin-top: 5px;
+    margin-bottom: 0;
 }
-
 
 /* Nivel 1 */
 .looma-block[data-type="bulletList"] li {
