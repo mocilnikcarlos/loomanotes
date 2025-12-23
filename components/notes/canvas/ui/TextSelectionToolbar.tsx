@@ -5,10 +5,11 @@ import { useTextSelectionToolbar } from "@/hooks/notes/useTextSelectionToolbar";
 import type { Editor } from "@tiptap/react";
 import { Tooltip } from "@heroui/tooltip";
 import { TextColorPopover } from "./TextColorPopover";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 // Icons
 import { Code, Bold, Italic, Strikethrough, Type } from "lucide-react";
+
 type Props = {
   editor: Editor;
 };
@@ -20,53 +21,71 @@ type RecentColor = {
 
 export function TextSelectionToolbar({ editor }: Props) {
   const { visible, position } = useTextSelectionToolbar(editor);
+
   const [showColors, setShowColors] = useState(false);
   const [recentColors, setRecentColors] = useState<RecentColor[]>([]);
 
-  const activeTextColor = useMemo(() => {
-    return editor.getAttributes("textStyle")?.color ?? null;
-  }, [editor, editor.state]);
+  const [activeTextColor, setActiveTextColor] = useState<string | null>(null);
+  const [activeHighlightColor, setActiveHighlightColor] = useState<
+    string | null
+  >(null);
 
-  const activeHighlightColor = useMemo(() => {
-    return editor.getAttributes("highlight")?.color ?? null;
-  }, [editor, editor.state]);
+  // -----------------------------
+  // Sync styles with editor state
+  // -----------------------------
+  useEffect(() => {
+    if (!editor) return;
 
+    const updateActiveStyles = () => {
+      const { selection } = editor.state;
+
+      // Si no hay selección, no mostramos estilos aplicados
+      if (selection.empty) {
+        setActiveTextColor(null);
+        setActiveHighlightColor(null);
+        return;
+      }
+
+      // ---- TEXT COLOR ----
+      const rawTextColor = editor.getAttributes("textStyle")?.color;
+
+      const textColor =
+        rawTextColor &&
+        rawTextColor !== "inherit" &&
+        rawTextColor !== "currentColor"
+          ? rawTextColor
+          : null;
+
+      // ---- HIGHLIGHT COLOR ----
+      const highlightColor = editor.getAttributes("highlight")?.color ?? null;
+
+      setActiveTextColor(textColor);
+      setActiveHighlightColor(highlightColor);
+    };
+
+    updateActiveStyles();
+
+    editor.on("selectionUpdate", updateActiveStyles);
+    editor.on("transaction", updateActiveStyles);
+
+    return () => {
+      editor.off("selectionUpdate", updateActiveStyles);
+      editor.off("transaction", updateActiveStyles);
+    };
+  }, [editor]);
+
+  // -----------------------------
+  // Close popover when toolbar hides
+  // -----------------------------
   useEffect(() => {
     if (!visible) {
       setShowColors(false);
     }
   }, [visible]);
 
-  useEffect(() => {
-    function handleClickOutside() {
-      setShowColors(false);
-    }
-
-    if (showColors) {
-      window.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      window.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showColors]);
-
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setShowColors(false);
-      }
-    }
-
-    if (showColors) {
-      window.addEventListener("keydown", handleKey);
-    }
-
-    return () => {
-      window.removeEventListener("keydown", handleKey);
-    };
-  }, [showColors]);
-
+  // -----------------------------
+  // Recent colors helper
+  // -----------------------------
   function pushRecent(entry: RecentColor) {
     setRecentColors((prev) => {
       const next = [
@@ -134,7 +153,7 @@ export function TextSelectionToolbar({ editor }: Props) {
         />
       </Tooltip>
 
-      {/* ---- Separator mental: acá empieza otro sistema ---- */}
+      {/* ---- Color system ---- */}
 
       <Tooltip content="Color de texto">
         <ButtonIcon
@@ -155,7 +174,6 @@ export function TextSelectionToolbar({ editor }: Props) {
             activeTextColor={activeTextColor}
             activeHighlightColor={activeHighlightColor}
             onPushRecent={pushRecent}
-            onSelect={() => setShowColors(false)}
           />
         </div>
       )}

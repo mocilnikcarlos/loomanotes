@@ -1,4 +1,4 @@
-export const TEXT_COLORS = [
+export const BASE_COLORS = [
   "#000000",
   "#6B7280",
   "#EF4444",
@@ -9,13 +9,4 @@ export const TEXT_COLORS = [
   "#3B82F6",
   "#8B5CF6",
   "#EC4899",
-];
-
-export const HIGHLIGHT_COLORS = [
-  "#FEF08A",
-  "#BBF7D0",
-  "#BFDBFE",
-  "#E9D5FF",
-  "#FBCFE8",
-  "#FED7AA",
 ];

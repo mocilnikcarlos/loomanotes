@@ -1,49 +1,48 @@
 import type { Editor } from "@tiptap/react";
-import { HIGHLIGHT_COLORS } from "@/config/editor.colors";
+import { BASE_COLORS } from "@/config/editor.colors";
 import { RecentColor } from "./types";
-import { Undo2 } from "lucide-react";
-import { Tooltip } from "@heroui/tooltip";
 
 type Props = {
   editor: Editor;
+  activeHighlightColor: string | null;
   onPushRecent: (entry: RecentColor) => void;
-  onSelect?: () => void;
 };
+
+const highlight = (hex: string) => `${hex}33`; // ~20% alpha
 
 export function HighlightColorSection({
   editor,
+  activeHighlightColor,
   onPushRecent,
-  onSelect,
 }: Props) {
   return (
     <section className="flex flex-col gap-2">
       <span className="text-xs text-muted-foreground">Highlight Color</span>
-      <Tooltip content="Quitar fondo" placement="right">
-        <button
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => {
-            editor.chain().focus().unsetHighlight().run();
-            onSelect?.();
-          }}
-          className="h-6 w-6 rounded-full flex items-center justify-center border border-border bg-transparent cursor-pointer"
-        >
-          <Undo2 size={12} />
-        </button>
-      </Tooltip>
 
       <div className="grid grid-cols-5 gap-2">
-        {HIGHLIGHT_COLORS.map((color) => (
-          <button
-            key={color}
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => {
-              editor.chain().focus().toggleHighlight({ color }).run();
-              onPushRecent({ type: "highlight", color });
-            }}
-            className="h-6 w-6 rounded-full border border-border cursor-pointer"
-            style={{ backgroundColor: color }}
-          />
-        ))}
+        {BASE_COLORS.map((color) => {
+          const bg = highlight(color);
+          const isActive = activeHighlightColor === bg;
+
+          return (
+            <button
+              key={color}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                if (isActive) {
+                  editor.chain().focus().unsetHighlight().run();
+                } else {
+                  editor.chain().focus().toggleHighlight({ color: bg }).run();
+                  onPushRecent({ type: "highlight", color: bg });
+                }
+              }}
+              className={`h-6 w-6 rounded-full border cursor-pointer
+                ${isActive ? "ring-2 ring-offset-2 ring-primary" : "border-border"}
+              `}
+              style={{ backgroundColor: bg }}
+            />
+          );
+        })}
       </div>
     </section>
   );

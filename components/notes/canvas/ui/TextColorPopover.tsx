@@ -3,7 +3,6 @@
 import type { Editor } from "@tiptap/react";
 import { RecentColor } from "./popovertoolbar/types";
 import { AppliedStyleSection } from "./popovertoolbar/AppliedStyleSection";
-import { RecentlyUsedSection } from "./popovertoolbar/RecentlyUsedSection";
 import { TextColorSection } from "./popovertoolbar/TextColorSection";
 import { HighlightColorSection } from "./popovertoolbar/HighlightColorSection";
 
@@ -13,16 +12,13 @@ type Props = {
   activeTextColor: string | null;
   activeHighlightColor: string | null;
   onPushRecent: (entry: RecentColor) => void;
-  onSelect?: () => void;
 };
 
 export function TextColorPopover({
   editor,
-  recentColors,
   activeTextColor,
   activeHighlightColor,
   onPushRecent,
-  onSelect,
 }: Props) {
   return (
     <div
@@ -34,24 +30,16 @@ export function TextColorPopover({
         activeHighlightColor={activeHighlightColor}
       />
 
-      {/* <RecentlyUsedSection
-        editor={editor}
-        recentColors={recentColors}
-        activeTextColor={activeTextColor}
-        activeHighlightColor={activeHighlightColor}
-        onSelect={onSelect}
-      /> */}
-
       <TextColorSection
         editor={editor}
+        activeTextColor={activeTextColor}
         onPushRecent={onPushRecent}
-        onSelect={onSelect}
       />
 
       <HighlightColorSection
         editor={editor}
+        activeHighlightColor={activeHighlightColor}
         onPushRecent={onPushRecent}
-        onSelect={onSelect}
       />
     </div>
   );
