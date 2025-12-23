@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import DragHandle from "@tiptap/extension-drag-handle-react";
 import { GripVertical } from "lucide-react";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import type { Editor } from "@tiptap/core";
 import { BlockInsertMenu } from "./BlockInsertMenu";
 import { offset, shift } from "@floating-ui/dom";
-import { useRef } from "react";
 
 type Props = {
   editor: Editor;
@@ -16,8 +15,6 @@ type Props = {
 export function AsideBlockMenu({ editor }: Props) {
   const [insertPos, setInsertPos] = useState<number | null>(null);
   const activeNodeRef = useRef<HTMLElement | null>(null);
-  const [activeNode, setActiveNode] = useState<any>(null);
-  const [activePos, setActivePos] = useState<number | null>(null);
 
   return (
     <DragHandle
@@ -31,18 +28,13 @@ export function AsideBlockMenu({ editor }: Props) {
         if (!node || pos == null) {
           activeNodeRef.current = null;
           setInsertPos(null);
-          setActiveNode(null);
-          setActivePos(null);
           return;
         }
 
         const dom = editor.view.nodeDOM(pos) as HTMLElement | null;
         activeNodeRef.current = dom;
 
-        setActiveNode(node);
-        setActivePos(pos);
-
-        // sigue siendo útil para inserción
+        // siempre insertar debajo
         setInsertPos(pos + node.nodeSize);
       }}
       getReferencedVirtualElement={() => {
@@ -67,12 +59,7 @@ export function AsideBlockMenu({ editor }: Props) {
       }}
     >
       <div className="flex items-center gap-1">
-        <BlockInsertMenu
-          editor={editor}
-          insertPos={insertPos}
-          activeNode={activeNode}
-          activePos={activePos}
-        />
+        <BlockInsertMenu editor={editor} insertPos={insertPos} />
 
         <ButtonIcon
           variant="ghost"

@@ -9,6 +9,7 @@
     position: relative;
 }
 
+/* placeholder */
 .react-renderer.is-editor-empty::before {
     content: attr(data-placeholder);
     color: var(--placeholder);
