@@ -71,9 +71,14 @@ const TaskListWithBlock = TaskList.extend({
   },
 });
 
-const CodeBlockWithBlock = CodeBlockLowlight.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
+const CodeBlock = CodeBlockLowlight.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      class: {
+        default: "hljs",
+      },
+    };
   },
 }).configure({
   lowlight,
@@ -117,7 +122,7 @@ export function createEditorExtensions() {
     }),
 
     // Code
-    CodeBlockWithBlock,
+    CodeBlock,
 
     // Misc
     HorizontalRule,

@@ -144,9 +144,10 @@ export const BLOCKS = [
     label: "Code",
     icon: Code,
     insert: (editor: Editor) => {
-      editor.chain().focus().setCodeBlock().run();
+      editor.chain().focus().setCodeBlock({ language: "javascript" }).run();
     },
   },
+
   {
     id: "divider",
     type: "horizontalRule",
