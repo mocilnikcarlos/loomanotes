@@ -16,6 +16,7 @@ import {
   TaskList,
   TaskItem,
 } from "@tiptap/extension-list";
+import Placeholder from "@tiptap/extension-placeholder";
 
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -34,6 +35,8 @@ const lowlight = createLowlight(all);
 // =====================================================
 // Block wrappers (NodeView único)
 // =====================================================
+
+// const ParagraphWithBlock = Paragraph (mas adelante agregar este bloque y cambiar los css para no pasarle blockview)
 
 const ParagraphWithBlock = Paragraph.extend({
   addNodeView() {
@@ -130,5 +133,21 @@ export function createEditorExtensions() {
 
     // Commands
     SlashCommand,
+
+    // Placeholder
+    Placeholder.configure({
+      placeholder: ({ node, editor }) => {
+        const { $from } = editor.state.selection;
+
+        // Solo paragraph raíz
+        if (node.type.name === "paragraph" && $from.depth === 1) {
+          return "Escribe / o haz clic en el botón + para agregar contenido";
+        }
+
+        return "";
+      },
+      showOnlyWhenEditable: false,
+      includeChildren: true,
+    }),
   ];
 }

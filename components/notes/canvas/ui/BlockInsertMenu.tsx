@@ -11,9 +11,16 @@ import { useState } from "react";
 type BlockInsertMenuProps = {
   editor: Editor;
   insertPos: number | null;
+  activeNode: any | null;
+  activePos: number | null;
 };
 
-export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
+export function BlockInsertMenu({
+  editor,
+  insertPos,
+  activeNode,
+  activePos,
+}: BlockInsertMenuProps) {
   const [open, setOpen] = useState(false);
   return (
     <Menu
@@ -32,11 +39,22 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
           title={block.title}
           description={block.description}
           onSelect={() => {
-            if (insertPos == null) return;
+            if (!activeNode || activePos == null) return;
 
-            editor.chain().focus().setTextSelection(insertPos).run();
+            const isEmpty =
+              activeNode.isTextblock && activeNode.content.size === 0;
 
-            block.insert(editor);
+            editor.chain().focus();
+
+            if (isEmpty) {
+              // 🔁 TRANSFORMAR bloque actual
+              editor.commands.setTextSelection(activePos);
+              block.insert(editor);
+            } else if (insertPos != null) {
+              // ➕ INSERTAR bloque nuevo debajo
+              editor.commands.setTextSelection(insertPos);
+              block.insert(editor);
+            }
 
             setOpen(false);
           }}

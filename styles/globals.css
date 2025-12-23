@@ -63,6 +63,7 @@ body {
     /* gris claro neutro */
     --foreground: #626164;
     --foreground-secondary: #e9e9e9;
+    --placeholder: #9ca3af;
 
     /* Surfaces */
     --card: #FDFDFD;
@@ -125,7 +126,7 @@ body {
     /* negro carbón */
     --foreground: #e6e9ed;
     --foreground-secondary: #121617;
-    /* blanco sucio */
+    --placeholder: #6b7280;
 
     /* Surfaces */
     --card: #1A1A1A;

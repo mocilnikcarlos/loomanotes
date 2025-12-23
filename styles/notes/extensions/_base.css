@@ -3,5 +3,17 @@
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere;
+}
+
+.react-renderer {
     position: relative;
+}
+
+.react-renderer.is-editor-empty::before {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
 }

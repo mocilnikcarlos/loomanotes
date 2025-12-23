@@ -16,6 +16,8 @@ type Props = {
 export function AsideBlockMenu({ editor }: Props) {
   const [insertPos, setInsertPos] = useState<number | null>(null);
   const activeNodeRef = useRef<HTMLElement | null>(null);
+  const [activeNode, setActiveNode] = useState<any>(null);
+  const [activePos, setActivePos] = useState<number | null>(null);
 
   return (
     <DragHandle
@@ -29,14 +31,18 @@ export function AsideBlockMenu({ editor }: Props) {
         if (!node || pos == null) {
           activeNodeRef.current = null;
           setInsertPos(null);
+          setActiveNode(null);
+          setActivePos(null);
           return;
         }
 
-        // DOM real (para posicionar el aside)
         const dom = editor.view.nodeDOM(pos) as HTMLElement | null;
         activeNodeRef.current = dom;
 
-        // POSICIÓN DE INSERCIÓN REAL (clave)
+        setActiveNode(node);
+        setActivePos(pos);
+
+        // sigue siendo útil para inserción
         setInsertPos(pos + node.nodeSize);
       }}
       getReferencedVirtualElement={() => {
@@ -61,7 +67,12 @@ export function AsideBlockMenu({ editor }: Props) {
       }}
     >
       <div className="flex items-center gap-1">
-        <BlockInsertMenu editor={editor} insertPos={insertPos} />
+        <BlockInsertMenu
+          editor={editor}
+          insertPos={insertPos}
+          activeNode={activeNode}
+          activePos={activePos}
+        />
 
         <ButtonIcon
           variant="ghost"

@@ -13,6 +13,7 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         "foreground-secondary": "var(--foreground-secondary)",
+        placeholder: "var(--placeholder)",
 
         card: "var(--card)",
         "card-hover": "var(--card-hover)",

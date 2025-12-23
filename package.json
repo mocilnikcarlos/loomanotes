@@ -64,6 +64,7 @@
     "@tiptap/extension-dropcursor": "^3.14.0",
     "@tiptap/extension-list": "^3.14.0",
     "@tiptap/extension-paragraph": "^3.0.0",
+    "@tiptap/extension-placeholder": "^3.14.0",
     "@tiptap/extension-text": "^3.0.0",
     "@tiptap/pm": "^3.0.0",
     "@tiptap/react": "^3.0.0",
