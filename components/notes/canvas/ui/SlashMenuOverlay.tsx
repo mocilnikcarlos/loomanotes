@@ -16,7 +16,6 @@ export function SlashMenuOverlay({ editor }: { editor: any }) {
     registerSlashMenu(setCtx);
   }, []);
 
-  // 🔴 ESTE EFECTO ES EL QUE FALTABA
   useEffect(() => {
     if (!ctx) return;
 
