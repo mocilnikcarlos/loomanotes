@@ -59,13 +59,9 @@ export function SlashMenuOverlay({ editor }: { editor: any }) {
       <SlashMenu
         items={BLOCKS}
         command={(block) => {
-          editor
-            .chain()
-            .focus()
-            .deleteRange(ctx.range)
-            .insertContent(block.insert())
-            .run();
+          editor.chain().focus().deleteRange(ctx.range).run();
 
+          block.insert(editor);
           setCtx(null);
         }}
       />

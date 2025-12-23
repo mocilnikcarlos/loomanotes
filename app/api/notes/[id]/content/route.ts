@@ -1,7 +1,7 @@
 import { withAuth } from "@/lib/api/withAuth";
 import { NextResponse } from "next/server";
 import { createRouteHandlerSupabase } from "@/lib/supabase/route";
-import { UpdateNoteContentSchema } from "@/lib/schemas/notes";
+import { UpdateNoteContentSchema } from "@/lib/schemas/content";
 
 export const PUT = withAuth(
   async ({ req, user, body, params }) => {

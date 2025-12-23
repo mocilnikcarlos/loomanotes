@@ -34,11 +34,8 @@ export function BlockInsertMenu({ editor, insertPos }: BlockInsertMenuProps) {
           onSelect={() => {
             if (insertPos == null) return;
 
-            editor
-              .chain()
-              .focus()
-              .insertContentAt(insertPos, block.insert())
-              .run();
+            editor.commands.setTextSelection(insertPos);
+            block.insert(editor);
 
             setOpen(false);
           }}

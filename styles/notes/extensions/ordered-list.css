@@ -1,0 +1,67 @@
+.looma-block[data-type="orderedList"] {
+    counter-reset: ol-level-1;
+    margin: 0;
+    padding-left: 25px;
+}
+
+/* Level 1 */
+.looma-block[data-type="orderedList"] li {
+    position: relative;
+}
+
+.looma-block[data-type="orderedList"] li::marker {
+    content: "";
+}
+
+.looma-block[data-type="orderedList"] li::before {
+    counter-increment: ol-level-1;
+    content: counter(ol-level-1) ".";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Level 2 */
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] {
+    counter-reset: ol-level-2;
+}
+
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] li::before {
+    counter-increment: ol-level-2;
+    content: counter(ol-level-1) "." counter(ol-level-2);
+}
+
+/* Level 3 */
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] {
+    counter-reset: ol-level-3;
+}
+
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] li::before {
+    counter-increment: ol-level-3;
+    content: counter(ol-level-1) "."
+        counter(ol-level-2) "."
+        counter(ol-level-3);
+}
+
+/* Level 1 */
+.looma-block[data-type="orderedList"] [data-type="paragraph"] {
+    padding-left: 25px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/* Level 2 */
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] [data-type="paragraph"] {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 32px;
+}
+
+/* Level 3 */
+.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] [data-type="paragraph"] {
+    padding-left: 48px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}

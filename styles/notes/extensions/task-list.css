@@ -1,0 +1,71 @@
+
+
+/* Grupo de tasks */
+.looma-block[data-type="taskList"] {
+    margin: 10px 0;
+}
+
+/* Task item */
+.looma-block[data-type="taskItem"] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Checkbox */
+.looma-task-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    position: relative;
+}
+
+/* Checked state */
+.looma-block[data-type="taskItem"][data-checked="true"] .looma-task-checkbox {
+    background-color: var(--primary);
+}
+
+/* Check mark */
+.looma-block[data-type="taskItem"][data-checked="true"] .looma-task-checkbox::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Texto */
+.looma-block[data-type="taskItem"] [data-type="paragraph"] {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+/* Completed text */
+.looma-block[data-type="taskItem"][data-checked="true"] [data-type="paragraph"] {
+    text-decoration: line-through;
+    opacity: 0.55;
+}
+
+/* Hover */
+.looma-block[data-type="taskItem"]:hover {
+    background-color: var(--card);
+    border-radius: 6px;
+}
+
+/* Nesting */
+.looma-block[data-type="taskItem"] .looma-block[data-type="taskItem"] {
+    margin-left: 24px;
+}
+
+/* Focus */
+.looma-block[data-type="taskItem"]:focus-within {
+    background-color: var(--accent-muted);
+    border-radius: 6px;
+}

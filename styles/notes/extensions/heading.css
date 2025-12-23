@@ -1,0 +1,20 @@
+
+.looma-block[data-type="heading"][data-level="1"] {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.looma-block[data-type="heading"][data-level="2"] {
+    font-size: 21px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.looma-block[data-type="heading"][data-level="3"] {
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
