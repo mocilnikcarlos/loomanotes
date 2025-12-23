@@ -23,8 +23,16 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
 // lowlight (según doc oficial)
 import { all, createLowlight } from "lowlight";
-
 import { SlashCommand } from "./SlashCommand";
+
+// Mark
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Strike from "@tiptap/extension-strike";
+import Code from "@tiptap/extension-code";
+import { TextStyleKit } from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
+import Highlight from "@tiptap/extension-highlight";
 
 // =====================================================
 // Lowlight setup
@@ -148,6 +156,17 @@ export function createEditorExtensions() {
       },
       showOnlyWhenEditable: false,
       includeChildren: true,
+    }),
+
+    // Marks (EXPLÍCITOS)
+    Bold,
+    Italic,
+    Strike,
+    Code,
+    TextStyleKit,
+    Color,
+    Highlight.configure({
+      multicolor: true,
     }),
   ];
 }

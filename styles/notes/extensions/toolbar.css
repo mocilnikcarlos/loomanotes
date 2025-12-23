@@ -1,0 +1,6 @@
+.react-renderer .looma-block code {
+    background-color: var(--primary-soft);
+    border-radius: 0.4rem;
+    color: var(--foreground);
+    padding: 0.25em 0.3em;
+}
