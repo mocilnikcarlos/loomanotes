@@ -4,7 +4,7 @@ import type { Editor } from "@tiptap/core";
 import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
 import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
 import { BLOCKS } from "@/config/blocks.config";
-import type { LucideIcon } from "lucide-react";
+import { EditorMenuRow } from "./EditorMenuRow";
 
 type Props = {
   editor: Editor;
@@ -46,7 +46,7 @@ export function BlockStylePopover({ editor, onSelect }: Props) {
 
         return (
           <div key={block.id}>
-            <Item
+            <EditorMenuRow
               label={block.title}
               icon={block.icon}
               active={currentBlock === block.id}
@@ -58,33 +58,5 @@ export function BlockStylePopover({ editor, onSelect }: Props) {
         );
       })}
     </div>
-  );
-}
-
-function Item({
-  label,
-  icon: Icon,
-  active,
-  onClick,
-}: {
-  label: string;
-  icon?: LucideIcon;
-  active?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={[
-        "flex w-full min-w-0 items-center gap-2 rounded-lg px-3 py-2",
-        "text-sm text-foreground cursor-pointer",
-        "hover:bg-button-hover transition-colors",
-        "overflow-hidden",
-        active ? "bg-button font-medium" : "",
-      ].join(" ")}
-    >
-      {Icon && <Icon size={14} />}
-      {label}
-    </button>
   );
 }

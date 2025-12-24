@@ -18,6 +18,7 @@ import {
   TIPTAP_FONT_FAMILIES,
   TIPTAP_FONT_SIZES,
 } from "@/config/tiptapfont.config";
+import { TextToolbarMoreMenu } from "./TextToolbarMoreMenu";
 
 // Icons
 import {
@@ -31,6 +32,8 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  MoreHorizontal,
+  Copy,
 } from "lucide-react";
 
 type Props = {
@@ -52,6 +55,8 @@ export function TextSelectionToolbar({ editor }: Props) {
     string | null
   >(null);
 
+  const [moreOpen, setMoreOpen] = useState(false);
+
   const isBold = editor.isActive("bold");
   const isItalic = editor.isActive("italic");
   const isStrike = editor.isActive("strike");
@@ -72,7 +77,7 @@ export function TextSelectionToolbar({ editor }: Props) {
 
   const currentFontFamily =
     TIPTAP_FONT_FAMILIES.find((f) => f.cssValue === textStyle?.fontFamily)
-      ?.label ?? "Inter";
+      ?.label ?? "Elms Sans";
 
   const currentFontSize =
     TIPTAP_FONT_SIZES.find((s) => s.value === textStyle?.fontSize)?.label ??
@@ -132,7 +137,8 @@ export function TextSelectionToolbar({ editor }: Props) {
         italic: editor.isActive("italic"),
         strike: editor.isActive("strike"),
         code: editor.isActive("code"),
-
+        subscript: editor.isActive("subscript"),
+        superscript: editor.isActive("superscript"),
         left: editor.isActive({ textAlign: "left" }),
         center: editor.isActive({ textAlign: "center" }),
         right: editor.isActive({ textAlign: "right" }),
@@ -440,6 +446,29 @@ export function TextSelectionToolbar({ editor }: Props) {
           activeTextColor={activeTextColor}
           activeHighlightColor={activeHighlightColor}
           onPushRecent={pushRecent}
+        />
+      </Menu>
+
+      <ToolbarDivider />
+      {/* ---- MORE ---- */}
+      <Menu
+        open={moreOpen}
+        onOpenChange={setMoreOpen}
+        position="bottom-end"
+        trigger={
+          <Tooltip content="Más acciones">
+            <ButtonIcon
+              onMouseDown={(e) => e.preventDefault()}
+              size="sm"
+              variant="ghost"
+              icon={<MoreHorizontal size={14} />}
+            />
+          </Tooltip>
+        }
+      >
+        <TextToolbarMoreMenu
+          editor={editor}
+          onClose={() => setMoreOpen(false)}
         />
       </Menu>
     </div>

@@ -17,7 +17,6 @@ import {
   TaskItem,
 } from "@tiptap/extension-list";
 import Placeholder from "@tiptap/extension-placeholder";
-
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 
@@ -39,6 +38,8 @@ import { LinkWithTooltip } from "./LinkWithTooltip";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import { FontSize } from "./FontSizeExtensions";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
 
 // =====================================================
 // Lowlight setup
@@ -172,6 +173,8 @@ export function createEditorExtensions() {
     TextStyleKit,
     FontFamily,
     FontSize,
+    Subscript,
+    Superscript,
     Color,
     Highlight.configure({
       multicolor: true,
