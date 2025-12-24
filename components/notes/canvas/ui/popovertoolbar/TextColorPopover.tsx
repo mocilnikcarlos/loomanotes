@@ -1,10 +1,10 @@
 "use client";
 
 import type { Editor } from "@tiptap/react";
-import { RecentColor } from "./popovertoolbar/types";
-import { AppliedStyleSection } from "./popovertoolbar/AppliedStyleSection";
-import { TextColorSection } from "./popovertoolbar/TextColorSection";
-import { HighlightColorSection } from "./popovertoolbar/HighlightColorSection";
+import { RecentColor } from "./types";
+import { AppliedStyleSection } from "./AppliedStyleSection";
+import { TextColorSection } from "./TextColorSection";
+import { HighlightColorSection } from "./HighlightColorSection";
 
 type Props = {
   editor: Editor;
@@ -23,7 +23,7 @@ export function TextColorPopover({
   return (
     <div
       onMouseDown={(e) => e.preventDefault()}
-      className="w-64 rounded-xl bg-card border border-border p-3 flex flex-col gap-6"
+      className="flex flex-col gap-6 p-2"
     >
       <AppliedStyleSection
         activeTextColor={activeTextColor}

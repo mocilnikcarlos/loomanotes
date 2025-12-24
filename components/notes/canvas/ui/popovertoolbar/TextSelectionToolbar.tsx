@@ -7,6 +7,12 @@ import { Tooltip } from "@heroui/tooltip";
 import { TextColorPopover } from "./TextColorPopover";
 import { useState, useEffect } from "react";
 import { useEditorState } from "@tiptap/react";
+import { BlockStylePopover } from "./BlockStylePopover";
+import { ToolbarDivider } from "./ToolbarDivider";
+import { Button } from "@/components/ui/Button";
+import { BLOCKS } from "@/config/blocks.config";
+import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
+import { Menu } from "@/components/ui/Menu";
 
 // Icons
 import { Code, Bold, Italic, Strikethrough, Type } from "lucide-react";
@@ -23,7 +29,6 @@ type RecentColor = {
 export function TextSelectionToolbar({ editor }: Props) {
   const { visible, position } = useTextSelectionToolbar(editor);
 
-  const [showColors, setShowColors] = useState(false);
   const [recentColors, setRecentColors] = useState<RecentColor[]>([]);
 
   const [activeTextColor, setActiveTextColor] = useState<string | null>(null);
@@ -35,6 +40,8 @@ export function TextSelectionToolbar({ editor }: Props) {
   const isItalic = editor.isActive("italic");
   const isStrike = editor.isActive("strike");
   const isCode = editor.isActive("code");
+
+  const { currentBlock } = useBlockStyleSwitcher(editor);
 
   // -----------------------------
   // Sync styles with editor state
@@ -90,14 +97,8 @@ export function TextSelectionToolbar({ editor }: Props) {
     }),
   });
 
-  // -----------------------------
-  // Close popover when toolbar hides
-  // -----------------------------
-  useEffect(() => {
-    if (!visible) {
-      setShowColors(false);
-    }
-  }, [visible]);
+  const blockTitle =
+    BLOCKS.find((b) => b.id === currentBlock)?.title ?? "Texto";
 
   // -----------------------------
   // Recent colors helper
@@ -127,8 +128,25 @@ export function TextSelectionToolbar({ editor }: Props) {
         left: position.left,
         transform: "translateX(-50%)",
       }}
-      className="absolute z-50 flex bg-card-hover gap-1 rounded-full border border-border p-1"
+      className="absolute z-50 flex items-center bg-card gap-1 rounded-full border border-border p-1"
     >
+      <Menu
+        trigger={
+          <Tooltip content="Estilo de bloque">
+            <Button
+              onMouseDown={(e) => e.preventDefault()}
+              size="sm"
+              variant="ghost"
+            >
+              {blockTitle}
+            </Button>
+          </Tooltip>
+        }
+      >
+        <BlockStylePopover editor={editor} />
+      </Menu>
+
+      <ToolbarDivider />
       <Tooltip content="Negrita">
         <ButtonIcon
           aria-pressed={isBold}
@@ -141,7 +159,6 @@ export function TextSelectionToolbar({ editor }: Props) {
           className={isBold ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
-
       <Tooltip content="Cursiva">
         <ButtonIcon
           aria-pressed={isItalic}
@@ -154,7 +171,6 @@ export function TextSelectionToolbar({ editor }: Props) {
           className={isItalic ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
-
       <Tooltip content="Tachado">
         <ButtonIcon
           aria-pressed={isStrike}
@@ -167,7 +183,6 @@ export function TextSelectionToolbar({ editor }: Props) {
           className={isStrike ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
-
       <Tooltip content="Código">
         <ButtonIcon
           aria-pressed={isCode}
@@ -180,31 +195,34 @@ export function TextSelectionToolbar({ editor }: Props) {
           className={isCode ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
-
+      <ToolbarDivider />
       {/* ---- Color system ---- */}
 
-      <Tooltip content="Color de texto">
-        <ButtonIcon
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => setShowColors((v) => !v)}
-          size="sm"
-          variant="ghost"
-          icon={<Type size={14} />}
-          style={activeTextColor ? { color: activeTextColor } : undefined}
+      <Menu
+        trigger={
+          <Tooltip content="Color de texto">
+            <ButtonIcon
+              onMouseDown={(e) => e.preventDefault()}
+              size="sm"
+              variant="ghost"
+              icon={<Type size={14} />}
+              style={activeTextColor ? { color: activeTextColor } : undefined}
+            />
+          </Tooltip>
+        }
+        onOpenChange={() => {
+          // si en el futuro hay otro menú, se coordina acá
+        }}
+        position="bottom-end"
+      >
+        <TextColorPopover
+          editor={editor}
+          recentColors={recentColors}
+          activeTextColor={activeTextColor}
+          activeHighlightColor={activeHighlightColor}
+          onPushRecent={pushRecent}
         />
-      </Tooltip>
-
-      {showColors && (
-        <div className="absolute top-full left-1/2 mt-2 -translate-x-1/2">
-          <TextColorPopover
-            editor={editor}
-            recentColors={recentColors}
-            activeTextColor={activeTextColor}
-            activeHighlightColor={activeHighlightColor}
-            onPushRecent={pushRecent}
-          />
-        </div>
-      )}
+      </Menu>
     </div>
   );
 }

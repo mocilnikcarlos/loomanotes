@@ -5,7 +5,7 @@ import { useSaveNoteContent } from "@/hooks/notes/useSaveNoteContent";
 import { AsideBlockMenu } from "./ui/AsideBlockMenu";
 import { SlashMenuOverlay } from "./ui/SlashMenuOverlay";
 import { createEditorExtensions } from "./extensions/editor.extensions";
-import { TextSelectionToolbar } from "./ui/TextSelectionToolbar";
+import { TextSelectionToolbar } from "./ui/popovertoolbar/TextSelectionToolbar";
 
 type Props = {
   noteId: string;

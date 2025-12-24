@@ -4,10 +4,20 @@ import { cn } from "@/utils/cn";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+type MenuPosition =
+  | "top-start"
+  | "top-center"
+  | "top-end"
+  | "bottom-start"
+  | "bottom-center"
+  | "bottom-end"
+  | "left"
+  | "right";
+
 interface MenuProps {
   trigger?: ReactNode;
   openOn?: "click" | "context";
-  position?: "top" | "bottom" | "left" | "right";
+  position?: MenuPosition;
   children: ReactNode;
   open?: boolean;
   coords?: { top: number; left: number };
@@ -18,7 +28,7 @@ interface MenuProps {
 export function Menu({
   trigger,
   openOn = "click",
-  position = "bottom",
+  position = "bottom-start",
   children,
   open,
   coords: externalCoords,
@@ -76,15 +86,39 @@ export function Menu({
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const menuRect = menuRef.current.getBoundingClientRect();
 
-    const map = {
-      bottom: {
+    const alignX = {
+      start: triggerRect.left,
+      center: triggerRect.left + triggerRect.width / 2 - menuRect.width / 2,
+      end: triggerRect.right - menuRect.width,
+    };
+
+    const map: Record<MenuPosition, { top: number; left: number }> = {
+      "bottom-start": {
         top: triggerRect.bottom + GAP,
-        left: triggerRect.left,
+        left: alignX.start,
       },
-      top: {
+      "bottom-center": {
+        top: triggerRect.bottom + GAP,
+        left: alignX.center,
+      },
+      "bottom-end": {
+        top: triggerRect.bottom + GAP,
+        left: alignX.end,
+      },
+
+      "top-start": {
         top: triggerRect.top - menuRect.height - GAP,
-        left: triggerRect.left,
+        left: alignX.start,
       },
+      "top-center": {
+        top: triggerRect.top - menuRect.height - GAP,
+        left: alignX.center,
+      },
+      "top-end": {
+        top: triggerRect.top - menuRect.height - GAP,
+        left: alignX.end,
+      },
+
       right: {
         top: triggerRect.top,
         left: triggerRect.right + GAP,
