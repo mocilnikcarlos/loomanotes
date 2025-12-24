@@ -23,7 +23,7 @@ export function TextColorPopover({
   return (
     <div
       onMouseDown={(e) => e.preventDefault()}
-      className="w-64 rounded-xl bg-card border border-border p-3 flex flex-col gap-4"
+      className="w-64 rounded-xl bg-card border border-border p-3 flex flex-col gap-6"
     >
       <AppliedStyleSection
         activeTextColor={activeTextColor}
