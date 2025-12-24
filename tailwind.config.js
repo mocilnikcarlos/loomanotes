@@ -37,6 +37,10 @@ const config = {
         menu: "var(--menu)",
         "menu-hover": "var(--menu-hover)",
 
+        "toolbar-bg": "var(--toolbar-bg)",
+        "toolbar-border": "var(--toolbar-border)",
+        "toolbar-shadow": "var(--toolbar-shadow)",
+
         primary: "var(--primary)",
         "primary-soft": "var(--primary-soft)",
         "primary-hover": "var(--primary-hover)",

@@ -37,6 +37,8 @@ import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import { LinkWithTooltip } from "./LinkWithTooltip";
 import TextAlign from "@tiptap/extension-text-align";
+import FontFamily from "@tiptap/extension-font-family";
+import { FontSize } from "./FontSizeExtensions";
 
 // =====================================================
 // Lowlight setup
@@ -168,6 +170,8 @@ export function createEditorExtensions() {
     Strike,
     Code,
     TextStyleKit,
+    FontFamily,
+    FontSize,
     Color,
     Highlight.configure({
       multicolor: true,

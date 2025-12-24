@@ -3,16 +3,21 @@ pre.hljs {
     border-radius: 10px;
     padding: 16px 18px;
     margin: 16px 0;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 pre.hljs code {
     display: block;
     color: var(--subtitle);
-    white-space: pre;
+
+    /* 🔥 la magia */
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
         Consolas, "Liberation Mono", "Courier New", monospace;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.65;
 }
 

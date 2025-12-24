@@ -103,6 +103,11 @@ a {
     --menu: #ffffff;
     --menu-hover: #f2f2f2;
 
+    /* Toolbar */
+    --toolbar-bg: #ffffff;
+    --toolbar-border: #dcdcdc;
+    --toolbar-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
     /* ACCENT BASE (mismo tono, ajusta percepción) */
     --primary: #8fa63e;
     --primary-soft: rgba(143, 166, 62, 0.15);
@@ -166,6 +171,11 @@ a {
 
     --menu: #181818;
     --menu-hover: #141414;
+
+    /* Toolbar */
+    --toolbar-bg: #1f1f1f;
+    --toolbar-border: #2f2f2f;
+    --toolbar-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 
     /* ACCENT BASE */
     --primary: #b9d256;

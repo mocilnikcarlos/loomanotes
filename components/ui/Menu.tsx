@@ -215,7 +215,7 @@ export function Menu({
             data-state={actualOpen ? "open" : "closed"}
             onPointerDown={(e) => e.stopPropagation()}
             className={cn(
-              "fixed z-50 min-w-[180px] rounded-xl border border-border bg-menu p-2 shadow-lg",
+              "fixed z-50 rounded-xl border border-border bg-menu p-2 shadow-lg",
               "transition-[opacity,transform] duration-150 ease-out",
               actualOpen ? "visible" : "invisible",
               "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",

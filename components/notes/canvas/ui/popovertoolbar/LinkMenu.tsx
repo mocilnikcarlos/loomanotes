@@ -70,9 +70,11 @@ export function LinkMenu({ editor, onClose }: Props) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() =>
-            editor.chain().focus().extendMarkRange("link").unsetLink().run()
-          }
+          onClick={() => {
+            editor.chain().focus().unsetLink().run();
+
+            onClose();
+          }}
         >
           Quitar
         </Button>

@@ -14,6 +14,10 @@ import { BLOCKS } from "@/config/blocks.config";
 import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
 import { Menu } from "@/components/ui/Menu";
 import { LinkMenu } from "./LinkMenu";
+import {
+  TIPTAP_FONT_FAMILIES,
+  TIPTAP_FONT_SIZES,
+} from "@/config/tiptapfont.config";
 
 // Icons
 import {
@@ -61,6 +65,19 @@ export function TextSelectionToolbar({ editor }: Props) {
   const { currentBlock } = useBlockStyleSwitcher(editor);
   const [linkOpen, setLinkOpen] = useState(false);
 
+  const blockTitle =
+    BLOCKS.find((b) => b.id === currentBlock)?.title ?? "Texto";
+
+  const textStyle = editor.getAttributes("textStyle");
+
+  const currentFontFamily =
+    TIPTAP_FONT_FAMILIES.find((f) => f.cssValue === textStyle?.fontFamily)
+      ?.label ?? "Inter";
+
+  const currentFontSize =
+    TIPTAP_FONT_SIZES.find((s) => s.value === textStyle?.fontSize)?.label ??
+    "16";
+
   // -----------------------------
   // Sync styles with editor state
   // -----------------------------
@@ -107,20 +124,25 @@ export function TextSelectionToolbar({ editor }: Props) {
 
   useEditorState({
     editor,
-    selector: ({ editor }) => ({
-      bold: editor.isActive("bold"),
-      italic: editor.isActive("italic"),
-      strike: editor.isActive("strike"),
-      code: editor.isActive("code"),
-      left: editor.isActive({ textAlign: "left" }),
-      center: editor.isActive({ textAlign: "center" }),
-      right: editor.isActive({ textAlign: "right" }),
-      justify: editor.isActive({ textAlign: "justify" }),
-    }),
-  });
+    selector: ({ editor }) => {
+      const textStyle = editor.getAttributes("textStyle");
 
-  const blockTitle =
-    BLOCKS.find((b) => b.id === currentBlock)?.title ?? "Texto";
+      return {
+        bold: editor.isActive("bold"),
+        italic: editor.isActive("italic"),
+        strike: editor.isActive("strike"),
+        code: editor.isActive("code"),
+
+        left: editor.isActive({ textAlign: "left" }),
+        center: editor.isActive({ textAlign: "center" }),
+        right: editor.isActive({ textAlign: "right" }),
+        justify: editor.isActive({ textAlign: "justify" }),
+
+        fontFamily: textStyle?.fontFamily ?? null,
+        fontSize: textStyle?.fontSize ?? null,
+      };
+    },
+  });
 
   // -----------------------------
   // Recent colors helper
@@ -150,7 +172,11 @@ export function TextSelectionToolbar({ editor }: Props) {
         left: position.left,
         transform: "translateX(-50%)",
       }}
-      className="absolute z-50 flex items-center bg-card gap-1 rounded-full border border-border p-1"
+      className="
+        absolute z-50 flex items-center gap-1 p-1 rounded-full
+        bg-[var(--toolbar-bg)]
+        border border-[var(--toolbar-border)]
+        shadow-[var(--toolbar-shadow)]"
     >
       <Menu
         trigger={
@@ -159,13 +185,87 @@ export function TextSelectionToolbar({ editor }: Props) {
               onMouseDown={(e) => e.preventDefault()}
               size="sm"
               variant="ghost"
+              className="whitespace-nowrap"
             >
               {blockTitle}
             </Button>
           </Tooltip>
         }
+        className="h-[240px] overflow-auto"
       >
         <BlockStylePopover editor={editor} />
+      </Menu>
+
+      <ToolbarDivider />
+
+      <Menu
+        trigger={
+          <Tooltip content="Fuente">
+            <Button
+              onMouseDown={(e) => e.preventDefault()}
+              size="sm"
+              variant="ghost"
+              className="whitespace-nowrap"
+            >
+              {currentFontFamily}
+            </Button>
+          </Tooltip>
+        }
+      >
+        <div className="flex flex-col gap-1 p-1">
+          {TIPTAP_FONT_FAMILIES.map((font) => (
+            <Button
+              key={font.id}
+              size="sm"
+              variant="ghost"
+              className="justify-start w-full"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                editor.chain().focus();
+                font.cssValue
+                  ? editor.commands.setFontFamily(font.cssValue)
+                  : editor.commands.unsetFontFamily();
+              }}
+            >
+              {font.label}
+            </Button>
+          ))}
+        </div>
+      </Menu>
+
+      <Menu
+        trigger={
+          <Tooltip content="Tamaño de texto">
+            <Button
+              onMouseDown={(e) => e.preventDefault()}
+              size="sm"
+              variant="ghost"
+            >
+              {currentFontSize}
+            </Button>
+          </Tooltip>
+        }
+      >
+        <div className="flex flex-col gap-1 p-1">
+          {TIPTAP_FONT_SIZES.map((size) => (
+            <Button
+              key={size.id}
+              size="sm"
+              variant="ghost"
+              className="justify-start"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() =>
+                editor
+                  .chain()
+                  .focus()
+                  .setMark("textStyle", { fontSize: size.value })
+                  .run()
+              }
+            >
+              {size.label}
+            </Button>
+          ))}
+        </div>
       </Menu>
 
       <ToolbarDivider />
@@ -290,10 +390,16 @@ export function TextSelectionToolbar({ editor }: Props) {
         open={linkOpen}
         onOpenChange={(open) => {
           setLinkOpen(open);
+
           if (open) {
             editor.commands.blur();
+          } else {
+            requestAnimationFrame(() => {
+              editor.commands.focus();
+            });
           }
         }}
+        position="bottom-end"
         trigger={
           <Tooltip content="Enlace">
             <ButtonIcon
