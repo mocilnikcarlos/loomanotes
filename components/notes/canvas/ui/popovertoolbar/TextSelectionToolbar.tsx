@@ -176,7 +176,6 @@ export function TextSelectionToolbar({ editor }: Props) {
       style={{
         top: position.top,
         left: position.left,
-        transform: "translateX(-50%)",
       }}
       className="
         absolute z-50 flex items-center gap-1 p-1 rounded-full

@@ -23,6 +23,7 @@ interface MenuProps {
   coords?: { top: number; left: number };
   onOpenChange?: (open: boolean) => void;
   className?: string;
+  closeOnOutsideClick?: boolean;
 }
 
 export function Menu({
@@ -34,6 +35,7 @@ export function Menu({
   coords: externalCoords,
   onOpenChange,
   className,
+  closeOnOutsideClick = true,
 }: MenuProps) {
   /** Estado interno (modo no controlado, como antes) */
   const [internalOpen, setInternalOpen] = useState(false);
@@ -134,7 +136,7 @@ export function Menu({
 
   /** Click fuera */
   useEffect(() => {
-    if (!actualOpen) return;
+    if (!actualOpen || !closeOnOutsideClick) return;
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -152,7 +154,7 @@ export function Menu({
     document.addEventListener("pointerdown", handleClickOutside);
     return () =>
       document.removeEventListener("pointerdown", handleClickOutside);
-  }, [actualOpen]);
+  }, [actualOpen, closeOnOutsideClick]);
 
   useEffect(() => {
     const el = menuRef.current;
