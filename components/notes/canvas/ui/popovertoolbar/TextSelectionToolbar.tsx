@@ -23,6 +23,10 @@ import {
   Strikethrough,
   Type,
   Link as LinkIcon,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
 } from "lucide-react";
 
 type Props = {
@@ -49,6 +53,10 @@ export function TextSelectionToolbar({ editor }: Props) {
   const isStrike = editor.isActive("strike");
   const isCode = editor.isActive("code");
   const isLink = editor.isActive("link");
+  const isAlignLeft = editor.isActive({ textAlign: "left" });
+  const isAlignCenter = editor.isActive({ textAlign: "center" });
+  const isAlignRight = editor.isActive({ textAlign: "right" });
+  const isAlignJustify = editor.isActive({ textAlign: "justify" });
 
   const { currentBlock } = useBlockStyleSwitcher(editor);
   const [linkOpen, setLinkOpen] = useState(false);
@@ -104,6 +112,10 @@ export function TextSelectionToolbar({ editor }: Props) {
       italic: editor.isActive("italic"),
       strike: editor.isActive("strike"),
       code: editor.isActive("code"),
+      left: editor.isActive({ textAlign: "left" }),
+      center: editor.isActive({ textAlign: "center" }),
+      right: editor.isActive({ textAlign: "right" }),
+      justify: editor.isActive({ textAlign: "justify" }),
     }),
   });
 
@@ -155,6 +167,72 @@ export function TextSelectionToolbar({ editor }: Props) {
       >
         <BlockStylePopover editor={editor} />
       </Menu>
+
+      <ToolbarDivider />
+
+      <Tooltip content="Alinear izquierda">
+        <ButtonIcon
+          aria-pressed={isAlignLeft}
+          data-active={isAlignLeft}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("left").run()}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignLeft size={14} />}
+          className={
+            isAlignLeft ? "bg-content2 border border-border" : undefined
+          }
+        />
+      </Tooltip>
+
+      <Tooltip content="Centrar">
+        <ButtonIcon
+          aria-pressed={isAlignCenter}
+          data-active={isAlignCenter}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("center").run()}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignCenter size={14} />}
+          className={
+            isAlignCenter ? "bg-content2 border border-border" : undefined
+          }
+        />
+      </Tooltip>
+
+      <Tooltip content="Alinear derecha">
+        <ButtonIcon
+          aria-pressed={isAlignRight}
+          data-active={isAlignRight}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("right").run()}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignRight size={14} />}
+          className={
+            isAlignRight ? "bg-content2 border border-border" : undefined
+          }
+        />
+      </Tooltip>
+
+      <Tooltip content="Justificar">
+        <ButtonIcon
+          aria-pressed={isAlignJustify}
+          data-active={isAlignJustify}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("justify").run()}
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignJustify size={14} />}
+          className={
+            isAlignJustify ? "bg-content2 border border-border" : undefined
+          }
+        />
+      </Tooltip>
 
       <ToolbarDivider />
       <Tooltip content="Negrita">

@@ -36,6 +36,7 @@ import { TextStyleKit } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
 import { LinkWithTooltip } from "./LinkWithTooltip";
+import TextAlign from "@tiptap/extension-text-align";
 
 // =====================================================
 // Lowlight setup
@@ -182,6 +183,12 @@ export function createEditorExtensions() {
         target: "_blank",
       },
     }),
+    TextAlign.configure({
+      types: ["paragraph", "heading", "blockquote"],
+      alignments: ["left", "center", "right", "justify"],
+      defaultAlignment: "left",
+    }),
+
     // Cleaner
     LinkBoundaryExtension,
     ClearMarksOnEnterExtension,
