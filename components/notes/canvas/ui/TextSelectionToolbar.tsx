@@ -6,6 +6,7 @@ import type { Editor } from "@tiptap/react";
 import { Tooltip } from "@heroui/tooltip";
 import { TextColorPopover } from "./TextColorPopover";
 import { useState, useEffect } from "react";
+import { useEditorState } from "@tiptap/react";
 
 // Icons
 import { Code, Bold, Italic, Strikethrough, Type } from "lucide-react";
@@ -29,6 +30,11 @@ export function TextSelectionToolbar({ editor }: Props) {
   const [activeHighlightColor, setActiveHighlightColor] = useState<
     string | null
   >(null);
+
+  const isBold = editor.isActive("bold");
+  const isItalic = editor.isActive("italic");
+  const isStrike = editor.isActive("strike");
+  const isCode = editor.isActive("code");
 
   // -----------------------------
   // Sync styles with editor state
@@ -74,6 +80,16 @@ export function TextSelectionToolbar({ editor }: Props) {
     };
   }, [editor]);
 
+  useEditorState({
+    editor,
+    selector: ({ editor }) => ({
+      bold: editor.isActive("bold"),
+      italic: editor.isActive("italic"),
+      strike: editor.isActive("strike"),
+      code: editor.isActive("code"),
+    }),
+  });
+
   // -----------------------------
   // Close popover when toolbar hides
   // -----------------------------
@@ -115,41 +131,53 @@ export function TextSelectionToolbar({ editor }: Props) {
     >
       <Tooltip content="Negrita">
         <ButtonIcon
+          aria-pressed={isBold}
+          data-active={isBold}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor.chain().focus().toggleBold().run()}
+          onClick={() => editor.chain().toggleBold().run()}
           size="sm"
           variant="ghost"
           icon={<Bold size={14} />}
+          className={isBold ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
 
       <Tooltip content="Cursiva">
         <ButtonIcon
+          aria-pressed={isItalic}
+          data-active={isItalic}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
+          onClick={() => editor.chain().toggleItalic().run()}
           size="sm"
           variant="ghost"
           icon={<Italic size={14} />}
+          className={isItalic ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
 
       <Tooltip content="Tachado">
         <ButtonIcon
+          aria-pressed={isStrike}
+          data-active={isStrike}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor.chain().focus().toggleStrike().run()}
+          onClick={() => editor.chain().toggleStrike().run()}
           size="sm"
           variant="ghost"
           icon={<Strikethrough size={14} />}
+          className={isStrike ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
 
       <Tooltip content="Código">
         <ButtonIcon
+          aria-pressed={isCode}
+          data-active={isCode}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor.chain().focus().toggleCode().run()}
+          onClick={() => editor.chain().toggleCode().run()}
           size="sm"
           variant="ghost"
           icon={<Code size={14} />}
+          className={isCode ? "bg-content2 border border-border" : undefined}
         />
       </Tooltip>
 
