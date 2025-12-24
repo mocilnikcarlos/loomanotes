@@ -13,7 +13,6 @@ const config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         "foreground-secondary": "var(--foreground-secondary)",
-        placeholder: "var(--placeholder)",
 
         card: "var(--card)",
         "card-hover": "var(--card-hover)",
@@ -21,6 +20,8 @@ const config = {
         border: "var(--border)",
         icon: "var(--icon)",
         subtitle: "var(--subtitle)",
+        placeholder: "var(--placeholder)",
+        link: "var(--link)",
 
         button: "var(--button)",
         "button-hover": "var(--button-hover)",

@@ -43,7 +43,16 @@ export function useTextSelectionToolbar(editor: Editor | null) {
       setVisible(true);
     };
 
-    const onBlur = () => setVisible(false);
+    const onBlur = ({ event }: any) => {
+      const relatedTarget = event?.relatedTarget as HTMLElement | null;
+
+      // Si el foco se va a un elemento dentro del toolbar, NO cerramos
+      if (relatedTarget?.closest("[data-text-toolbar]")) {
+        return;
+      }
+
+      setVisible(false);
+    };
 
     editor.on("selectionUpdate", update);
     editor.on("blur", onBlur);

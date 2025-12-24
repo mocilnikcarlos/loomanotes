@@ -6,6 +6,7 @@ import { AsideBlockMenu } from "./ui/AsideBlockMenu";
 import { SlashMenuOverlay } from "./ui/SlashMenuOverlay";
 import { createEditorExtensions } from "./extensions/editor.extensions";
 import { TextSelectionToolbar } from "./ui/popovertoolbar/TextSelectionToolbar";
+import { useEffect } from "react";
 
 type Props = {
   noteId: string;
@@ -21,6 +22,26 @@ export default function Tiptap({ noteId, initialContent }: Props) {
     immediatelyRender: false,
     onUpdate,
   });
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const clearMarksIfEmpty = () => {
+      const { state } = editor;
+      const isEmpty = state.doc.textContent.length === 0;
+
+      if (isEmpty) {
+        const tr = state.tr.setStoredMarks([]);
+        editor.view.dispatch(tr);
+      }
+    };
+
+    editor.on("update", clearMarksIfEmpty);
+
+    return () => {
+      editor.off("update", clearMarksIfEmpty);
+    };
+  }, [editor]);
 
   if (!editor) return null;
 

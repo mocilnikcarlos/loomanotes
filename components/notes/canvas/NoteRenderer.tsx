@@ -3,7 +3,7 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import type { Content } from "@tiptap/core";
 import { useEffect } from "react";
-import { createEditorExtensions } from "./extensions/editor.extensions";
+import { createReadOnlyExtensions } from "./extensions/editor.extensions.readonly";
 
 type NoteRendererProps = {
   content: Content;
@@ -11,7 +11,7 @@ type NoteRendererProps = {
 
 export function NoteRenderer({ content }: NoteRendererProps) {
   const editor = useEditor({
-    extensions: createEditorExtensions(),
+    extensions: createReadOnlyExtensions(),
     content,
     editable: false,
     immediatelyRender: false,

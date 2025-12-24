@@ -24,6 +24,8 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 // lowlight (según doc oficial)
 import { all, createLowlight } from "lowlight";
 import { SlashCommand } from "./SlashCommand";
+import { LinkBoundaryExtension } from "./LinkBoundaryExtension";
+import { ClearMarksOnEnterExtension } from "./ClearMarksOnEnterExtension";
 
 // Mark
 import Bold from "@tiptap/extension-bold";
@@ -33,6 +35,7 @@ import Code from "@tiptap/extension-code";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
+import { LinkWithTooltip } from "./LinkWithTooltip";
 
 // =====================================================
 // Lowlight setup
@@ -168,5 +171,19 @@ export function createEditorExtensions() {
     Highlight.configure({
       multicolor: true,
     }),
+    LinkWithTooltip.configure({
+      openOnClick: true,
+      autolink: true,
+      linkOnPaste: true,
+      defaultProtocol: "https",
+      protocols: ["http", "https"],
+      HTMLAttributes: {
+        rel: "noopener noreferrer",
+        target: "_blank",
+      },
+    }),
+    // Cleaner
+    LinkBoundaryExtension,
+    ClearMarksOnEnterExtension,
   ];
 }

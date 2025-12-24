@@ -13,9 +13,17 @@ import { Button } from "@/components/ui/Button";
 import { BLOCKS } from "@/config/blocks.config";
 import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
 import { Menu } from "@/components/ui/Menu";
+import { LinkMenu } from "./LinkMenu";
 
 // Icons
-import { Code, Bold, Italic, Strikethrough, Type } from "lucide-react";
+import {
+  Code,
+  Bold,
+  Italic,
+  Strikethrough,
+  Type,
+  Link as LinkIcon,
+} from "lucide-react";
 
 type Props = {
   editor: Editor;
@@ -40,8 +48,10 @@ export function TextSelectionToolbar({ editor }: Props) {
   const isItalic = editor.isActive("italic");
   const isStrike = editor.isActive("strike");
   const isCode = editor.isActive("code");
+  const isLink = editor.isActive("link");
 
   const { currentBlock } = useBlockStyleSwitcher(editor);
+  const [linkOpen, setLinkOpen] = useState(false);
 
   // -----------------------------
   // Sync styles with editor state
@@ -119,8 +129,8 @@ export function TextSelectionToolbar({ editor }: Props) {
 
   return (
     <div
+      data-text-toolbar
       onMouseDown={(e) => {
-        e.preventDefault();
         e.stopPropagation();
       }}
       style={{
@@ -196,6 +206,31 @@ export function TextSelectionToolbar({ editor }: Props) {
         />
       </Tooltip>
       <ToolbarDivider />
+      {/* ---- Link ---- */}
+
+      <Menu
+        open={linkOpen}
+        onOpenChange={(open) => {
+          setLinkOpen(open);
+          if (open) {
+            editor.commands.blur();
+          }
+        }}
+        trigger={
+          <Tooltip content="Enlace">
+            <ButtonIcon
+              aria-pressed={isLink}
+              data-active={isLink}
+              size="sm"
+              variant="ghost"
+              icon={<LinkIcon size={14} />}
+            />
+          </Tooltip>
+        }
+      >
+        <LinkMenu editor={editor} onClose={() => setLinkOpen(false)} />
+      </Menu>
+
       {/* ---- Color system ---- */}
 
       <Menu

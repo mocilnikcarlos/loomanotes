@@ -149,9 +149,25 @@ export function Menu({
       closeMenu();
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () =>
+      document.removeEventListener("pointerdown", handleClickOutside);
   }, [actualOpen]);
+
+  useEffect(() => {
+    const el = menuRef.current;
+    if (!el) return;
+
+    const stop = (e: Event) => {
+      e.stopPropagation();
+    };
+
+    el.addEventListener("pointerdown", stop);
+
+    return () => {
+      el.removeEventListener("pointerdown", stop);
+    };
+  }, []);
 
   /** Trigger (NO cambia respecto a tu versión original) */
   let triggerElement: ReactNode = null;
@@ -160,6 +176,7 @@ export function Menu({
     triggerElement = (
       <div
         ref={triggerRef}
+        onPointerDown={(e) => e.stopPropagation()}
         onContextMenu={
           openOn === "context"
             ? (e) => {
@@ -196,6 +213,7 @@ export function Menu({
           <div
             ref={menuRef}
             data-state={actualOpen ? "open" : "closed"}
+            onPointerDown={(e) => e.stopPropagation()}
             className={cn(
               "fixed z-50 min-w-[180px] rounded-xl border border-border bg-menu p-2 shadow-lg",
               "transition-[opacity,transform] duration-150 ease-out",
