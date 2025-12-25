@@ -8,6 +8,7 @@ import {
   MessageSquareQuote,
   Minus,
   Code,
+  CheckSquare,
 } from "lucide-react";
 
 import type { Editor } from "@tiptap/core";
@@ -91,6 +92,17 @@ export const BLOCKS = [
     icon: ListOrdered,
     insert: (editor: Editor) => {
       editor.chain().focus().toggleOrderedList().run();
+    },
+  },
+  {
+    id: "taskList",
+    type: "taskList",
+    title: "Lista de tareas",
+    description: "Checklist con tareas marcables",
+    label: "Task list",
+    icon: CheckSquare,
+    insert: (editor: Editor) => {
+      editor.chain().focus().toggleTaskList().run();
     },
   },
 
