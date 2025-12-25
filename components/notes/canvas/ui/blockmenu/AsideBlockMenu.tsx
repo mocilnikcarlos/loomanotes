@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import DragHandle from "@tiptap/extension-drag-handle-react";
-import { GripVertical, Plus } from "lucide-react";
+import { GripVertical, Plus, X } from "lucide-react";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import type { Editor } from "@tiptap/core";
 import { offset, shift } from "@floating-ui/dom";
@@ -15,18 +15,18 @@ type Props = {
   editor: Editor;
 };
 
-type AsideMenuMode = "insert" | "actions" | null;
+type AsideUIState = "idle" | "insert" | "actions";
 
 export function AsideBlockMenu({ editor }: Props) {
-  const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<AsideMenuMode>(null);
+  const [uiState, setUIState] = useState<AsideUIState>("idle");
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(
     null
   );
+
   const activeNodeRef = useRef<HTMLElement | null>(null);
   const activeBlockPosRef = useRef<number | null>(null);
 
-  function openMenu(nextMode: AsideMenuMode, e: React.MouseEvent) {
+  function openMenu(next: AsideUIState, e: React.MouseEvent) {
     e.stopPropagation();
 
     const blockPos = activeBlockPosRef.current;
@@ -34,23 +34,18 @@ export function AsideBlockMenu({ editor }: Props) {
 
     const { state, view } = editor;
     const node = state.doc.nodeAt(blockPos);
-
     if (!node) return;
 
+    // foco lógico correcto
     const focusPos = blockPos + 1;
     const $pos = state.doc.resolve(focusPos);
-
-    const trFocus = state.tr.setSelection(TextSelection.near($pos));
-
-    view.dispatch(trFocus);
+    view.dispatch(state.tr.setSelection(TextSelection.near($pos)));
     view.focus();
 
-    if (nextMode === "actions") {
-      const tr = state.tr.setSelection(
-        NodeSelection.create(state.doc, blockPos)
+    if (next === "actions") {
+      view.dispatch(
+        state.tr.setSelection(NodeSelection.create(state.doc, blockPos))
       );
-      view.dispatch(tr);
-      view.focus();
     }
 
     const dom = activeNodeRef.current;
@@ -58,23 +53,16 @@ export function AsideBlockMenu({ editor }: Props) {
 
     const rect = dom.getBoundingClientRect();
 
-    let top = rect.top + rect.height / 2;
-    let left = rect.left - 8;
+    setCoords({
+      top: rect.top + rect.height / 2,
+      left: rect.left - 8,
+    });
 
-    if (nextMode === "insert") {
-      const btn = e.currentTarget.getBoundingClientRect();
-      top = btn.bottom + 6;
-      left = btn.right + 6;
-    }
-
-    setCoords({ top, left });
-    setMode(nextMode);
-    setOpen(true);
+    setUIState(next);
   }
 
   function closeMenu() {
-    setOpen(false);
-    setMode(null);
+    setUIState("idle");
   }
 
   return (
@@ -96,43 +84,61 @@ export function AsideBlockMenu({ editor }: Props) {
       }}
     >
       <div className="flex items-center gap-1">
-        <ButtonIcon
-          icon={<Plus size={14} />}
-          variant="ghost"
-          tabIndex={-1}
-          onClick={(e) => openMenu("insert", e)}
-        />
+        {/* ESTADO IDLE → botones visibles */}
+        {uiState === "idle" && (
+          <>
+            <ButtonIcon
+              icon={<Plus size={14} />}
+              variant="ghost"
+              tabIndex={-1}
+              onClick={(e) => openMenu("insert", e)}
+            />
 
-        <ButtonIcon
-          icon={<GripVertical size={14} />}
-          variant="ghost"
-          tabIndex={-1}
-          onClick={(e) => openMenu("actions", e)}
-        />
+            <ButtonIcon
+              icon={<GripVertical size={14} />}
+              variant="ghost"
+              tabIndex={-1}
+              onClick={(e) => openMenu("actions", e)}
+            />
+          </>
+        )}
 
-        <Menu
-          open={open}
-          coords={coords ?? undefined}
-          onOpenChange={(v) => {
-            if (!v) closeMenu();
-          }}
-        >
-          {mode === "insert" && (
+        {/* ESTADO INSERT → menú insert (NO cierra con click afuera) */}
+        {uiState === "insert" && coords && (
+          <Menu open coords={coords} closeOnOutsideClick={false}>
+            <div className="flex items-center justify-between px-2 pb-1">
+              <span className="text-xs text-muted">Insertar bloque</span>
+              <ButtonIcon
+                icon={<X size={12} />}
+                variant="ghost"
+                onClick={closeMenu}
+              />
+            </div>
+
             <InsertMenuContent
               editor={editor}
               blockPos={activeBlockPosRef.current}
               onClose={closeMenu}
             />
-          )}
+          </Menu>
+        )}
 
-          {mode === "actions" && (
+        {/* ESTADO ACTIONS → menú drag (SÍ cierra con click afuera) */}
+        {uiState === "actions" && coords && (
+          <Menu
+            open
+            coords={coords}
+            onOpenChange={(open) => {
+              if (!open) closeMenu();
+            }}
+          >
             <MenuDrag
               editor={editor}
               blockPos={activeBlockPosRef.current}
               onClose={closeMenu}
             />
-          )}
-        </Menu>
+          </Menu>
+        )}
       </div>
     </DragHandle>
   );
