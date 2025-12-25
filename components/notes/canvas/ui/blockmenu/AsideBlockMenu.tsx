@@ -9,7 +9,7 @@ import { offset, shift } from "@floating-ui/dom";
 import { Menu } from "@/components/ui/Menu";
 import { MenuDrag } from "./MenuDrag";
 import { InsertMenuContent } from "./InsertMenuContent";
-import { NodeSelection } from "prosemirror-state";
+import { NodeSelection, TextSelection } from "prosemirror-state";
 
 type Props = {
   editor: Editor;
@@ -33,11 +33,25 @@ export function AsideBlockMenu({ editor }: Props) {
     if (blockPos == null) return;
 
     const { state, view } = editor;
+    const node = state.doc.nodeAt(blockPos);
 
-    const tr = state.tr.setSelection(NodeSelection.create(state.doc, blockPos));
+    if (!node) return;
 
-    view.dispatch(tr);
+    const focusPos = blockPos + 1;
+    const $pos = state.doc.resolve(focusPos);
+
+    const trFocus = state.tr.setSelection(TextSelection.near($pos));
+
+    view.dispatch(trFocus);
     view.focus();
+
+    if (nextMode === "actions") {
+      const tr = state.tr.setSelection(
+        NodeSelection.create(state.doc, blockPos)
+      );
+      view.dispatch(tr);
+      view.focus();
+    }
 
     const dom = activeNodeRef.current;
     if (!dom) return;
@@ -104,7 +118,11 @@ export function AsideBlockMenu({ editor }: Props) {
           }}
         >
           {mode === "insert" && (
-            <InsertMenuContent editor={editor} onClose={closeMenu} />
+            <InsertMenuContent
+              editor={editor}
+              blockPos={activeBlockPosRef.current}
+              onClose={closeMenu}
+            />
           )}
 
           {mode === "actions" && (

@@ -13,7 +13,24 @@ import {
 
 import type { Editor } from "@tiptap/core";
 
-export const BLOCKS = [
+export type BlockConfig = {
+  id: string;
+  type: string;
+  title: string;
+  description?: string;
+  label?: string;
+  icon: any;
+
+  // SlashMenu (transforma)
+  insert: (editor: Editor) => void;
+
+  // PlusMenu (inserta debajo)
+  content?: any;
+
+  level?: number;
+};
+
+export const BLOCKS: BlockConfig[] = [
   // --------------------
   // Paragraph
   // --------------------
@@ -26,6 +43,9 @@ export const BLOCKS = [
     icon: CaseSensitive,
     insert: (editor: Editor) => {
       editor.chain().focus().setNode("paragraph").run();
+    },
+    content: {
+      type: "paragraph",
     },
   },
 
@@ -43,6 +63,10 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().setNode("heading", { level: 1 }).run();
     },
+    content: {
+      type: "heading",
+      attrs: { level: 1 },
+    },
   },
   {
     id: "heading_2",
@@ -55,6 +79,10 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().setNode("heading", { level: 2 }).run();
     },
+    content: {
+      type: "heading",
+      attrs: { level: 2 },
+    },
   },
   {
     id: "heading_3",
@@ -66,6 +94,10 @@ export const BLOCKS = [
     icon: Heading3,
     insert: (editor: Editor) => {
       editor.chain().focus().setNode("heading", { level: 3 }).run();
+    },
+    content: {
+      type: "heading",
+      attrs: { level: 3 },
     },
   },
 
@@ -82,6 +114,15 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().toggleBulletList().run();
     },
+    content: {
+      type: "bulletList",
+      content: [
+        {
+          type: "listItem",
+          content: [{ type: "paragraph" }],
+        },
+      ],
+    },
   },
   {
     id: "orderedList",
@@ -93,6 +134,15 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().toggleOrderedList().run();
     },
+    content: {
+      type: "orderedList",
+      content: [
+        {
+          type: "listItem",
+          content: [{ type: "paragraph" }],
+        },
+      ],
+    },
   },
   {
     id: "taskList",
@@ -103,6 +153,15 @@ export const BLOCKS = [
     icon: CheckSquare,
     insert: (editor: Editor) => {
       editor.chain().focus().toggleTaskList().run();
+    },
+    content: {
+      type: "taskList",
+      content: [
+        {
+          type: "taskItem",
+          content: [{ type: "paragraph" }],
+        },
+      ],
     },
   },
 
@@ -119,6 +178,10 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().toggleBlockquote().run();
     },
+    content: {
+      type: "blockquote",
+      content: [{ type: "paragraph" }],
+    },
   },
   {
     id: "codeBlock",
@@ -130,8 +193,11 @@ export const BLOCKS = [
     insert: (editor: Editor) => {
       editor.chain().focus().setCodeBlock({ language: "javascript" }).run();
     },
+    content: {
+      type: "codeBlock",
+      attrs: { language: "javascript" },
+    },
   },
-
   {
     id: "divider",
     type: "horizontalRule",
@@ -143,6 +209,9 @@ export const BLOCKS = [
         .focus()
         .insertContent([{ type: "horizontalRule" }, { type: "paragraph" }])
         .run();
+    },
+    content: {
+      type: "horizontalRule",
     },
   },
 ];
