@@ -126,7 +126,11 @@ export function AsideBlockMenu({ editor }: Props) {
           )}
 
           {mode === "actions" && (
-            <MenuDrag editor={editor} onClose={closeMenu} />
+            <MenuDrag
+              editor={editor}
+              blockPos={activeBlockPosRef.current}
+              onClose={closeMenu}
+            />
           )}
         </Menu>
       </div>
