@@ -1,5 +1,45 @@
 # Changelog
 
+# [0.11.0](/compare/v0.10.0...v0.11.0) (2025-12-25)
+
+
+### Bug Fixes
+
+* **root:** asideblockmenu + align block 54e0c38
+* **root:** button + fe2d656
+* **root:** button drag + plus + css padding 757e3f2
+* **root:** drag with drag handle react 2afe928
+* **root:** fix build 596c891
+* **root:** fix button state 9a05a40
+* **root:** heading block 9edcbca
+* **root:** icon drag 2f78405
+* **root:** left button + 41fc07b
+* **root:** naming file fdfbe9f
+* **root:** persistence 07486f4
+* **root:** placeholder d24a6e7
+* **root:** popover colors state 82d05ec
+
+
+### Features
+
+* **root:** added bullet + fix close aside menu + 30ec5c8
+* **root:** added code extensions 04814a8
+* **root:** added context menu create node eb43202
+* **root:** added fontFamily and fontSize + fix link + fix code wrap c59e6ef
+* **root:** added menu more 0dc9190
+* **root:** added menu slash c940e5a
+* **root:** added textAlign ad7a20a
+* **root:** blockquote 85dbfc2
+* **root:** color and highlight text fd3811b
+* **root:** create change block from toolbar + update menu component c43d39c
+* **root:** create change block from toolbar + update menu component 7c131b6
+* **root:** created link extensions 129ae69
+* **root:** divider 24941a9
+* **root:** popover color paragraph ee36edc
+* **root:** refactor schema tiptap 0571f79
+* **root:** style list number 3d4db1c
+* **root:** tiptap paragraph f2496ad
+
 # [0.10.0](/compare/v0.9.0...v0.10.0) (2025-12-19)
 
 

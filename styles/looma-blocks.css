@@ -1,0 +1,12 @@
+
+/* Looma editor */
+@import "./notes/extensions/_base.css";
+@import "./notes/extensions/paragraph.css";
+@import "./notes/extensions/heading.css";
+@import "./notes/extensions/bullet-list.css";
+@import "./notes/extensions/task-list.css";
+@import "./notes/extensions/horizontal-rule.css";
+@import "./notes/extensions/blockquote.css";
+@import "./notes/extensions/ordered-list.css";
+@import "./notes/extensions/code.css";
+@import "./notes/extensions/toolbar.css";

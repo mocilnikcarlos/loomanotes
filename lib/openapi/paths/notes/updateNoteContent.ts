@@ -1,6 +1,7 @@
 import { registry } from "@/lib/openapi/registry";
-import { NoteParamsSchema, UpdateNoteContentSchema } from "@/lib/schemas/notes";
+import { NoteParamsSchema } from "@/lib/schemas/notes";
 import { z } from "@/lib/openapi/zod";
+import { UpdateNoteContentSchema } from "@/lib/schemas/content";
 
 const UpdateNoteContentResponseSchema = z.object({
   message: z.literal("content_saved"),

@@ -15,7 +15,7 @@ export function HeaderNote({
   onCommitTitle,
 }: HeaderNoteProps) {
   return (
-    <div className="flex items-start gap-6 w-full">
+    <div className="flex items-start gap-6 w-full px-[80px] mb-8">
       <div className="flex-1 min-w-0">
         <EditableNoteTitle
           value={title}

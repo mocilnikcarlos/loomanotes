@@ -1,11 +1,11 @@
 "use client";
 
-import { Section } from "@/components/ui/layout/Section";
 import { useAsideStore } from "@/store/aside.store";
 import { HeaderNote } from "@/components/notes/ui/HeaderNote";
 import { useEffect, useState } from "react";
 import type { Note } from "@/store/aside.store";
-import { Canvas } from "@/components/notes/Canvas";
+import { EditorCanvas } from "@/components/ui/layout/EditorCanvas";
+import Canvas from "@/components/notes/canvas/Canvas";
 
 export default function NotePageClient({ id }: { id: string }) {
   const [note, setNote] = useState<Note | null>(null);
@@ -60,7 +60,7 @@ export default function NotePageClient({ id }: { id: string }) {
   if (!note) return null;
 
   return (
-    <Section className="flex flex-col gap-6 w-full">
+    <div className="w-full">
       <HeaderNote
         noteId={note.id}
         title={note.title}
@@ -68,7 +68,9 @@ export default function NotePageClient({ id }: { id: string }) {
         onCommitTitle={commitRename}
       />
 
-      <Canvas noteId={note.id} initialContent={note.content} />
-    </Section>
+      <EditorCanvas>
+        <Canvas noteId={note.id} initialContent={note.content} />
+      </EditorCanvas>
+    </div>
   );
 }
