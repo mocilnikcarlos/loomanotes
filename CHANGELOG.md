@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.1](/compare/v0.11.0...v0.11.1) (2025-12-25)
+
+
+### Bug Fixes
+
+* **root:** focus on block from button + f656f76
+* **root:** remove task extension b6047fe
+
 # [0.11.0](/compare/v0.10.0...v0.11.0) (2025-12-25)
 
 
