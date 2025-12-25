@@ -5,7 +5,6 @@ import {
   Heading3,
   List,
   ListOrdered,
-  CheckSquare,
   MessageSquareQuote,
   Minus,
   Code,
@@ -92,33 +91,6 @@ export const BLOCKS = [
     icon: ListOrdered,
     insert: (editor: Editor) => {
       editor.chain().focus().toggleOrderedList().run();
-    },
-  },
-
-  // --------------------
-  // Task list (INSERT)
-  // --------------------
-  {
-    id: "taskList",
-    type: "taskList",
-    title: "Lista de tareas",
-    description: "Creá una lista con checkboxes",
-    icon: CheckSquare,
-    insert: (editor: Editor) => {
-      editor
-        .chain()
-        .focus()
-        .insertContent({
-          type: "taskList",
-          content: [
-            {
-              type: "taskItem",
-              attrs: { checked: false },
-              content: [{ type: "paragraph" }],
-            },
-          ],
-        })
-        .run();
     },
   },
 
