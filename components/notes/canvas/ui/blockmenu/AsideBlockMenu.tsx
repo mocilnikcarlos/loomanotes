@@ -29,26 +29,14 @@ export function AsideBlockMenu({ editor }: Props) {
   function openMenu(nextMode: AsideMenuMode, e: React.MouseEvent) {
     e.stopPropagation();
 
-    console.log("➕ openMenu");
-    console.log("mode:", nextMode);
-    console.log("activeBlockPosRef:", activeBlockPosRef.current);
-    console.log("activeNodeRef:", activeNodeRef.current);
-
-    // 1️⃣ Posición del bloque dueño del botón +
     const blockPos = activeBlockPosRef.current;
-    if (blockPos == null) {
-      console.warn("⛔ No active block pos");
-      return;
-    }
+    if (blockPos == null) return;
 
     const { state, view } = editor;
     const node = state.doc.nodeAt(blockPos);
 
-    console.log("📦 node at pos:", node?.type.name, node);
-
     if (!node) return;
 
-    // 2️⃣ FORZAMOS EL FOCO DENTRO DEL BLOQUE (FORMA CORRECTA)
     const focusPos = blockPos + 1;
     const $pos = state.doc.resolve(focusPos);
 
@@ -57,9 +45,6 @@ export function AsideBlockMenu({ editor }: Props) {
     view.dispatch(trFocus);
     view.focus();
 
-    console.log("🎯 Focus forced to block at pos:", blockPos);
-
-    // 3️⃣ NodeSelection SOLO para acciones
     if (nextMode === "actions") {
       const tr = state.tr.setSelection(
         NodeSelection.create(state.doc, blockPos)
@@ -68,7 +53,6 @@ export function AsideBlockMenu({ editor }: Props) {
       view.focus();
     }
 
-    // 4️⃣ Posicionamos el menú
     const dom = activeNodeRef.current;
     if (!dom) return;
 
@@ -101,10 +85,6 @@ export function AsideBlockMenu({ editor }: Props) {
         middleware: [offset(8), shift()],
       }}
       onNodeChange={({ node, pos }) => {
-        console.log("🔁 onNodeChange");
-        console.log("node:", node?.type.name);
-        console.log("pos:", pos);
-
         if (!node || pos == null) {
           activeNodeRef.current = null;
           activeBlockPosRef.current = null;
@@ -138,7 +118,11 @@ export function AsideBlockMenu({ editor }: Props) {
           }}
         >
           {mode === "insert" && (
-            <InsertMenuContent editor={editor} onClose={closeMenu} />
+            <InsertMenuContent
+              editor={editor}
+              blockPos={activeBlockPosRef.current}
+              onClose={closeMenu}
+            />
           )}
 
           {mode === "actions" && (
