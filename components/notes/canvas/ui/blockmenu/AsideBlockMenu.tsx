@@ -109,6 +109,7 @@ export function AsideBlockMenu({ editor }: Props) {
             <div className="flex items-center justify-between px-2 pb-1">
               <span className="text-xs text-muted">Insertar bloque</span>
               <ButtonIcon
+                size="sm"
                 icon={<X size={12} />}
                 variant="ghost"
                 onClick={closeMenu}

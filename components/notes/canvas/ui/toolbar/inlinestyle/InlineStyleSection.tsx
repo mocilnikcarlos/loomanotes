@@ -3,7 +3,7 @@
 import type { Editor } from "@tiptap/react";
 import { Tooltip } from "@heroui/tooltip";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
-import { Bold, Italic, Strikethrough, Code } from "lucide-react";
+import { Bold, Italic, Strikethrough, Code, Underline } from "lucide-react";
 
 type Props = {
   editor: Editor;
@@ -14,6 +14,7 @@ export function InlineStyleSection({ editor }: Props) {
   const isItalic = editor.isActive("italic");
   const isStrike = editor.isActive("strike");
   const isCode = editor.isActive("code");
+  const isUnderline = editor.isActive("underline");
 
   return (
     <>
@@ -53,6 +54,21 @@ export function InlineStyleSection({ editor }: Props) {
           variant="ghost"
           icon={<Strikethrough size={14} />}
           className={isStrike ? "bg-content2 border border-border" : undefined}
+        />
+      </Tooltip>
+
+      <Tooltip content="Subrayado">
+        <ButtonIcon
+          aria-pressed={isUnderline}
+          data-active={isUnderline}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().toggleUnderline().run()}
+          size="sm"
+          variant="ghost"
+          icon={<Underline size={14} />}
+          className={
+            isUnderline ? "bg-content2 border border-border" : undefined
+          }
         />
       </Tooltip>
 

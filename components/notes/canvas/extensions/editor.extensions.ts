@@ -34,6 +34,7 @@ import FontFamily from "@tiptap/extension-font-family";
 import { FontSize } from "./FontSizeExtensions";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
+import Underline from "@tiptap/extension-underline";
 
 // =====================================================
 // Lowlight setup
@@ -156,6 +157,7 @@ export function createEditorExtensions() {
     Bold,
     Italic,
     Strike,
+    Underline,
     Code,
     TextStyleKit,
     FontFamily,
