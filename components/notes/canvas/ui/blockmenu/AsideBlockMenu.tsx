@@ -9,7 +9,7 @@ import { offset, shift } from "@floating-ui/dom";
 import { Menu } from "@/components/ui/Menu";
 import { MenuDrag } from "./MenuDrag";
 import { InsertMenuContent } from "./InsertMenuContent";
-import { NodeSelection } from "prosemirror-state";
+import { NodeSelection, TextSelection } from "prosemirror-state";
 
 type Props = {
   editor: Editor;
@@ -29,16 +29,46 @@ export function AsideBlockMenu({ editor }: Props) {
   function openMenu(nextMode: AsideMenuMode, e: React.MouseEvent) {
     e.stopPropagation();
 
+    console.log("➕ openMenu");
+    console.log("mode:", nextMode);
+    console.log("activeBlockPosRef:", activeBlockPosRef.current);
+    console.log("activeNodeRef:", activeNodeRef.current);
+
+    // 1️⃣ Posición del bloque dueño del botón +
     const blockPos = activeBlockPosRef.current;
-    if (blockPos == null) return;
+    if (blockPos == null) {
+      console.warn("⛔ No active block pos");
+      return;
+    }
 
     const { state, view } = editor;
+    const node = state.doc.nodeAt(blockPos);
 
-    const tr = state.tr.setSelection(NodeSelection.create(state.doc, blockPos));
+    console.log("📦 node at pos:", node?.type.name, node);
 
-    view.dispatch(tr);
+    if (!node) return;
+
+    // 2️⃣ FORZAMOS EL FOCO DENTRO DEL BLOQUE (FORMA CORRECTA)
+    const focusPos = blockPos + 1;
+    const $pos = state.doc.resolve(focusPos);
+
+    const trFocus = state.tr.setSelection(TextSelection.near($pos));
+
+    view.dispatch(trFocus);
     view.focus();
 
+    console.log("🎯 Focus forced to block at pos:", blockPos);
+
+    // 3️⃣ NodeSelection SOLO para acciones
+    if (nextMode === "actions") {
+      const tr = state.tr.setSelection(
+        NodeSelection.create(state.doc, blockPos)
+      );
+      view.dispatch(tr);
+      view.focus();
+    }
+
+    // 4️⃣ Posicionamos el menú
     const dom = activeNodeRef.current;
     if (!dom) return;
 
@@ -71,6 +101,10 @@ export function AsideBlockMenu({ editor }: Props) {
         middleware: [offset(8), shift()],
       }}
       onNodeChange={({ node, pos }) => {
+        console.log("🔁 onNodeChange");
+        console.log("node:", node?.type.name);
+        console.log("pos:", pos);
+
         if (!node || pos == null) {
           activeNodeRef.current = null;
           activeBlockPosRef.current = null;
