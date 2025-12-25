@@ -3,19 +3,12 @@ import Dropcursor from "@tiptap/extension-dropcursor";
 
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { BlockView } from "../nodeview/BlockView";
-import { TaskItemView } from "../nodeview/TaskItemView";
 
 // Blocks base
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
 import Blockquote from "@tiptap/extension-blockquote";
-import {
-  BulletList,
-  OrderedList,
-  ListItem,
-  TaskList,
-  TaskItem,
-} from "@tiptap/extension-list";
+import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -51,8 +44,6 @@ const lowlight = createLowlight(all);
 // Block wrappers (NodeView único)
 // =====================================================
 
-// const ParagraphWithBlock = Paragraph (mas adelante agregar este bloque y cambiar los css para no pasarle blockview)
-
 const ParagraphWithBlock = Paragraph.extend({
   addNodeView() {
     return ReactNodeViewRenderer(BlockView);
@@ -83,12 +74,6 @@ const OrderedListWithBlock = OrderedList.extend({
   },
 });
 
-const TaskListWithBlock = TaskList.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
-
 const CodeBlock = CodeBlockLowlight.extend({
   addAttributes() {
     return {
@@ -114,7 +99,7 @@ export function createEditorExtensions() {
       blockquote: false,
       bulletList: false,
       orderedList: false,
-      listItem: false,
+      // listItem: false,
       codeBlock: false,
       horizontalRule: false,
     }),
@@ -128,16 +113,6 @@ export function createEditorExtensions() {
     BulletListWithBlock,
     OrderedListWithBlock,
     ListItem,
-
-    // Tasks
-    TaskListWithBlock,
-    TaskItem.extend({
-      addNodeView() {
-        return ReactNodeViewRenderer(TaskItemView);
-      },
-    }).configure({
-      nested: true,
-    }),
 
     // Code
     CodeBlock,

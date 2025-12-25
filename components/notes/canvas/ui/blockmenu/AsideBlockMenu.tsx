@@ -9,6 +9,7 @@ import { offset, shift } from "@floating-ui/dom";
 import { Menu } from "@/components/ui/Menu";
 import { MenuDrag } from "./MenuDrag";
 import { InsertMenuContent } from "./InsertMenuContent";
+import { NodeSelection } from "prosemirror-state";
 
 type Props = {
   editor: Editor;
@@ -23,9 +24,20 @@ export function AsideBlockMenu({ editor }: Props) {
     null
   );
   const activeNodeRef = useRef<HTMLElement | null>(null);
+  const activeBlockPosRef = useRef<number | null>(null);
 
   function openMenu(nextMode: AsideMenuMode, e: React.MouseEvent) {
     e.stopPropagation();
+
+    const blockPos = activeBlockPosRef.current;
+    if (blockPos == null) return;
+
+    const { state, view } = editor;
+
+    const tr = state.tr.setSelection(NodeSelection.create(state.doc, blockPos));
+
+    view.dispatch(tr);
+    view.focus();
 
     const dom = activeNodeRef.current;
     if (!dom) return;
@@ -61,21 +73,12 @@ export function AsideBlockMenu({ editor }: Props) {
       onNodeChange={({ node, pos }) => {
         if (!node || pos == null) {
           activeNodeRef.current = null;
+          activeBlockPosRef.current = null;
           return;
         }
 
-        const $pos = editor.state.doc.resolve(pos);
-
-        let depth = $pos.depth;
-        while (depth > 0 && !$pos.node(depth).isBlock) {
-          depth--;
-        }
-
-        const blockPos = depth === 0 ? 0 : $pos.before(depth);
-
-        activeNodeRef.current = editor.view.nodeDOM(
-          blockPos
-        ) as HTMLElement | null;
+        activeBlockPosRef.current = pos;
+        activeNodeRef.current = editor.view.nodeDOM(pos) as HTMLElement | null;
       }}
     >
       <div className="flex items-center gap-1">
