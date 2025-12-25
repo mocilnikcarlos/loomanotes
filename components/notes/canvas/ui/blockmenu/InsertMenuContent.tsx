@@ -6,11 +6,10 @@ import { BlockMenuItem } from "./BlockMenuItem";
 
 type Props = {
   editor: Editor;
-  insertPos: number | null;
   onClose: () => void;
 };
 
-export function InsertMenuContent({ editor, insertPos, onClose }: Props) {
+export function InsertMenuContent({ editor, onClose }: Props) {
   return (
     <div className="max-h-[320px] w-64 overflow-y-auto">
       {BLOCKS.map((block) => (
@@ -20,8 +19,6 @@ export function InsertMenuContent({ editor, insertPos, onClose }: Props) {
           title={block.title}
           description={block.description}
           onSelect={() => {
-            if (!insertPos) return;
-            editor.chain().focus().setTextSelection(insertPos).run();
             block.insert(editor);
             onClose();
           }}

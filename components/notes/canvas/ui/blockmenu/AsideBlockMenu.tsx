@@ -8,7 +8,7 @@ import type { Editor } from "@tiptap/core";
 import { offset, shift } from "@floating-ui/dom";
 import { Menu } from "@/components/ui/Menu";
 import { MenuDrag } from "./MenuDrag";
-import { InsertMenuContent } from "../InsertMenuContent";
+import { InsertMenuContent } from "./InsertMenuContent";
 
 type Props = {
   editor: Editor;
@@ -17,39 +17,38 @@ type Props = {
 type AsideMenuMode = "insert" | "actions" | null;
 
 export function AsideBlockMenu({ editor }: Props) {
-  const [insertPos, setInsertPos] = useState<number | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [menuMode, setMenuMode] = useState<AsideMenuMode>(null);
+  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<AsideMenuMode>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+    null
+  );
   const activeNodeRef = useRef<HTMLElement | null>(null);
-  const [menuCoords, setMenuCoords] = useState<{
-    top: number;
-    left: number;
-  } | null>(null);
 
-  function openMenu(
-    mode: AsideMenuMode,
-    e?: React.MouseEvent<HTMLButtonElement>
-  ) {
+  function openMenu(nextMode: AsideMenuMode, e: React.MouseEvent) {
+    e.stopPropagation();
+
     const dom = activeNodeRef.current;
     if (!dom) return;
 
     const rect = dom.getBoundingClientRect();
 
-    // Default (acciones / drag)
     let top = rect.top + rect.height / 2;
-    let left = rect.left - 2;
+    let left = rect.left - 8;
 
-    // Caso botón "+"
-    if (mode === "insert" && e) {
-      const btnRect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-
-      top = btnRect.bottom + 6; // abajo del botón
-      left = btnRect.right + 6; // a la derecha del +
+    if (nextMode === "insert") {
+      const btn = e.currentTarget.getBoundingClientRect();
+      top = btn.bottom + 6;
+      left = btn.right + 6;
     }
 
-    setMenuCoords({ top, left });
-    setMenuMode(mode);
-    setMenuOpen(true);
+    setCoords({ top, left });
+    setMode(nextMode);
+    setOpen(true);
+  }
+
+  function closeMenu() {
+    setOpen(false);
+    setMode(null);
   }
 
   return (
@@ -57,68 +56,56 @@ export function AsideBlockMenu({ editor }: Props) {
       editor={editor}
       computePositionConfig={{
         placement: "left",
-        strategy: "absolute",
         middleware: [offset(8), shift()],
       }}
       onNodeChange={({ node, pos }) => {
         if (!node || pos == null) {
           activeNodeRef.current = null;
-          setInsertPos(null);
           return;
         }
 
-        const dom = editor.view.nodeDOM(pos) as HTMLElement | null;
-        activeNodeRef.current = dom;
-        setInsertPos(pos + node.nodeSize);
+        const $pos = editor.state.doc.resolve(pos);
+
+        let depth = $pos.depth;
+        while (depth > 0 && !$pos.node(depth).isBlock) {
+          depth--;
+        }
+
+        const blockPos = depth === 0 ? 0 : $pos.before(depth);
+
+        activeNodeRef.current = editor.view.nodeDOM(
+          blockPos
+        ) as HTMLElement | null;
       }}
     >
       <div className="flex items-center gap-1">
-        {/* Botón + */}
         <ButtonIcon
-          variant="ghost"
           icon={<Plus size={14} />}
+          variant="ghost"
           tabIndex={-1}
           onClick={(e) => openMenu("insert", e)}
-          className={
-            menuMode === "actions"
-              ? "opacity-0 pointer-events-none"
-              : "opacity-100"
-          }
         />
 
-        {/* Botón drag */}
         <ButtonIcon
-          variant="ghost"
-          className={`cursor-grab ${
-            menuMode === "insert"
-              ? "opacity-0 pointer-events-none"
-              : "opacity-100"
-          }`}
           icon={<GripVertical size={14} />}
+          variant="ghost"
           tabIndex={-1}
-          onClick={() => openMenu("actions")}
+          onClick={(e) => openMenu("actions", e)}
         />
 
-        {/* MENÚ ÚNICO */}
         <Menu
-          open={menuOpen}
-          coords={menuCoords ?? undefined}
-          closeOnOutsideClick={true}
-          onOpenChange={(open) => {
-            if (!open) setMenuMode(null);
-            setMenuOpen(open);
+          open={open}
+          coords={coords ?? undefined}
+          onOpenChange={(v) => {
+            if (!v) closeMenu();
           }}
         >
-          {menuMode === "insert" && (
-            <InsertMenuContent
-              editor={editor}
-              insertPos={insertPos}
-              onClose={() => setMenuOpen(false)}
-            />
+          {mode === "insert" && (
+            <InsertMenuContent editor={editor} onClose={closeMenu} />
           )}
 
-          {menuMode === "actions" && (
-            <MenuDrag editor={editor} onClose={() => setMenuOpen(false)} />
+          {mode === "actions" && (
+            <MenuDrag editor={editor} onClose={closeMenu} />
           )}
         </Menu>
       </div>

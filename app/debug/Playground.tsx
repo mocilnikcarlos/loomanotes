@@ -237,7 +237,7 @@ export default function Playground() {
           <ModalFooter cancelText="Cancelar" confirmText="Confirmar" />
         </Modal>
         <Menu
-          position="top"
+          position="top-start"
           trigger={<Button variant="ghost">Acciones</Button>}
         >
           <MenuItem icon={<Edit size={14} />}>Editar</MenuItem>
