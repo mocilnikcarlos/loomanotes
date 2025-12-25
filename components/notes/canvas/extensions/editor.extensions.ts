@@ -12,6 +12,7 @@ import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { TaskList, TaskItem } from "@tiptap/extension-list";
 
 // lowlight (según doc oficial)
 import { all, createLowlight } from "lowlight";
@@ -87,6 +88,16 @@ const CodeBlock = CodeBlockLowlight.extend({
   lowlight,
 });
 
+const TaskListWithBlock = TaskList.extend({
+  addNodeView() {
+    return ReactNodeViewRenderer(BlockView);
+  },
+});
+
+const TaskItemConfigured = TaskItem.configure({
+  nested: true,
+});
+
 // =====================================================
 // Factory
 // =====================================================
@@ -99,7 +110,6 @@ export function createEditorExtensions() {
       blockquote: false,
       bulletList: false,
       orderedList: false,
-      // listItem: false,
       codeBlock: false,
       horizontalRule: false,
     }),
@@ -113,6 +123,8 @@ export function createEditorExtensions() {
     BulletListWithBlock,
     OrderedListWithBlock,
     ListItem,
+    TaskListWithBlock,
+    TaskItemConfigured,
 
     // Code
     CodeBlock,
