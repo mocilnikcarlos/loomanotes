@@ -11,7 +11,7 @@ import Blockquote from "@tiptap/extension-blockquote";
 import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { CodeBlockWithWrapper } from "./CodeBlockWithWrapper";
 import { TaskList, TaskItem } from "@tiptap/extension-list";
 
 // lowlight (según doc oficial)
@@ -76,16 +76,7 @@ const OrderedListWithBlock = OrderedList.extend({
   },
 });
 
-const CodeBlock = CodeBlockLowlight.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      class: {
-        default: "hljs",
-      },
-    };
-  },
-}).configure({
+const CodeBlock = CodeBlockWithWrapper.configure({
   lowlight,
 });
 
