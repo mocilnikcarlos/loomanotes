@@ -4,55 +4,123 @@ import { cn } from "@/utils/cn";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+type MenuPosition =
+  | "top-start"
+  | "top-center"
+  | "top-end"
+  | "bottom-start"
+  | "bottom-center"
+  | "bottom-end"
+  | "left"
+  | "right";
+
 interface MenuProps {
   trigger?: ReactNode;
   openOn?: "click" | "context";
-  position?: "top" | "bottom" | "left" | "right";
+  position?: MenuPosition;
   children: ReactNode;
+  open?: boolean;
+  coords?: { top: number; left: number };
+  onOpenChange?: (open: boolean) => void;
+  className?: string;
+  closeOnOutsideClick?: boolean;
 }
 
 export function Menu({
   trigger,
   openOn = "click",
-  position = "bottom",
+  position = "bottom-start",
   children,
+  open,
+  coords: externalCoords,
+  onOpenChange,
+  className,
+  closeOnOutsideClick = true,
 }: MenuProps) {
-  const [open, setOpen] = useState(false);
+  /** Estado interno (modo no controlado, como antes) */
+  const [internalOpen, setInternalOpen] = useState(false);
   const [rendered, setRendered] = useState(false);
+
+  /** Modo controlado vs no controlado */
+  const isControlled = typeof open === "boolean";
+  const actualOpen = isControlled ? open : internalOpen;
 
   const triggerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
   const [coords, setCoords] = useState({ top: 0, left: 0 });
-  const [positioned, setPositioned] = useState(false);
 
   const GAP = 8;
 
+  /** Abrir menú */
   const openMenu = () => {
-    setRendered(true);
-    requestAnimationFrame(() => setOpen(true));
+    if (isControlled) {
+      onOpenChange?.(true);
+    } else {
+      setRendered(true);
+      requestAnimationFrame(() => setInternalOpen(true));
+    }
   };
 
+  /** Cerrar menú */
   const closeMenu = () => {
-    setOpen(false);
-    setTimeout(() => setRendered(false), 150);
+    if (isControlled) {
+      onOpenChange?.(false);
+    } else {
+      setInternalOpen(false);
+      setTimeout(() => setRendered(false), 150);
+    }
   };
 
   /** Posicionamiento */
   useEffect(() => {
-    if (!open || !triggerRef.current || !menuRef.current) return;
+    if (!actualOpen || !menuRef.current) return;
+
+    /** 🔹 Caso slash menu (coords externos) */
+    if (externalCoords) {
+      setCoords(externalCoords);
+      return;
+    }
+
+    /** 🔹 Caso clásico (trigger) */
+    if (!triggerRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
     const menuRect = menuRef.current.getBoundingClientRect();
 
-    const map = {
-      bottom: {
+    const alignX = {
+      start: triggerRect.left,
+      center: triggerRect.left + triggerRect.width / 2 - menuRect.width / 2,
+      end: triggerRect.right - menuRect.width,
+    };
+
+    const map: Record<MenuPosition, { top: number; left: number }> = {
+      "bottom-start": {
         top: triggerRect.bottom + GAP,
-        left: triggerRect.left,
+        left: alignX.start,
       },
-      top: {
+      "bottom-center": {
+        top: triggerRect.bottom + GAP,
+        left: alignX.center,
+      },
+      "bottom-end": {
+        top: triggerRect.bottom + GAP,
+        left: alignX.end,
+      },
+
+      "top-start": {
         top: triggerRect.top - menuRect.height - GAP,
-        left: triggerRect.left,
+        left: alignX.start,
       },
+      "top-center": {
+        top: triggerRect.top - menuRect.height - GAP,
+        left: alignX.center,
+      },
+      "top-end": {
+        top: triggerRect.top - menuRect.height - GAP,
+        left: alignX.end,
+      },
+
       right: {
         top: triggerRect.top,
         left: triggerRect.right + GAP,
@@ -64,36 +132,54 @@ export function Menu({
     };
 
     setCoords(map[position]);
-  }, [open, position]);
+  }, [actualOpen, position, externalCoords]);
 
   /** Click fuera */
   useEffect(() => {
-    if (!open) return;
+    if (!actualOpen || !closeOnOutsideClick) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
+    const handleClickOutside = (e: PointerEvent) => {
+      const path = e.composedPath();
 
-      if (
-        menuRef.current?.contains(target) ||
-        triggerRef.current?.contains(target)
-      ) {
+      if (menuRef.current && path.includes(menuRef.current)) {
+        return;
+      }
+
+      if (triggerRef.current && path.includes(triggerRef.current)) {
         return;
       }
 
       closeMenu();
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () =>
+      document.removeEventListener("pointerdown", handleClickOutside);
+  }, [actualOpen, closeOnOutsideClick]);
 
-  /** Trigger */
+  useEffect(() => {
+    const el = menuRef.current;
+    if (!el) return;
+
+    const stop = (e: Event) => {
+      e.stopPropagation();
+    };
+
+    el.addEventListener("pointerdown", stop);
+
+    return () => {
+      el.removeEventListener("pointerdown", stop);
+    };
+  }, []);
+
+  /** Trigger (NO cambia respecto a tu versión original) */
   let triggerElement: ReactNode = null;
 
   if (trigger) {
     triggerElement = (
       <div
         ref={triggerRef}
+        onPointerDown={(e) => e.stopPropagation()}
         onContextMenu={
           openOn === "context"
             ? (e) => {
@@ -111,7 +197,7 @@ export function Menu({
                 const target = e.target as HTMLElement;
                 if (target.closest("[data-menu-ignore]")) return;
 
-                open ? closeMenu() : openMenu();
+                actualOpen ? closeMenu() : openMenu();
               }
             : undefined
         }
@@ -125,17 +211,19 @@ export function Menu({
     <>
       {triggerElement}
 
-      {rendered &&
+      {(rendered || isControlled) &&
         createPortal(
           <div
             ref={menuRef}
-            data-state={open ? "open" : "closed"}
+            data-state={actualOpen ? "open" : "closed"}
+            onPointerDown={(e) => e.stopPropagation()}
             className={cn(
-              "fixed z-50 min-w-[180px] rounded-xl border border-border bg-menu p-2 shadow-lg",
+              "fixed z-50 rounded-xl border border-border bg-menu p-2 shadow-lg",
               "transition-[opacity,transform] duration-150 ease-out",
-              open ? "visible" : "invisible",
+              actualOpen ? "visible" : "invisible",
               "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
-              "data-[state=open]:opacity-100 data-[state=open]:scale-100"
+              "data-[state=open]:opacity-100 data-[state=open]:scale-100",
+              className
             )}
             style={{ top: coords.top, left: coords.left }}
           >
@@ -147,26 +235,37 @@ export function Menu({
   );
 }
 
+/** MenuItem (sin cambios) */
 interface MenuItemProps {
   icon?: ReactNode;
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  className?: string;
 }
 
-export function MenuItem({ icon, children, onClick, disabled }: MenuItemProps) {
+export function MenuItem({
+  icon,
+  children,
+  onClick,
+  disabled,
+  className,
+}: MenuItemProps) {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-foreground cursor-pointer",
+        "flex w-full min-w-0 items-center gap-2 rounded-lg px-3 py-2",
+        "text-sm text-foreground cursor-pointer",
         "hover:bg-button-hover transition-colors",
-        disabled && "opacity-50 cursor-not-allowed"
+        "overflow-hidden",
+        disabled && "opacity-50 cursor-not-allowed",
+        className
       )}
     >
-      {icon && <span className="text-icon">{icon}</span>}
-      <span>{children}</span>
+      {icon && <span className="text-icon shrink-0">{icon}</span>}
+      {children}
     </button>
   );
 }

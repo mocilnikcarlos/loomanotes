@@ -9,6 +9,13 @@ body {
     margin: 0;
 }
 
+a {
+    cursor: pointer;
+    color: var(--link);
+    text-decoration: underline;
+
+}
+
 @keyframes brand-flash {
     0% {
         box-shadow: 0 0 0 0 rgba(185, 210, 86, 0);
@@ -73,6 +80,8 @@ body {
     --title: #111111;
     --subtitle: #7C7C7C;
     --icon: #6b7280;
+    --link: #3A7FD5;
+    --placeholder: #9ca3af;
 
     /* Interactive (neutros) */
     --button: #F4F6FA;
@@ -94,8 +103,14 @@ body {
     --menu: #ffffff;
     --menu-hover: #f2f2f2;
 
+    /* Toolbar */
+    --toolbar-bg: #ffffff;
+    --toolbar-border: #dcdcdc;
+    --toolbar-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
     /* ACCENT BASE (mismo tono, ajusta percepción) */
     --primary: #8fa63e;
+    --primary-soft: rgba(143, 166, 62, 0.15);
     --primary-hover: #7f9436;
 
 /* STATES – LIGHT (más saturados, pero elegantes) */
@@ -124,7 +139,6 @@ body {
     /* negro carbón */
     --foreground: #e6e9ed;
     --foreground-secondary: #121617;
-    /* blanco sucio */
 
     /* Surfaces */
     --card: #1A1A1A;
@@ -136,6 +150,8 @@ body {
     --subtitle: #ffffff;
     --subtitle: #9aa0a6;
     --icon: #8f96a3;
+    --link: #6EA8FF;
+    --placeholder: #6b7280;
 
     /* Interactive (neutros) */
     --button: #303030;
@@ -156,8 +172,14 @@ body {
     --menu: #181818;
     --menu-hover: #141414;
 
+    /* Toolbar */
+    --toolbar-bg: #1f1f1f;
+    --toolbar-border: #2f2f2f;
+    --toolbar-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+
     /* ACCENT BASE */
     --primary: #b9d256;
+    --primary-soft: rgba(185, 210, 86, 0.15);
     --primary-hover: #A4B84B;
 
     /* STATES – DARK (más limpios, más profundos) */
@@ -174,32 +196,3 @@ body {
     --info-bg: #121a1e;
 }
 
-/* NO borrar - columna de mirror */
-.editor-canvas .ProseMirror {
-    width: 100%;
-    padding-left: 80px;
-    padding-right: 80px;
-}
-
-/* Columna visual */
-.editor-canvas .ProseMirror>* {
-    max-width: 790px;
-}
-/* NO borrar - columna de mirror */
-
-.ProseMirror {
-    min-height: 100%;
-    padding-bottom: 40vh;
-}
-
-.ProseMirror:focus {
-    outline: none;
-}
-
-.ProseMirror-focused {
-    outline: none;
-}
-
-.node-paragraph {
-    padding: 24px 0;
-}

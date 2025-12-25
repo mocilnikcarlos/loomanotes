@@ -29,7 +29,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "types"
+    "types",
+    "components/notes/canvas/ui/popovertoolbar/ColorButton.Highlight",
+    "components/notes/canvas/ui/popovertoolbar/ColorButton.Text"
   ],
   "exclude": ["node_modules"]
 }

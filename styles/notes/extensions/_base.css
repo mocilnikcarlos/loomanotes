@@ -1,0 +1,47 @@
+/* NO borrar - columna de mirror */
+.editor-canvas .ProseMirror {
+    width: 100%;
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+/* NO borrar - columna de mirror */
+
+.ProseMirror {
+    min-height: 100%;
+    padding-bottom: 40vh;
+}
+
+.ProseMirror:focus {
+    outline: none;
+}
+
+.ProseMirror-focused {
+    outline: none;
+}
+
+.ProseMirror {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    padding: 0;
+}
+
+.react-renderer {
+    position: relative;
+}
+
+/* placeholder */
+.react-renderer.is-editor-empty::before {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+mark {
+    border-radius: 0.4rem;
+    padding: 0.1rem 0.3rem;
+}

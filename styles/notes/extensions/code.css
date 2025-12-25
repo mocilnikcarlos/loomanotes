@@ -1,0 +1,96 @@
+pre.hljs {
+    background-color: var(--card);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    overflow-x: hidden;
+}
+
+pre.hljs code {
+    display: block;
+    color: var(--subtitle);
+
+    /* 🔥 la magia */
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco,
+        Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.hljs-keyword {
+    color: #c678dd;
+    font-weight: 600;
+}
+
+.hljs-string {
+    color: #98c379;
+}
+
+.hljs-number {
+    color: #d19a66;
+}
+
+.hljs-title.function_,
+.hljs-function .hljs-title {
+    color: #61afef;
+}
+
+.hljs-comment {
+    color: #5c6370;
+    font-style: italic;
+}
+
+.hljs-built_in {
+    color: #56b6c2;
+}
+
+.hljs-operator {
+    color: #56b6c2;
+}
+
+.hljs-punctuation {
+    color: #abb2bf;
+}
+
+.hljs-tag,
+.hljs-name {
+    color: #e06c75;
+}
+
+.hljs-attr {
+    color: #d19a66;
+}
+
+.hljs-text {
+    color: #abb2bf;
+}
+
+.hljs-variable,
+.hljs-template-variable {
+    color: #e06c75;
+}
+
+
+/* button */
+.copy-code-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--button);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.copy-code-btn:hover {
+    background: var(--button-hover);
+    color: var(--primary);
+}
