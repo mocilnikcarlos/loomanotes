@@ -21,12 +21,6 @@ export function useTextSelectionToolbar(editor: Editor | null) {
       const view = editor.view;
       const { selection } = editor.state;
 
-      // 1. No foco
-      if (!editor.isFocused) {
-        setVisible(false);
-        return;
-      }
-
       // 2. Drag activo
       if ((view as any).dragging) {
         setVisible(false);
@@ -97,7 +91,14 @@ export function useTextSelectionToolbar(editor: Editor | null) {
     const onBlur = ({ event }: any) => {
       const relatedTarget = event?.relatedTarget as HTMLElement | null;
 
-      if (relatedTarget?.closest("[data-text-toolbar]")) return;
+      // Si el foco va a cualquier cosa del toolbar o menú → NO cerramos
+      if (
+        relatedTarget?.closest("[data-text-toolbar]") ||
+        relatedTarget?.closest("[data-menu]") ||
+        relatedTarget?.closest("input")
+      ) {
+        return;
+      }
 
       setVisible(false);
     };

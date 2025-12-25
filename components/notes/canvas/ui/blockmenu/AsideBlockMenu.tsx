@@ -7,8 +7,8 @@ import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import type { Editor } from "@tiptap/core";
 import { offset, shift } from "@floating-ui/dom";
 import { Menu } from "@/components/ui/Menu";
-import { MenuDrag } from "./popovertoolbar/MenuDrag";
-import { InsertMenuContent } from "./InsertMenuContent";
+import { MenuDrag } from "./MenuDrag";
+import { InsertMenuContent } from "../InsertMenuContent";
 
 type Props = {
   editor: Editor;

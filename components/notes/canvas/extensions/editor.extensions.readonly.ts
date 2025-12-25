@@ -6,7 +6,7 @@ export function createReadOnlyExtensions() {
   return createEditorExtensions().map((ext) => {
     if (ext.name === "link") {
       return Link.configure({
-        openOnClick: true,
+        openOnClick: true, // ✔ SOLO ACÁ
         autolink: true,
         linkOnPaste: true,
         HTMLAttributes: {

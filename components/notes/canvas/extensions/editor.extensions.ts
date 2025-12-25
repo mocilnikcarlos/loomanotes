@@ -190,6 +190,7 @@ export function createEditorExtensions() {
         target: "_blank",
       },
     }),
+
     TextAlign.configure({
       types: ["paragraph", "heading", "blockquote"],
       alignments: ["left", "center", "right", "justify"],

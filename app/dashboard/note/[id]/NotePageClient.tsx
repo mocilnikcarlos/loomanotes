@@ -4,8 +4,8 @@ import { useAsideStore } from "@/store/aside.store";
 import { HeaderNote } from "@/components/notes/ui/HeaderNote";
 import { useEffect, useState } from "react";
 import type { Note } from "@/store/aside.store";
-import Tiptap from "@/components/notes/canvas/Tiptap";
 import { EditorCanvas } from "@/components/ui/layout/EditorCanvas";
+import Canvas from "@/components/notes/canvas/Canvas";
 
 export default function NotePageClient({ id }: { id: string }) {
   const [note, setNote] = useState<Note | null>(null);
@@ -69,7 +69,7 @@ export default function NotePageClient({ id }: { id: string }) {
       />
 
       <EditorCanvas>
-        <Tiptap noteId={note.id} initialContent={note.content} />
+        <Canvas noteId={note.id} initialContent={note.content} />
       </EditorCanvas>
     </div>
   );

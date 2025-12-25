@@ -1,0 +1,77 @@
+"use client";
+
+import type { Editor } from "@tiptap/react";
+import { Tooltip } from "@heroui/tooltip";
+import { ButtonIcon } from "@/components/ui/ButtonIcon";
+import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
+
+type Props = {
+  editor: Editor;
+};
+
+export function AlignSection({ editor }: Props) {
+  const isLeft = editor.isActive({ textAlign: "left" });
+  const isCenter = editor.isActive({ textAlign: "center" });
+  const isRight = editor.isActive({ textAlign: "right" });
+  const isJustify = editor.isActive({ textAlign: "justify" });
+
+  return (
+    <>
+      <Tooltip content="Alinear izquierda">
+        <ButtonIcon
+          aria-pressed={isLeft}
+          data-active={isLeft}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("left").run()}
+          onClick={() => editor.chain().focus().setTextAlign("left").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignLeft size={14} />}
+          className={isLeft ? "bg-content2 border border-border" : undefined}
+        />
+      </Tooltip>
+
+      <Tooltip content="Centrar">
+        <ButtonIcon
+          aria-pressed={isCenter}
+          data-active={isCenter}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("center").run()}
+          onClick={() => editor.chain().focus().setTextAlign("center").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignCenter size={14} />}
+          className={isCenter ? "bg-content2 border border-border" : undefined}
+        />
+      </Tooltip>
+
+      <Tooltip content="Alinear derecha">
+        <ButtonIcon
+          aria-pressed={isRight}
+          data-active={isRight}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("right").run()}
+          onClick={() => editor.chain().focus().setTextAlign("right").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignRight size={14} />}
+          className={isRight ? "bg-content2 border border-border" : undefined}
+        />
+      </Tooltip>
+
+      <Tooltip content="Justificar">
+        <ButtonIcon
+          aria-pressed={isJustify}
+          data-active={isJustify}
+          onMouseDown={(e) => e.preventDefault()}
+          disabled={!editor.can().chain().focus().setTextAlign("justify").run()}
+          onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+          size="sm"
+          variant="ghost"
+          icon={<AlignJustify size={14} />}
+          className={isJustify ? "bg-content2 border border-border" : undefined}
+        />
+      </Tooltip>
+    </>
+  );
+}

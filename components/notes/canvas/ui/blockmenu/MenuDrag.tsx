@@ -3,7 +3,7 @@
 import type { Editor } from "@tiptap/react";
 import { CopyPlus, Trash } from "lucide-react";
 import { addToast } from "@heroui/toast";
-import { EditorMenuRow } from "./EditorMenuRow";
+import { EditorMenuRow } from "../shared/EditorMenuRow";
 import { TextSelection } from "@tiptap/pm/state";
 
 type Props = {

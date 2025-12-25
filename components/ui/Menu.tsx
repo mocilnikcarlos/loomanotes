@@ -138,13 +138,14 @@ export function Menu({
   useEffect(() => {
     if (!actualOpen || !closeOnOutsideClick) return;
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
+    const handleClickOutside = (e: PointerEvent) => {
+      const path = e.composedPath();
 
-      if (
-        menuRef.current?.contains(target) ||
-        triggerRef.current?.contains(target)
-      ) {
+      if (menuRef.current && path.includes(menuRef.current)) {
+        return;
+      }
+
+      if (triggerRef.current && path.includes(triggerRef.current)) {
         return;
       }
 

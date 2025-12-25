@@ -2,18 +2,18 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import { useSaveNoteContent } from "@/hooks/notes/useSaveNoteContent";
-import { AsideBlockMenu } from "./ui/AsideBlockMenu";
+import { AsideBlockMenu } from "./ui/blockmenu/AsideBlockMenu";
 import { SlashMenuOverlay } from "./ui/SlashMenuOverlay";
 import { createEditorExtensions } from "./extensions/editor.extensions";
-import { TextSelectionToolbar } from "./ui/popovertoolbar/TextSelectionToolbar";
 import { useEffect } from "react";
+import { SelectionToolbar } from "./ui/toolbar/SelectionToolbar";
 
 type Props = {
   noteId: string;
   initialContent?: any;
 };
 
-export default function Tiptap({ noteId, initialContent }: Props) {
+export default function Canvas({ noteId, initialContent }: Props) {
   const { onUpdate } = useSaveNoteContent(noteId);
 
   const editor = useEditor({
@@ -51,7 +51,7 @@ export default function Tiptap({ noteId, initialContent }: Props) {
         <div id="editor-drag-ghost-root">
           <SlashMenuOverlay editor={editor} />
           <AsideBlockMenu editor={editor} />
-          <TextSelectionToolbar editor={editor} />
+          <SelectionToolbar editor={editor} />
           <EditorContent editor={editor} />
         </div>
       )}

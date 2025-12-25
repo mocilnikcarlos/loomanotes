@@ -1,5 +1,5 @@
 "use client";
-import { BlockMenuItem } from "./BlockMenuItem";
+import { BlockMenuItem } from "./blockmenu/BlockMenuItem";
 
 type Props = {
   items: any[];

@@ -7,8 +7,8 @@ import {
   Superscript as SuperIcon,
 } from "lucide-react";
 import { addToast } from "@heroui/toast";
-import { EditorMenuRow } from "./EditorMenuRow";
 import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
+import { EditorMenuRow } from "../../shared/EditorMenuRow";
 
 type Props = {
   editor: Editor;

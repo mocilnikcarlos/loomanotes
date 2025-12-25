@@ -4,7 +4,7 @@ import type { Editor } from "@tiptap/core";
 import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
 import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
 import { BLOCKS } from "@/config/blocks.config";
-import { EditorMenuRow } from "./EditorMenuRow";
+import { EditorMenuRow } from "../../shared/EditorMenuRow";
 
 type Props = {
   editor: Editor;

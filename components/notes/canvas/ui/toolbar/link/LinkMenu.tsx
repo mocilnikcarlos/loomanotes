@@ -50,7 +50,10 @@ export function LinkMenu({ editor, onClose }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-64">
+    <div
+      className="flex flex-col gap-2 w-64"
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       <Input
         ref={inputRef}
         placeholder="https://example.com"
@@ -60,7 +63,7 @@ export function LinkMenu({ editor, onClose }: Props) {
           if (e.key === "Enter") {
             e.preventDefault();
             applyLink();
-            onClose(); // 👈 CIERRA EL MENÚ
+            onClose();
             editor.commands.focus();
           }
         }}
@@ -70,8 +73,9 @@ export function LinkMenu({ editor, onClose }: Props) {
         <Button
           variant="ghost"
           size="sm"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
-            editor.chain().focus().unsetLink().run();
+            editor.chain().focus().extendMarkRange("link").unsetLink().run();
 
             onClose();
           }}
