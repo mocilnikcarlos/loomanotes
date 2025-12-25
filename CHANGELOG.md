@@ -1,5 +1,24 @@
 # Changelog
 
+# [0.13.0](/compare/v0.12.0...v0.13.0) (2025-12-25)
+
+
+### Bug Fixes
+
+* **root:** focus on block 5b0a378
+
+
+### Features
+
+* **root:** insert new block 5bc0503
+
+# [0.12.0](/compare/v0.11.1...v0.12.0) (2025-12-25)
+
+
+### Features
+
+* **root:** added taskList 6a9bc37
+
 ## [0.11.1](/compare/v0.11.0...v0.11.1) (2025-12-25)
 
 
