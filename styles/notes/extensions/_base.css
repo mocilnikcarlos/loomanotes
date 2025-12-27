@@ -32,13 +32,14 @@
 }
 
 /* placeholder */
-.react-renderer.is-editor-empty::before {
+.node-paragraph.is-editor-empty::before {
     content: attr(data-placeholder);
     color: var(--placeholder);
     pointer-events: none;
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 0;
+    transform: translateY(-50%);
 }
 
 mark {

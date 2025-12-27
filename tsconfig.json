@@ -31,7 +31,8 @@
     ".next/dev/types/**/*.ts",
     "types",
     "components/notes/canvas/ui/popovertoolbar/ColorButton.Highlight",
-    "components/notes/canvas/ui/popovertoolbar/ColorButton.Text"
+    "components/notes/canvas/ui/popovertoolbar/ColorButton.Text",
+    "components/notes/canvas/extensions/extend/findAncestorOfType.ts}"
   ],
   "exclude": ["node_modules"]
 }

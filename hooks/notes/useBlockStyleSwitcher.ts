@@ -3,6 +3,10 @@
 import { useEditorState } from "@tiptap/react";
 import type { Editor } from "@tiptap/core";
 
+/* -------------------------------------------------------------------------- */
+/*                                   Types                                    */
+/* -------------------------------------------------------------------------- */
+
 export type BlockStyle =
   | "paragraph"
   | "heading_1"
@@ -14,8 +18,41 @@ export type BlockStyle =
   | "blockquote"
   | "codeBlock";
 
+/* -------------------------------------------------------------------------- */
+/*                              Block actions                                 */
+/* -------------------------------------------------------------------------- */
+
+type BlockAction = (editor: Editor) => void;
+
+const BLOCK_ACTIONS: Record<BlockStyle, BlockAction> = {
+  paragraph: (editor) => editor.chain().focus().setParagraph().run(),
+
+  heading_1: (editor) =>
+    editor.chain().focus().setNode("heading", { level: 1 }).run(),
+
+  heading_2: (editor) =>
+    editor.chain().focus().setNode("heading", { level: 2 }).run(),
+
+  heading_3: (editor) =>
+    editor.chain().focus().setNode("heading", { level: 3 }).run(),
+
+  bulletList: (editor) => editor.chain().focus().toggleBulletList().run(),
+
+  orderedList: (editor) => editor.chain().focus().toggleOrderedList().run(),
+
+  taskList: (editor) => editor.chain().focus().toggleTaskList().run(),
+
+  blockquote: (editor) => editor.chain().focus().toggleBlockquote().run(),
+
+  codeBlock: (editor) => editor.chain().focus().setCodeBlock().run(),
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                   Hook                                     */
+/* -------------------------------------------------------------------------- */
+
 export function useBlockStyleSwitcher(editor: Editor) {
-  // 🔁 fuerza re-render cuando cambia el estado del editor
+  // 🔁 fuerza re-render cuando cambia el bloque activo
   useEditorState({
     editor,
     selector: ({ editor }) => ({
@@ -23,58 +60,15 @@ export function useBlockStyleSwitcher(editor: Editor) {
     }),
   });
 
-  function clearCodeBlock() {
-    if (editor.isActive("codeBlock")) {
+  function exitCodeBlockIfNeeded(next: BlockStyle) {
+    if (next !== "codeBlock" && editor.isActive("codeBlock")) {
       editor.chain().focus().setParagraph().run();
     }
   }
 
   function setBlock(type: BlockStyle) {
-    switch (type) {
-      case "paragraph":
-        clearCodeBlock();
-        editor.chain().focus().setParagraph().run();
-        break;
-
-      case "heading_1":
-        clearCodeBlock();
-        editor.chain().focus().setNode("heading", { level: 1 }).run();
-        break;
-
-      case "heading_2":
-        clearCodeBlock();
-        editor.chain().focus().setNode("heading", { level: 2 }).run();
-        break;
-
-      case "heading_3":
-        clearCodeBlock();
-        editor.chain().focus().setNode("heading", { level: 3 }).run();
-        break;
-
-      case "bulletList":
-        clearCodeBlock();
-        editor.chain().focus().toggleBulletList().run();
-        break;
-
-      case "orderedList":
-        clearCodeBlock();
-        editor.chain().focus().toggleOrderedList().run();
-        break;
-
-      case "taskList":
-        clearCodeBlock();
-        editor.chain().focus().toggleTaskList().run();
-        break;
-
-      case "blockquote":
-        clearCodeBlock();
-        editor.chain().focus().toggleBlockquote().run();
-        break;
-
-      case "codeBlock":
-        editor.chain().focus().setCodeBlock().run();
-        break;
-    }
+    exitCodeBlockIfNeeded(type);
+    BLOCK_ACTIONS[type](editor);
   }
 
   return {
@@ -83,9 +77,9 @@ export function useBlockStyleSwitcher(editor: Editor) {
   };
 }
 
-// ----------------------------
-// Helpers
-// ----------------------------
+/* -------------------------------------------------------------------------- */
+/*                                   Helpers                                  */
+/* -------------------------------------------------------------------------- */
 
 function getCurrentBlock(editor: Editor): BlockStyle {
   if (editor.isActive("heading", { level: 1 })) return "heading_1";
@@ -96,5 +90,6 @@ function getCurrentBlock(editor: Editor): BlockStyle {
   if (editor.isActive("taskList")) return "taskList";
   if (editor.isActive("blockquote")) return "blockquote";
   if (editor.isActive("codeBlock")) return "codeBlock";
+
   return "paragraph";
 }

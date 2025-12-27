@@ -1,37 +1,28 @@
-export const LIST_CONTAINER_TYPES = new Set([
-  "bulletList",
-  "orderedList",
+const DRAGGABLE_BLOCK_TYPES = new Set([
+  "paragraph",
+  "heading",
+  "bulletItem",
   "taskList",
+  "blockquote",
+  "codeBlock",
+  "horizontalRule",
 ]);
 
-export function findInteractiveBlock(el: Element | null): HTMLElement | null {
+export function findDraggableBlock(el: Element | null): HTMLElement | null {
   if (!el) return null;
 
   let node: HTMLElement | null = el as HTMLElement;
-  const foundContainers: HTMLElement[] = [];
 
   while (node && node !== document.body) {
-    if (
-      node.classList?.contains("looma-block") &&
-      node.dataset.type &&
-      LIST_CONTAINER_TYPES.has(node.dataset.type)
-    ) {
-      foundContainers.push(node);
+    const type = node.dataset?.type;
+
+    // 🔥 ESTA es la condición correcta
+    if (type && DRAGGABLE_BLOCK_TYPES.has(type)) {
+      return node;
     }
+
     node = node.parentElement;
   }
 
-  if (foundContainers.length > 0) {
-    return foundContainers[foundContainers.length - 1];
-  }
-
-  return el.closest(
-    `
-    .looma-block[data-type="paragraph"],
-    .looma-block[data-type="blockquote"],
-    .looma-block[data-type="codeBlock"],
-    .looma-block[data-type="horizontalRule"],
-    .looma-block[data-type^="heading"]
-    `
-  ) as HTMLElement | null;
+  return null;
 }

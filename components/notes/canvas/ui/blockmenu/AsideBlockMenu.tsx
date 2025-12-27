@@ -10,6 +10,7 @@ import { Menu } from "@/components/ui/Menu";
 import { MenuDrag } from "./MenuDrag";
 import { InsertMenuContent } from "./InsertMenuContent";
 import { useAsideBlockMenu } from "./hook/useAsideBlockMenu";
+import { normalizeDragHandlePos } from "./helper/normalizeDragPosToListItem";
 
 type Props = {
   editor: Editor;
@@ -34,7 +35,16 @@ export function AsideBlockMenu({ editor }: Props) {
         placement: "left",
         middleware: [offset(8), shift()],
       }}
-      onNodeChange={({ pos }) => onNodeChange(pos)}
+      onNodeChange={({ pos }) => {
+        const safePos = normalizeDragHandlePos(editor, pos);
+
+        if (safePos == null) {
+          onNodeChange(null);
+          return;
+        }
+
+        onNodeChange(safePos);
+      }}
     >
       <div className="flex items-center gap-1">
         {animatedTop != null && activeBlockRect && uiState === "idle" && (

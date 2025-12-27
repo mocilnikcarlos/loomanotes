@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Editor } from "@tiptap/core";
 import { NodeSelection, TextSelection } from "prosemirror-state";
-import { findInteractiveBlock } from "../helper/findBlockElement";
+import { findDraggableBlock } from "../helper/findBlockElement";
 
 export type AsideUIState = "idle" | "insert" | "actions";
 
@@ -93,7 +93,7 @@ export function useAsideBlockMenu(editor: Editor) {
     const root = editor.view.dom;
 
     function onMouseMove(e: MouseEvent) {
-      const block = findInteractiveBlock(e.target as Element | null);
+      const block = findDraggableBlock(e.target as Element | null);
 
       if (!block || block === lastBlockRef.current) return;
 

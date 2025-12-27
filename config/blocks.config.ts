@@ -11,24 +11,68 @@ import {
   CheckSquare,
 } from "lucide-react";
 
-import type { Editor } from "@tiptap/core";
+import type { Editor, JSONContent } from "@tiptap/core";
+import type { LucideIcon } from "lucide-react";
+
+/* -------------------------------------------------------------------------- */
+/*                                    Types                                   */
+/* -------------------------------------------------------------------------- */
+
+export type BlockType =
+  | "paragraph"
+  | "heading"
+  | "bulletItem"
+  | "taskList"
+  | "blockquote"
+  | "codeBlock"
+  | "horizontalRule";
 
 export type BlockConfig = {
   id: string;
-  type: string;
+  type: BlockType;
   title: string;
   description?: string;
   label?: string;
-  icon: any;
+  icon: LucideIcon;
 
-  // SlashMenu (transforma)
+  /** Transforma el bloque actual */
   insert: (editor: Editor) => void;
 
-  // PlusMenu (inserta debajo)
-  content?: any;
+  /** Inserta contenido nuevo (PlusMenu) */
+  content?: JSONContent;
 
-  level?: number;
+  /** Solo para headings */
+  level?: 1 | 2 | 3;
 };
+
+/* -------------------------------------------------------------------------- */
+/*                               Block factories                              */
+/* -------------------------------------------------------------------------- */
+
+const createHeadingBlock = (
+  level: 1 | 2 | 3,
+  icon: LucideIcon,
+  title: string
+): BlockConfig => ({
+  id: `heading_${level}`,
+  type: "heading",
+  level,
+  title,
+  description: "Encabezado para la sección",
+  label: "Heading",
+  icon,
+  insert: (editor) => {
+    editor.chain().focus().setNode("heading", { level }).run();
+  },
+  content: {
+    type: "heading",
+    attrs: { level },
+  },
+});
+
+/* -------------------------------------------------------------------------- */
+/*                                   Blocks                                   */
+/* -------------------------------------------------------------------------- */
 
 export const BLOCKS: BlockConfig[] = [
   // --------------------
@@ -41,7 +85,7 @@ export const BLOCKS: BlockConfig[] = [
     description: "Empieza a escribir libremente",
     label: "Paragraph",
     icon: CaseSensitive,
-    insert: (editor: Editor) => {
+    insert: (editor) => {
       editor.chain().focus().setNode("paragraph").run();
     },
     content: {
@@ -50,98 +94,69 @@ export const BLOCKS: BlockConfig[] = [
   },
 
   // --------------------
-  // Headings (TRANSFORM)
+  // Headings
   // --------------------
-  {
-    id: "heading_1",
-    type: "heading",
-    level: 1,
-    title: "Titulo grande",
-    description: "Encabezado grande para la sección",
-    label: "Heading",
-    icon: Heading1,
-    insert: (editor: Editor) => {
-      editor.chain().focus().setNode("heading", { level: 1 }).run();
-    },
-    content: {
-      type: "heading",
-      attrs: { level: 1 },
-    },
-  },
-  {
-    id: "heading_2",
-    type: "heading",
-    level: 2,
-    title: "Titulo mediano",
-    description: "Encabezado mediano para la sección",
-    label: "Heading",
-    icon: Heading2,
-    insert: (editor: Editor) => {
-      editor.chain().focus().setNode("heading", { level: 2 }).run();
-    },
-    content: {
-      type: "heading",
-      attrs: { level: 2 },
-    },
-  },
-  {
-    id: "heading_3",
-    type: "heading",
-    level: 3,
-    title: "Titulo pequeño",
-    description: "Encabezado pequeño para la sección",
-    label: "Heading",
-    icon: Heading3,
-    insert: (editor: Editor) => {
-      editor.chain().focus().setNode("heading", { level: 3 }).run();
-    },
-    content: {
-      type: "heading",
-      attrs: { level: 3 },
-    },
-  },
+  createHeadingBlock(1, Heading1, "Título grande"),
+  createHeadingBlock(2, Heading2, "Título mediano"),
+  createHeadingBlock(3, Heading3, "Título pequeño"),
 
   // --------------------
   // Lists
   // --------------------
   {
-    id: "bulletList",
-    type: "bulletList",
+    id: "bulletItem",
+    type: "bulletItem",
     title: "Lista con viñetas",
-    description: "Creá una lista sin numerar",
+    description: "Ítem de lista (estilo BlockNote)",
     label: "List",
     icon: List,
-    insert: (editor: Editor) => {
-      editor.chain().focus().toggleBulletList().run();
+
+    // TRANSFORMA el bloque actual
+    insert: (editor) => {
+      editor
+        .chain()
+        .focus()
+        .setNode("bulletItem", {
+          listType: "bullet",
+          indent: 0,
+        })
+        .run();
     },
+
+    // INSERTA un bloque nuevo
     content: {
-      type: "bulletList",
-      content: [
-        {
-          type: "listItem",
-          content: [{ type: "paragraph" }],
-        },
-      ],
+      type: "bulletItem",
+      attrs: {
+        listType: "bullet",
+        indent: 0,
+      },
     },
   },
   {
-    id: "orderedList",
-    type: "orderedList",
+    id: "orderedItem",
+    type: "bulletItem",
     title: "Lista numerada",
-    description: "Creá una lista ordenada",
+    description: "Ítem numerado",
     label: "Ordered list",
     icon: ListOrdered,
-    insert: (editor: Editor) => {
-      editor.chain().focus().toggleOrderedList().run();
+
+    insert: (editor) => {
+      editor
+        .chain()
+        .focus()
+        .setNode("bulletItem", {
+          listType: "ordered",
+          indent: 0,
+        })
+        .run();
     },
+
     content: {
-      type: "orderedList",
-      content: [
-        {
-          type: "listItem",
-          content: [{ type: "paragraph" }],
-        },
-      ],
+      type: "bulletItem",
+      attrs: {
+        listType: "ordered",
+        indent: 0,
+      },
     },
   },
   {
@@ -151,7 +166,7 @@ export const BLOCKS: BlockConfig[] = [
     description: "Checklist con tareas marcables",
     label: "Task list",
     icon: CheckSquare,
-    insert: (editor: Editor) => {
+    insert: (editor) => {
       editor.chain().focus().toggleTaskList().run();
     },
     content: {
@@ -175,7 +190,7 @@ export const BLOCKS: BlockConfig[] = [
     description: "Creá un bloque de cita",
     label: "Blockquote",
     icon: MessageSquareQuote,
-    insert: (editor: Editor) => {
+    insert: (editor) => {
       editor.chain().focus().toggleBlockquote().run();
     },
     content: {
@@ -190,7 +205,7 @@ export const BLOCKS: BlockConfig[] = [
     description: "Escribí código con formato",
     label: "Code",
     icon: Code,
-    insert: (editor: Editor) => {
+    insert: (editor) => {
       editor.chain().focus().setCodeBlock({ language: "javascript" }).run();
     },
     content: {
@@ -203,7 +218,7 @@ export const BLOCKS: BlockConfig[] = [
     type: "horizontalRule",
     title: "Separador",
     icon: Minus,
-    insert: (editor: Editor) => {
+    insert: (editor) => {
       editor
         .chain()
         .focus()
