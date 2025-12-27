@@ -8,16 +8,13 @@ export const BulletItem = Node.create({
   inline: false,
   selectable: true,
   defining: true,
-
-  // 👇 clave: lo trata como textblock
-  marks: "_",
-  isolating: false,
+  isolating: true,
 
   addAttributes() {
     return {
       indent: { default: 0 },
-      listType: { default: "bullet" }, // bullet | ordered | task
-      checked: { default: false }, // si querés task
+      listType: { default: "bullet" },
+      checked: { default: false },
     };
   },
 

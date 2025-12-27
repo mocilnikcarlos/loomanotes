@@ -1,0 +1,32 @@
+[data-type="bulletItem"] {
+    display: block;
+    padding-left: 24px;
+    margin: 0;
+    white-space: pre-wrap;
+    position: relative;
+}
+
+[data-type="bulletItem"][indent="1"] {
+    margin: 0;
+    padding-left: 44px;
+}
+
+[data-type="bulletItem"][indent="2"] {
+    margin: 0;
+    padding-left: 64px;
+}
+
+[data-type="bulletItem"]::before{
+    content: "●";
+    margin-right: 8px;
+    font-size: 1em;
+    color: var(--primary);
+}
+
+[data-type="bulletItem"][indent="1"]::before {
+    content: "○";
+}
+
+[data-type="bulletItem"][indent="2"]::before {
+    content: "-";
+}
