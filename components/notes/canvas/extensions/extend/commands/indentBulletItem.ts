@@ -1,5 +1,6 @@
 import { Command } from "@tiptap/core";
 import { findAncestorOfType } from "./findAncestorOfType";
+import { findAncestorListItem } from "../../../ui/blockmenu/helper/findAncestorListItem";
 
 const MAX_INDENT = 2;
 
@@ -7,7 +8,7 @@ export const indentBulletItem =
   (dir: 1 | -1): Command =>
   ({ state, dispatch }) => {
     const { $from } = state.selection;
-    const found = findAncestorOfType($from, "bulletItem");
+    const found = findAncestorListItem($from);
     if (!found) return false;
 
     const { node, pos } = found;

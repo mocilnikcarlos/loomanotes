@@ -22,6 +22,7 @@ export type BlockType =
   | "paragraph"
   | "heading"
   | "bulletItem"
+  | "orderedItem"
   | "taskList"
   | "blockquote"
   | "codeBlock"
@@ -134,7 +135,7 @@ export const BLOCKS: BlockConfig[] = [
   },
   {
     id: "orderedItem",
-    type: "bulletItem",
+    type: "orderedItem",
     title: "Lista numerada",
     description: "Ítem numerado",
     label: "Ordered list",
@@ -144,7 +145,7 @@ export const BLOCKS: BlockConfig[] = [
       editor
         .chain()
         .focus()
-        .setNode("bulletItem", {
+        .setNode("orderedItem", {
           listType: "ordered",
           indent: 0,
         })
@@ -152,7 +153,7 @@ export const BLOCKS: BlockConfig[] = [
     },
 
     content: {
-      type: "bulletItem",
+      type: "orderedItem",
       attrs: {
         listType: "ordered",
         indent: 0,

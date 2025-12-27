@@ -1,6 +1,7 @@
 import { Command } from "@tiptap/core";
 import { TextSelection } from "prosemirror-state";
 import { findAncestorOfType } from "./findAncestorOfType";
+import { findAncestorListItem } from "../../../ui/blockmenu/helper/findAncestorListItem";
 
 const MAX_INDENT = 2;
 
@@ -8,7 +9,8 @@ export const splitBulletItem: Command = ({ state, dispatch }) => {
   const { selection } = state;
   const { $from } = selection;
 
-  const found = findAncestorOfType($from, "bulletItem");
+  const found = findAncestorListItem($from);
+
   if (!found) return false;
 
   const { node, depth, pos } = found;

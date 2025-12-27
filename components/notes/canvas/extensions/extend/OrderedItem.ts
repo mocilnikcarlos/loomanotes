@@ -1,7 +1,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 
-export const BulletItem = Node.create({
-  name: "bulletItem",
+export const OrderedItem = Node.create({
+  name: "orderedItem",
 
   group: "block",
   content: "inline*",
@@ -13,18 +13,20 @@ export const BulletItem = Node.create({
   addAttributes() {
     return {
       indent: { default: 0 },
-      listType: { default: "bullet" },
+      listType: { default: "ordered" },
     };
   },
 
   parseHTML() {
-    return [{ tag: 'div[data-type="bulletItem"]' }];
+    return [{ tag: 'div[data-type="orderedItem"]' }];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
       "div",
-      mergeAttributes(HTMLAttributes, { "data-type": "bulletItem" }),
+      mergeAttributes(HTMLAttributes, {
+        "data-type": "orderedItem",
+      }),
       0,
     ];
   },

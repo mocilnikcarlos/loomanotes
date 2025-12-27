@@ -16,14 +16,16 @@ import { BlockView } from "../nodeview/BlockView";
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
 import Blockquote from "@tiptap/extension-blockquote";
-import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
 import { TaskList, TaskItem } from "@tiptap/extension-list";
 import { CodeBlockWithWrapper } from "./CodeBlockWithWrapper";
+import { BulletItem } from "./extend/BulletItem";
+import { OrderedItem } from "./extend/OrderedItem";
 
 // Commands / Custom
 import { SlashCommand } from "./SlashCommand";
 import { LinkBoundaryExtension } from "./LinkBoundaryExtension";
 import { ClearMarksOnEnterExtension } from "./ClearMarksOnEnterExtension";
+import { BulletItemBehavior } from "./extend/commands/BulletItemBehavior";
 
 // Marks
 import Bold from "@tiptap/extension-bold";
@@ -40,8 +42,6 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import { FontSize } from "./FontSizeExtensions";
 import { LinkWithTooltip } from "./LinkWithTooltip";
-import { BulletItem } from "./extend/BulletItem";
-import { BulletItemBehavior } from "./extend/commands/BulletItemBehavior";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Lowlight                                  */
@@ -91,6 +91,7 @@ export function createEditorExtensions() {
     // Lists (✅ draggable por item, no por contenedor)
     // ------------------------------------------------------------------
     BulletItem,
+    OrderedItem,
     BulletItemBehavior,
 
     withBlockView(TaskList),

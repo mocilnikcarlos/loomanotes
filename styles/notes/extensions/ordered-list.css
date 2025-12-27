@@ -1,67 +1,71 @@
-.looma-block[data-type="orderedList"] {
-    counter-reset: ol-level-1;
-    margin: 0;
-    padding-left: 25px;
+/* =========================
+   RESET GLOBAL
+   ========================= */
+
+.ProseMirror {
+    counter-reset: ol-1;
 }
 
-/* Level 1 */
-.looma-block[data-type="orderedList"] li {
+
+/* =========================
+   BASE ITEM
+   ========================= */
+
+[data-type="orderedItem"] {
+    display: block;
     position: relative;
 }
 
-.looma-block[data-type="orderedList"] li::marker {
-    content: "";
-}
-
-.looma-block[data-type="orderedList"] li::before {
-    counter-increment: ol-level-1;
-    content: counter(ol-level-1) ".";
+[data-type="orderedItem"]::before {
     position: absolute;
-    left: 0;
-    top: 0;
-    color: var(--primary);
+    left: 24px;
     font-weight: 600;
+    color: var(--primary);
 }
 
-/* Level 2 */
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] {
-    counter-reset: ol-level-2;
-}
 
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] li::before {
-    counter-increment: ol-level-2;
-    content: counter(ol-level-1) "." counter(ol-level-2);
-}
+/* =========================
+   NIVEL 0 (PADRE)
+   ========================= */
 
-/* Level 3 */
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] {
-    counter-reset: ol-level-3;
-}
-
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] li::before {
-    counter-increment: ol-level-3;
-    content: counter(ol-level-1) "."
-        counter(ol-level-2) "."
-        counter(ol-level-3);
-}
-
-/* Level 1 */
-.looma-block[data-type="orderedList"] [data-type="paragraph"] {
-    padding-left: 25px;
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-
-/* Level 2 */
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] [data-type="paragraph"] {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    padding-left: 32px;
-}
-
-/* Level 3 */
-.looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] .looma-block[data-type="orderedList"] [data-type="paragraph"] {
+[data-type="orderedItem"][indent="0"] {
+    counter-increment: ol-1;
+    counter-reset: ol-2;
     padding-left: 48px;
-    margin-top: 5px;
-    margin-bottom: 0;
+}
+
+[data-type="orderedItem"][indent="0"]::before {
+    content: counter(ol-1) ".";
+}
+
+
+/* =========================
+   NIVEL 1 (HIJO)
+   ========================= */
+
+[data-type="orderedItem"][indent="1"] {
+    padding-left: 60px;
+    counter-increment: ol-2;
+    counter-reset: ol-3;
+}
+
+[data-type="orderedItem"][indent="1"]::before {
+    content: counter(ol-1) "." counter(ol-2);
+}
+
+
+/* =========================
+   NIVEL 2 (NIETO)
+   ========================= */
+
+[data-type="orderedItem"][indent="2"] {
+    padding-left: 76px;
+    counter-increment: ol-3;
+}
+
+[data-type="orderedItem"][indent="2"]::before {
+    content:
+        counter(ol-1) "."
+        counter(ol-2) "."
+        counter(ol-3);
 }

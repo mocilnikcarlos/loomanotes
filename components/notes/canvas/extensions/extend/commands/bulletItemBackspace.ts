@@ -1,12 +1,15 @@
 import { Command } from "@tiptap/core";
 import { TextSelection } from "prosemirror-state";
 import { findAncestorOfType } from "./findAncestorOfType";
+import { findAncestorListItem } from "../../../ui/blockmenu/helper/findAncestorListItem";
+import { LIST_ITEM_TYPES } from "../../../ui/blockmenu/helper/listItemTypes";
 
 export const bulletItemBackspace: Command = ({ state, dispatch }) => {
   const { selection } = state;
   const { $from } = selection;
 
-  const found = findAncestorOfType($from, "bulletItem");
+  const found = findAncestorListItem($from);
+
   if (!found) return false;
 
   const { node, pos, depth } = found;
@@ -32,7 +35,7 @@ export const bulletItemBackspace: Command = ({ state, dispatch }) => {
     const $pos = state.doc.resolve(pos);
     const before = $pos.nodeBefore;
 
-    if (before && before.type.name === "bulletItem") {
+    if (before && LIST_ITEM_TYPES.has(before.type.name)) {
       const prevIndent = before.attrs.indent ?? 0;
 
       // Solo merge si el anterior es padre o hermano lógico

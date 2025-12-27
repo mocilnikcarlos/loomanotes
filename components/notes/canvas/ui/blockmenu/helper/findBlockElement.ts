@@ -2,6 +2,7 @@ const DRAGGABLE_BLOCK_TYPES = new Set([
   "paragraph",
   "heading",
   "bulletItem",
+  "orderedItem",
   "taskList",
   "blockquote",
   "codeBlock",
