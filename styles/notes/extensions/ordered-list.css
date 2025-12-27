@@ -1,15 +1,7 @@
-/* =========================
-   RESET GLOBAL
-   ========================= */
-
 .ProseMirror {
     counter-reset: ol-1;
 }
 
-
-/* =========================
-   BASE ITEM
-   ========================= */
 
 [data-type="orderedItem"] {
     display: block;
@@ -24,10 +16,6 @@
 }
 
 
-/* =========================
-   NIVEL 0 (PADRE)
-   ========================= */
-
 [data-type="orderedItem"][indent="0"] {
     counter-increment: ol-1;
     counter-reset: ol-2;
@@ -39,10 +27,6 @@
 }
 
 
-/* =========================
-   NIVEL 1 (HIJO)
-   ========================= */
-
 [data-type="orderedItem"][indent="1"] {
     padding-left: 60px;
     counter-increment: ol-2;
@@ -53,10 +37,6 @@
     content: counter(ol-1) "." counter(ol-2);
 }
 
-
-/* =========================
-   NIVEL 2 (NIETO)
-   ========================= */
 
 [data-type="orderedItem"][indent="2"] {
     padding-left: 76px;
