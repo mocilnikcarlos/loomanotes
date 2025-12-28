@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.14.1](/compare/v0.14.0...v0.14.1) (2025-12-28)
+
+
+### Bug Fixes
+
+* **root:** css + create blockquote node 943d1fc
+* **root:** css + toolbar 9188caf
+
 # [0.14.0](/compare/v0.13.0...v0.14.0) (2025-12-28)
 
 
