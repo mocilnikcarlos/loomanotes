@@ -3,6 +3,8 @@
 import type { Editor } from "@tiptap/core";
 import { BLOCKS } from "@/config/blocks.config";
 import { BlockMenuItem } from "./BlockMenuItem";
+import { useT } from "@/hooks/utils/useT";
+import { addToast } from "@heroui/toast";
 
 type Props = {
   editor: Editor;
@@ -11,6 +13,8 @@ type Props = {
 };
 
 export function InsertMenuContent({ editor, onClose, blockPos }: Props) {
+  const { t } = useT();
+
   function insertBlockBelow(editor: Editor, blockPos: number, content: any) {
     const { state, view } = editor;
 
@@ -24,6 +28,10 @@ export function InsertMenuContent({ editor, onClose, blockPos }: Props) {
     const tr = state.tr.insert(insertPos, node);
     view.dispatch(tr);
 
+    addToast({
+      title: t("canvas.asideMenuPlus.toast"),
+    });
+
     editor.commands.focus(insertPos + 1);
   }
 
@@ -33,8 +41,8 @@ export function InsertMenuContent({ editor, onClose, blockPos }: Props) {
         <BlockMenuItem
           key={block.id}
           icon={block.icon}
-          title={block.title}
-          description={block.description}
+          title={t(block.title)}
+          description={block.description ? t(block.description) : undefined}
           onSelect={() => {
             if (blockPos == null) return;
             if (!block.content) return;

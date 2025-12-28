@@ -9,6 +9,7 @@ import {
 import { addToast } from "@heroui/toast";
 import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
 import { EditorMenuRow } from "../../shared/EditorMenuRow";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -16,12 +17,14 @@ type Props = {
 };
 
 export function TextToolbarMoreMenu({ editor, onClose }: Props) {
+  const { t } = useT();
+
   function handleCopy() {
     editor.commands.focus();
     editor.view.dom.ownerDocument.execCommand("copy");
 
     addToast({
-      title: "Copiado al portapapeles",
+      title: t("canvas.toolbar.more.toast"),
     });
 
     onClose();
@@ -34,7 +37,7 @@ export function TextToolbarMoreMenu({ editor, onClose }: Props) {
   return (
     <div className="flex flex-col gap-1 p-1">
       <EditorMenuRow
-        label="Subíndice"
+        label={t("canvas.toolbar.more.labelSubscript")}
         icon={SubIcon}
         active={editor.isActive("subscript")}
         onClick={() => {
@@ -44,7 +47,7 @@ export function TextToolbarMoreMenu({ editor, onClose }: Props) {
       />
 
       <EditorMenuRow
-        label="Superíndice"
+        label={t("canvas.toolbar.more.labelSuperscript")}
         icon={SuperIcon}
         active={editor.isActive("superscript")}
         onClick={() => {
@@ -55,7 +58,11 @@ export function TextToolbarMoreMenu({ editor, onClose }: Props) {
 
       <AsideDivider />
 
-      <EditorMenuRow label="Copiar" icon={Copy} onClick={handleCopy} />
+      <EditorMenuRow
+        label={t("canvas.toolbar.more.labelCopy")}
+        icon={Copy}
+        onClick={handleCopy}
+      />
     </div>
   );
 }

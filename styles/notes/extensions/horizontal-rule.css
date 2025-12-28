@@ -1,5 +1,5 @@
 
-.ProseMirror hr {
+[data-type="horizontalRule"] {
     border: none;
     height: 1px;
     margin: 2rem 0;
@@ -12,7 +12,7 @@
             transparent);
 }
 
-.ProseMirror hr+p.is-empty {
+[data-type="horizontalRule"].is-empty {
     min-height: 0;
     margin-top: 0;
 }

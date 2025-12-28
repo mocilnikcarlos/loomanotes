@@ -1,6 +1,7 @@
 import { BASE_COLORS, resolveColor } from "@/config/editor.colors";
 import { Editor } from "@tiptap/core";
 import { ColorButton } from "./ColorButton";
+import { useT } from "@/hooks/utils/useT";
 
 type Variant = "text" | "highlight";
 
@@ -15,10 +16,14 @@ export function ColorGrid({
   activeColor: string | null;
   onSelect: (color: string | null) => void;
 }) {
+  const { t } = useT();
+
   return (
     <section className="flex flex-col gap-2">
       <span className="text-xs font-bold uppercase">
-        {variant === "text" ? "Text color" : "Highlight color"}
+        {variant === "text"
+          ? t("canvas.toolbar.color.colorTitle")
+          : t("canvas.toolbar.color.highlightTitle")}
       </span>
 
       <div className="grid grid-cols-5 gap-2">

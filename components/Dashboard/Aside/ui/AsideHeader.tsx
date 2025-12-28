@@ -7,7 +7,10 @@ export function AsideHeader() {
         <span className="text-lg font-semibold text-foreground">
           LoomaNotes
         </span>
-        <span className="text-xs text-subtitle">v2.1.0</span>
+
+        <span className="text-xs text-subtitle">
+          v{process.env.NEXT_PUBLIC_APP_VERSION}
+        </span>
       </div>
     </div>
   );

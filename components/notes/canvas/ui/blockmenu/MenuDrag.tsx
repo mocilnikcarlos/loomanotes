@@ -5,6 +5,8 @@ import { CopyPlus, Trash } from "lucide-react";
 import { addToast } from "@heroui/toast";
 import { EditorMenuRow } from "../shared/EditorMenuRow";
 import { TextSelection } from "@tiptap/pm/state";
+import { useT } from "@/hooks/utils/useT";
+import { NodeSelection } from "@tiptap/pm/state";
 
 type Props = {
   editor: Editor;
@@ -13,6 +15,8 @@ type Props = {
 };
 
 export function MenuDrag({ editor, onClose, blockPos }: Props) {
+  const { t } = useT();
+
   function duplicateBlockAtPos(editor: Editor, blockPos: number) {
     const { state, view } = editor;
     const node = state.doc.nodeAt(blockPos);
@@ -33,30 +37,53 @@ export function MenuDrag({ editor, onClose, blockPos }: Props) {
       editor.commands.focus();
     });
 
-    addToast({ title: "Bloque duplicado" });
+    addToast({ title: t("canvas.asideMenuDrag.toastDouble") });
   }
 
-  function deleteBlockAtPos(editor: Editor, blockPos: number) {
+  function deleteSelectedBlock(editor: Editor) {
     const { state, view } = editor;
-    const node = state.doc.nodeAt(blockPos);
-    if (!node) return;
+    const { selection } = state;
+    let tr = state.tr;
 
-    const from = blockPos;
-    const to = blockPos + node.nodeSize;
+    // Caso 1: NodeSelection (ideal)
+    if (selection instanceof NodeSelection) {
+      const from = selection.from;
+      const to = selection.to;
 
-    const tr = state.tr.delete(from, to);
-    const nextPos = Math.min(from, tr.doc.content.size);
+      tr = tr.delete(from, to);
+    } else {
+      // Caso 2: TextSelection / GapCursor
+      const $from = selection.$from;
 
+      // Preferimos nodeAfter (HR suele estar ahí)
+      let node = $from.nodeAfter;
+      let from = $from.pos;
+      let to = from + (node?.nodeSize ?? 0);
+
+      // Fallback: nodeBefore
+      if (!node) {
+        node = $from.nodeBefore;
+        if (!node) return;
+
+        to = $from.pos;
+        from = to - node.nodeSize;
+      }
+
+      tr = tr.delete(from, to);
+    }
+
+    const nextPos = Math.min(tr.selection.from, tr.doc.content.size);
     tr.setSelection(TextSelection.near(tr.doc.resolve(nextPos)));
+
     view.dispatch(tr);
 
-    addToast({ title: "Bloque eliminado" });
+    addToast({ title: t("canvas.asideMenuDrag.toastDelete") });
   }
 
   return (
     <div className="flex flex-col gap-1 p-1 w-56">
       <EditorMenuRow
-        label="Duplicar bloque"
+        label={t("canvas.asideMenuDrag.labelDouble")}
         icon={CopyPlus}
         onClick={() => {
           if (blockPos == null) return;
@@ -67,12 +94,11 @@ export function MenuDrag({ editor, onClose, blockPos }: Props) {
       />
 
       <EditorMenuRow
-        label="Eliminar bloque"
+        label={t("canvas.asideMenuDrag.labelDelete")}
         icon={Trash}
         danger
         onClick={() => {
-          if (blockPos == null) return;
-          deleteBlockAtPos(editor, blockPos);
+          deleteSelectedBlock(editor);
           onClose();
           requestAnimationFrame(() => editor.commands.focus());
         }}
