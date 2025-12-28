@@ -1,16 +1,4 @@
 {
-  "dashboard": {
-    "notebook": {
-      "title": "Notas",
-      "empty": "Todavía no hay notas creadas.",
-      "buttonNewNote": "Nueva nota",
-      "placeholder": "Mi nota"
-    },
-    "note": {
-      "tooltipDownload": "Descargar nota",
-      "tooltipFavorite": "Agregar a favoritos"
-    }
-  },
   "auth": {
     "login": {
       "buttonLogin": "Continuar con Google"
@@ -43,6 +31,125 @@
         "buttonCancel": "Cancelar",
         "buttonDelete": "Eliminar"
       }
+    }
+  },
+  "dashboard": {
+    "notebook": {
+      "title": "Notas",
+      "empty": "Todavía no hay notas creadas.",
+      "buttonNewNote": "Nueva nota",
+      "placeholder": "Mi nota"
+    },
+    "note": {
+      "tooltipDownload": "Descargar nota",
+      "tooltipFavorite": "Agregar a favoritos"
+    }
+  },
+
+  "canvas": {
+    "typeBlock": {
+      "paragraph": {
+        "title": "Texto",
+        "description": "Empieza a escribir libremente"
+      },
+      "heading": {
+        "description": "Encabezado para la sección",
+
+        "1": {
+          "title": "Título grande"
+        },
+        "2": {
+          "title": "Título mediano"
+        },
+        "3": {
+          "title": "Título pequeño"
+        }
+      },
+      "bullet": {
+        "title": "Lista con viñetas",
+        "description": "Ítem de lista"
+      },
+      "ordered": {
+        "title": "Lista numerada",
+        "description": "Ítem numerado"
+      },
+      "task": {
+        "title": "Lista de tareas",
+        "description": "Ítem de tarea marcable"
+      },
+      "blockquote": {
+        "title": "Cita",
+        "description": "Creá un bloque de cita"
+      },
+      "codeblock": {
+        "title": "Bloque de código",
+        "description": "Escribí código con formato"
+      },
+      "divider": {
+        "title": "Separador",
+        "description": "Intoduce un separador"
+      }
+    },
+    "toolbar": {
+      "typeBlock": {
+        "tooltip": "Tipo de bloque",
+        "titleMenu": "Cambiar tipo de bloque"
+      },
+      "color": {
+        "tooltip": "Color de texto",
+        "appliedTitle": "Estilo aplicado",
+        "colorTitle": "Color del texto",
+        "highlightTitle": "Color de resaltador"
+      },
+      "font": {
+        "tooltipSize": "Tamaño del texto",
+        "tooltipFont": "Fuente"
+      },
+      "inlineStyle": {
+        "tooltipBold": "Negrita",
+        "tooltipItalic": "Cursiva",
+        "tooltipStrike": "Tachado",
+        "tooltipUnderline": "Subrayado",
+        "tooltipCode": "Código"
+      },
+      "link": {
+        "tooltip": "Enlace",
+        "buttonRemove": "Quitar",
+        "buttonApply": "Aplicar",
+        "placeholder": "https://www.dominio.com"
+      },
+      "more": {
+        "tooltip": "Más opciones",
+        "toast": "Copiado al portapapeles",
+        "labelSubscript": "Subíndice",
+        "labelSuperscript": "Superíndice",
+        "labelCopy": "Copiar"
+      },
+      "align": {
+        "tooltipLeft": "Alineación izquierda",
+        "tooltipCenter": "Centrar",
+        "tooltipRight": "Alineación derecha",
+        "tooltipJustify": "Justificar"
+      }
+    },
+    "asideMenuPlus": {
+      "titleMenu": "Agregá un nuevo bloque",
+      "toast": "Nuevo bloque agregado"
+    },
+    "asideMenuDrag": {
+      "labelDouble": "Duplicar bloque",
+      "toastDouble": "Bloque duplicado",
+      "labelDelete": "Eliminar bloque",
+      "toastDelete": "Bloque eliminado"
+    },
+    "placeholder": {
+      "paragraph": "Escribí / o hacé clic en el botón + para agregar contenido",
+      "heading": "Escribí un título",
+      "bullet": "Lista",
+      "ordered": "Lista",
+      "task": "Nueva tarea",
+      "blockquote": "Escribí una cita",
+      "code": "Escribí código…"
     }
   }
 }

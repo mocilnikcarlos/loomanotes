@@ -25,11 +25,7 @@ export function SelectionToolbar({ editor }: Props) {
       data-text-toolbar
       onMouseDown={(e) => e.stopPropagation()}
       style={{ top: position.top, left: position.left }}
-      className={`
-        absolute z-50 flex items-center gap-1 p-1 rounded-full
-        bg-[var(--toolbar-bg)]
-        border border-[var(--toolbar-border)]
-        shadow-[var(--toolbar-shadow)]
+      className={`absolute z-50 flex items-center gap-1 p-1 rounded-full bg-[var(--toolbar-bg)] border border-[var(--toolbar-border)] shadow-[var(--toolbar-shadow)]
         ${
           isPositioned
             ? "transition-opacity transition-transform duration-150 ease-out"

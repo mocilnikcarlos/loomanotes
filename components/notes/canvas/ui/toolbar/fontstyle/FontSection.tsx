@@ -8,6 +8,7 @@ import {
   TIPTAP_FONT_FAMILIES,
   TIPTAP_FONT_SIZES,
 } from "@/config/tiptapfont.config";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -15,6 +16,7 @@ type Props = {
 
 export function FontSection({ editor }: Props) {
   const textStyle = editor.getAttributes("textStyle");
+  const { t } = useT();
 
   const currentFontFamily =
     TIPTAP_FONT_FAMILIES.find((f) => f.cssValue === textStyle?.fontFamily)
@@ -29,7 +31,7 @@ export function FontSection({ editor }: Props) {
       {/* Font family */}
       <Menu
         trigger={
-          <Tooltip content="Fuente">
+          <Tooltip content={t("canvas.toolbar.font.tooltipFont")}>
             <Button
               onMouseDown={(e) => e.preventDefault()}
               size="sm"
@@ -65,7 +67,7 @@ export function FontSection({ editor }: Props) {
       {/* Font size */}
       <Menu
         trigger={
-          <Tooltip content="Tamaño de texto">
+          <Tooltip content={t("canvas.toolbar.font.tooltipSize")}>
             <Button
               onMouseDown={(e) => e.preventDefault()}
               size="sm"

@@ -70,7 +70,15 @@ function withBlockView(node: Node) {
 /*                             Extension factory                              */
 /* -------------------------------------------------------------------------- */
 
-export function createEditorExtensions() {
+export function createEditorExtensions(placeholders: {
+  paragraph: string;
+  heading: string;
+  bulletItem: string;
+  orderedItem: string;
+  taskItem: string;
+  blockquote: string;
+  codeBlock: string;
+}) {
   return [
     // ------------------------------------------------------------------
     // StarterKit (desactivado selectivamente)
@@ -95,7 +103,7 @@ export function createEditorExtensions() {
     // ------------------------------------------------------------------
     withBlockView(Paragraph),
     withBlockView(Heading),
-    // withBlockView(Blockquote),
+    withBlockView(HorizontalRule),
 
     // ------------------------------------------------------------------
     // Lists (✅ draggable por item, no por contenedor)
@@ -114,11 +122,11 @@ export function createEditorExtensions() {
     // ------------------------------------------------------------------
     // Misc
     // ------------------------------------------------------------------
-    HorizontalRule.configure({
-      HTMLAttributes: {
-        "data-type": "horizontalRule",
-      },
-    }),
+    // HorizontalRule.configure({
+    //   HTMLAttributes: {
+    //     "data-type": "horizontalRule",
+    //   },
+    // }),
     Dropcursor,
 
     // ------------------------------------------------------------------
@@ -136,26 +144,19 @@ export function createEditorExtensions() {
       placeholder: ({ node }) => {
         switch (node.type.name) {
           case "paragraph":
-            return "Escribe / o haz clic en el botón + para agregar contenido";
-
+            return placeholders.paragraph;
           case "heading":
-            return "Escribe un título";
-
+            return placeholders.heading;
           case "bulletItem":
-            return "Lista";
-
+            return placeholders.bulletItem;
           case "orderedItem":
-            return "Lista";
-
+            return placeholders.orderedItem;
           case "taskItem":
-            return "Nueva tarea";
-
+            return placeholders.taskItem;
           case "blockquote":
-            return "Escribe una cita";
-
+            return placeholders.blockquote;
           case "codeBlock":
-            return "Escribe código…";
-
+            return placeholders.codeBlock;
           default:
             return "";
         }

@@ -7,6 +7,7 @@ import { SlashMenuOverlay } from "./ui/SlashMenuOverlay";
 import { createEditorExtensions } from "./extensions/editor.extensions";
 import { useEffect } from "react";
 import { SelectionToolbar } from "./ui/toolbar/SelectionToolbar";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   noteId: string;
@@ -16,8 +17,18 @@ type Props = {
 export default function Canvas({ noteId, initialContent }: Props) {
   const { onUpdate } = useSaveNoteContent(noteId);
 
+  const { t } = useT();
+
   const editor = useEditor({
-    extensions: createEditorExtensions(),
+    extensions: createEditorExtensions({
+      paragraph: t("canvas.placeholder.paragraph"),
+      heading: t("canvas.placeholder.heading"),
+      bulletItem: t("canvas.placeholder.bullet"),
+      orderedItem: t("canvas.placeholder.ordered"),
+      taskItem: t("canvas.placeholder.task"),
+      blockquote: t("canvas.placeholder.blockquote"),
+      codeBlock: t("canvas.placeholder.code"),
+    }),
     content: initialContent ?? "<p></p>",
     immediatelyRender: false,
     onUpdate,

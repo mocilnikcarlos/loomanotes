@@ -1,3 +1,4 @@
+"use client";
 import type { Editor } from "@tiptap/react";
 import { BASE_COLORS, resolveColor } from "@/config/editor.colors";
 import { RecentColor } from "./types";
@@ -23,47 +24,41 @@ export function HighlightColorSection({
     : null;
 
   return (
-    <section className="flex flex-col gap-2">
-      <span className="text-xs text-foreground font-bold uppercase">
-        Highlight Color
-      </span>
+    <div className="grid grid-cols-5 gap-2">
+      {BASE_COLORS.map((color) => {
+        const resolved = resolveColor(color);
+        const isActive = activeBaseColor === resolved;
 
-      <div className="grid grid-cols-5 gap-2">
-        {BASE_COLORS.map((color) => {
-          const resolved = resolveColor(color);
-          const isActive = activeBaseColor === resolved;
+        return (
+          <ColorButton
+            key={color}
+            color={resolved}
+            variant="highlight"
+            size="md"
+            isActive={isActive}
+            onClick={() => {
+              if (isActive) {
+                editor.chain().focus().unsetHighlight().run();
+              } else {
+                const highlightColor = toHighlightColor(resolved);
 
-          return (
-            <ColorButton
-              key={color}
-              color={resolved}
-              variant="highlight"
-              size="md"
-              isActive={isActive}
-              onClick={() => {
-                if (isActive) {
-                  editor.chain().focus().unsetHighlight().run();
-                } else {
-                  const highlightColor = toHighlightColor(resolved);
+                editor
+                  .chain()
+                  .focus()
+                  .toggleHighlight({ color: highlightColor })
+                  .run();
 
-                  editor
-                    .chain()
-                    .focus()
-                    .toggleHighlight({ color: highlightColor })
-                    .run();
-
-                  onPushRecent({
-                    type: "highlight",
-                    color: highlightColor,
-                  });
-                }
-              }}
-            >
-              <ColorButton.Highlight />
-            </ColorButton>
-          );
-        })}
-      </div>
-    </section>
+                onPushRecent({
+                  type: "highlight",
+                  color: highlightColor,
+                });
+              }
+            }}
+          >
+            <ColorButton.Highlight />
+          </ColorButton>
+        );
+      })}
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import type { Editor } from "@tiptap/react";
 import { Tooltip } from "@heroui/tooltip";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import { Bold, Italic, Strikethrough, Code, Underline } from "lucide-react";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -16,9 +17,11 @@ export function InlineStyleSection({ editor }: Props) {
   const isCode = editor.isActive("code");
   const isUnderline = editor.isActive("underline");
 
+  const { t } = useT();
+
   return (
     <>
-      <Tooltip content="Negrita">
+      <Tooltip content={t("canvas.toolbar.inlineStyle.tooltipBold")}>
         <ButtonIcon
           aria-pressed={isBold}
           data-active={isBold}
@@ -27,11 +30,11 @@ export function InlineStyleSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<Bold size={14} />}
-          className={isBold ? "bg-content2 border border-border" : undefined}
+          className={isBold ? "border border-border" : undefined}
         />
       </Tooltip>
 
-      <Tooltip content="Cursiva">
+      <Tooltip content={t("canvas.toolbar.inlineStyle.tooltipItalic")}>
         <ButtonIcon
           aria-pressed={isItalic}
           data-active={isItalic}
@@ -40,11 +43,11 @@ export function InlineStyleSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<Italic size={14} />}
-          className={isItalic ? "bg-content2 border border-border" : undefined}
+          className={isItalic ? "border border-border" : undefined}
         />
       </Tooltip>
 
-      <Tooltip content="Tachado">
+      <Tooltip content={t("canvas.toolbar.inlineStyle.tooltipStrike")}>
         <ButtonIcon
           aria-pressed={isStrike}
           data-active={isStrike}
@@ -53,11 +56,11 @@ export function InlineStyleSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<Strikethrough size={14} />}
-          className={isStrike ? "bg-content2 border border-border" : undefined}
+          className={isStrike ? "border border-border" : undefined}
         />
       </Tooltip>
 
-      <Tooltip content="Subrayado">
+      <Tooltip content={t("canvas.toolbar.inlineStyle.tooltipUnderline")}>
         <ButtonIcon
           aria-pressed={isUnderline}
           data-active={isUnderline}
@@ -66,13 +69,11 @@ export function InlineStyleSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<Underline size={14} />}
-          className={
-            isUnderline ? "bg-content2 border border-border" : undefined
-          }
+          className={isUnderline ? "border border-border" : undefined}
         />
       </Tooltip>
 
-      <Tooltip content="Código">
+      <Tooltip content={t("canvas.toolbar.inlineStyle.tooltipCode")}>
         <ButtonIcon
           aria-pressed={isCode}
           data-active={isCode}
@@ -81,7 +82,7 @@ export function InlineStyleSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<Code size={14} />}
-          className={isCode ? "bg-content2 border border-border" : undefined}
+          className={isCode ? "border border-border" : undefined}
         />
       </Tooltip>
     </>

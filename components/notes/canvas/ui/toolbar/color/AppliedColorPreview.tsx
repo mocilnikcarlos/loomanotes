@@ -1,4 +1,6 @@
+"use client";
 import { resolveColor } from "@/config/editor.colors";
+import { useT } from "@/hooks/utils/useT";
 
 const normalizeHighlight = (color: string) =>
   color.length === 9 ? color.slice(0, 7) : color;
@@ -11,6 +13,7 @@ type Props = {
 };
 
 export function AppliedColorPreview({ textColor, highlightColor }: Props) {
+  const { t } = useT();
   if (!textColor && !highlightColor) return null;
 
   const highlightBase = highlightColor
@@ -20,7 +23,7 @@ export function AppliedColorPreview({ textColor, highlightColor }: Props) {
   return (
     <section className="flex flex-col gap-2">
       <span className="text-xs text-foreground font-bold uppercase">
-        Estilo aplicado
+        {t("canvas.toolbar.color.appliedTitle")}
       </span>
 
       <div className="flex gap-3">
