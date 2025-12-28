@@ -18,21 +18,28 @@ type Props = {
 };
 
 export function SelectionToolbar({ editor }: Props) {
-  const { visible, position } = useTextSelectionToolbar(editor);
-
-  if (!visible) return null;
+  const { visible, position, isPositioned } = useTextSelectionToolbar(editor);
 
   return (
     <div
       data-text-toolbar
       onMouseDown={(e) => e.stopPropagation()}
       style={{ top: position.top, left: position.left }}
-      className="
+      className={`
         absolute z-50 flex items-center gap-1 p-1 rounded-full
         bg-[var(--toolbar-bg)]
         border border-[var(--toolbar-border)]
         shadow-[var(--toolbar-shadow)]
-      "
+        ${
+          isPositioned
+            ? "transition-opacity transition-transform duration-150 ease-out"
+            : "transition-none"
+        }
+        ${
+          visible
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-1 pointer-events-none"
+        }`}
     >
       <BlockStyleSection editor={editor} />
       <ToolbarDivider />

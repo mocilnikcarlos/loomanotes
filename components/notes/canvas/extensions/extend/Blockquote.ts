@@ -7,6 +7,7 @@ export const Blockquote = Node.create({
   content: "inline*",
   defining: true,
   isolating: true,
+  draggable: false,
 
   parseHTML() {
     return [{ tag: "blockquote" }];

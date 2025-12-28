@@ -108,7 +108,7 @@ export const BLOCKS: BlockConfig[] = [
     id: "bulletItem",
     type: "bulletItem",
     title: "Lista con viñetas",
-    description: "Ítem de lista (estilo BlockNote)",
+    description: "Ítem de lista",
     label: "List",
     icon: List,
     insert: (editor) => {

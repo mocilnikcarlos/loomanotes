@@ -1,118 +1,92 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState, useCallback } from "react";
 import type { Editor } from "@tiptap/react";
 import { TextSelection } from "prosemirror-state";
-import { computePosition, offset, shift } from "@floating-ui/dom";
-
-type Position = {
-  top: number;
-  left: number;
-};
+import { computePosition, offset, shift, flip } from "@floating-ui/dom";
 
 export function useTextSelectionToolbar(editor: Editor | null) {
   const [visible, setVisible] = useState(false);
-  const [position, setPosition] = useState<Position>({ top: 0, left: 0 });
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const isSelectingRef = useRef(false);
+  const [isPositioned, setIsPositioned] = useState(false);
 
-  useEffect(() => {
-    if (!editor) return;
+  const updatePosition = useCallback(async () => {
+    if (!editor || !editor.isFocused || isSelectingRef.current) return;
 
-    const update = () => {
-      const view = editor.view;
-      const { selection } = editor.state;
-
-      // 2. Drag activo
-      if ((view as any).dragging) {
-        setVisible(false);
-        return;
-      }
-
-      // 3. Solo TextSelection
-      if (!(selection instanceof TextSelection)) {
-        setVisible(false);
-        return;
-      }
-
-      const { from, to } = selection;
-
-      // 4. Selección vacía
-      if (from === to) {
-        setVisible(false);
-        return;
-      }
-
-      // 5. Sin texto real
-      const text = editor.state.doc.textBetween(from, to, " ");
-      if (!text.trim()) {
-        setVisible(false);
-        return;
-      }
-
-      // 6. DOM selection válida
-      const domSelection = window.getSelection();
-      if (!domSelection || domSelection.rangeCount === 0) {
-        setVisible(false);
-        return;
-      }
-
-      const range = domSelection.getRangeAt(0);
-
-      // 👉 MOSTRAMOS PRIMERO
-      setVisible(true);
-
-      // 👉 POSICIONAMOS DESPUÉS
-      requestAnimationFrame(async () => {
-        const toolbarEl = document.querySelector(
-          "[data-text-toolbar]"
-        ) as HTMLElement | null;
-
-        if (!toolbarEl) return;
-
-        const virtualReference = {
-          getBoundingClientRect: () => range.getBoundingClientRect(),
-        };
-
-        const { x, y } = await computePosition(
-          virtualReference as any,
-          toolbarEl,
-          {
-            placement: "top",
-            middleware: [offset(8), shift({ padding: 8 })],
-          }
-        );
-
-        setPosition({
-          top: y + window.scrollY,
-          left: x + window.scrollX,
-        });
-      });
-    };
-
-    const onBlur = ({ event }: any) => {
-      const relatedTarget = event?.relatedTarget as HTMLElement | null;
-
-      // Si el foco va a cualquier cosa del toolbar o menú → NO cerramos
-      if (
-        relatedTarget?.closest("[data-text-toolbar]") ||
-        relatedTarget?.closest("[data-menu]") ||
-        relatedTarget?.closest("input")
-      ) {
-        return;
-      }
-
+    const { selection } = editor.state;
+    if (!(selection instanceof TextSelection) || selection.empty) {
       setVisible(false);
-    };
+      return;
+    }
 
-    editor.on("selectionUpdate", update);
-    editor.on("transaction", update);
-    editor.on("blur", onBlur);
+    const domSelection = window.getSelection();
+    if (!domSelection || domSelection.rangeCount === 0) return;
 
-    return () => {
-      editor.off("selectionUpdate", update);
-      editor.off("transaction", update);
-      editor.off("blur", onBlur);
-    };
+    const range = domSelection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const toolbarEl = document.querySelector(
+      "[data-text-toolbar]"
+    ) as HTMLElement;
+
+    if (!toolbarEl) {
+      setVisible(true);
+      return;
+    }
+
+    const { x, y } = await computePosition(
+      { getBoundingClientRect: () => rect },
+      toolbarEl,
+      {
+        placement: "top",
+        middleware: [offset(12), flip(), shift({ padding: 10 })],
+      }
+    );
+
+    setPosition({ top: y, left: x });
+    setIsPositioned(true);
+    setVisible(true);
   }, [editor]);
 
-  return { visible, position };
+  useLayoutEffect(() => {
+    if (visible && position.top === 0 && position.left === 0) {
+      updatePosition();
+    }
+  }, [visible, position, updatePosition]);
+
+  useLayoutEffect(() => {
+    if (!editor) return;
+
+    const onMouseDown = () => {
+      isSelectingRef.current = true;
+      setVisible(false);
+      setPosition({ top: 0, left: 0 });
+      setIsPositioned(false);
+    };
+
+    const onMouseUp = () => {
+      isSelectingRef.current = false;
+      setTimeout(updatePosition, 20);
+    };
+
+    const dom = editor.view.dom;
+    dom.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
+
+    editor.on("selectionUpdate", updatePosition);
+    editor.on("focus", updatePosition);
+    editor.on("blur", () => setVisible(false));
+
+    return () => {
+      dom.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
+      editor.off("selectionUpdate", updatePosition);
+      editor.off("focus", updatePosition);
+      editor.off("blur", () => setVisible(false));
+    };
+  }, [editor, updatePosition]);
+
+  return { visible, position, isPositioned };
 }

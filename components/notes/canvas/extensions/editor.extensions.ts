@@ -58,6 +58,8 @@ const lowlight = createLowlight(all);
 
 function withBlockView(node: Node) {
   return node.extend({
+    draggable: false,
+
     addNodeView() {
       return ReactNodeViewRenderer(BlockView);
     },
