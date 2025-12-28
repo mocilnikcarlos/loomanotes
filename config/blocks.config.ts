@@ -23,7 +23,7 @@ export type BlockType =
   | "heading"
   | "bulletItem"
   | "orderedItem"
-  | "taskList"
+  | "taskItem"
   | "blockquote"
   | "codeBlock"
   | "horizontalRule";
@@ -161,23 +161,28 @@ export const BLOCKS: BlockConfig[] = [
     },
   },
   {
-    id: "taskList",
-    type: "taskList",
+    id: "taskItem",
+    type: "taskItem",
     title: "Lista de tareas",
-    description: "Checklist con tareas marcables",
-    label: "Task list",
+    description: "Ítem de tarea marcable",
+    label: "Task",
     icon: CheckSquare,
     insert: (editor) => {
-      editor.chain().focus().toggleTaskList().run();
+      editor
+        .chain()
+        .focus()
+        .setNode("taskItem", {
+          indent: 0,
+          checked: false,
+        })
+        .run();
     },
     content: {
-      type: "taskList",
-      content: [
-        {
-          type: "taskItem",
-          content: [{ type: "paragraph" }],
-        },
-      ],
+      type: "taskItem",
+      attrs: {
+        indent: 0,
+        checked: false,
+      },
     },
   },
 

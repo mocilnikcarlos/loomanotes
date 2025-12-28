@@ -3,7 +3,7 @@ const DRAGGABLE_BLOCK_TYPES = new Set([
   "heading",
   "bulletItem",
   "orderedItem",
-  "taskList",
+  "taskItem",
   "blockquote",
   "codeBlock",
   "horizontalRule",

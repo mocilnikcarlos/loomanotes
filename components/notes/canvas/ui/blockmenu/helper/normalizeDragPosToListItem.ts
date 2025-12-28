@@ -1,6 +1,6 @@
 import type { Editor } from "@tiptap/core";
 
-const FLAT_LIST_PM_TYPES = new Set(["bulletItem, orderedItem"]);
+const FLAT_LIST_PM_TYPES = new Set(["bulletItem", "orderedItem", "taskItem"]);
 
 export function normalizeDragHandlePos(
   editor: Editor,

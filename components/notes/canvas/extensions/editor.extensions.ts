@@ -16,16 +16,17 @@ import { BlockView } from "../nodeview/BlockView";
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
 import Blockquote from "@tiptap/extension-blockquote";
-import { TaskList, TaskItem } from "@tiptap/extension-list";
 import { CodeBlockWithWrapper } from "./CodeBlockWithWrapper";
 import { BulletItem } from "./extend/BulletItem";
 import { OrderedItem } from "./extend/OrderedItem";
+import { TaskItem } from "./extend/TaskItem";
 
 // Commands / Custom
 import { SlashCommand } from "./SlashCommand";
 import { LinkBoundaryExtension } from "./LinkBoundaryExtension";
 import { ClearMarksOnEnterExtension } from "./ClearMarksOnEnterExtension";
 import { BulletItemBehavior } from "./extend/commands/BulletItemBehavior";
+import { TaskItemToggleExtension } from "./extend/plugins/TaskItemToggleExtension";
 
 // Marks
 import Bold from "@tiptap/extension-bold";
@@ -92,12 +93,9 @@ export function createEditorExtensions() {
     // ------------------------------------------------------------------
     BulletItem,
     OrderedItem,
+    TaskItem,
     BulletItemBehavior,
-
-    withBlockView(TaskList),
-    TaskItem.configure({
-      nested: true,
-    }),
+    TaskItemToggleExtension,
 
     // ------------------------------------------------------------------
     // Code

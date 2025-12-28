@@ -70,7 +70,11 @@ export const splitBulletItem: Command = ({ state, dispatch }) => {
 
     let tr = state.tr;
 
-    const newItem = node.type.createAndFill({ ...node.attrs });
+    const newItem = node.type.createAndFill({
+      ...node.attrs,
+      checked: false,
+    });
+
     if (!newItem) return false;
 
     tr = tr.insert(pos, newItem);
@@ -104,6 +108,7 @@ export const splitBulletItem: Command = ({ state, dispatch }) => {
         {
           ...node.attrs,
           indent: indent + 1,
+          checked: false,
         },
         state.schema.text(textAfter)
       );
@@ -117,7 +122,10 @@ export const splitBulletItem: Command = ({ state, dispatch }) => {
 
     // 2.b → MAX_INDENT alcanzado → crear HERMANO
     const siblingItem = node.type.create(
-      { ...node.attrs },
+      {
+        ...node.attrs,
+        checked: false,
+      },
       state.schema.text(textAfter)
     );
 
@@ -134,7 +142,11 @@ export const splitBulletItem: Command = ({ state, dispatch }) => {
   const insertPos = $from.after(depth);
 
   if (dispatch) {
-    const newItem = node.type.createAndFill({ ...node.attrs });
+    const newItem = node.type.createAndFill({
+      ...node.attrs,
+      checked: false,
+    });
+
     if (!newItem) return false;
 
     let tr = state.tr.insert(insertPos, newItem);
