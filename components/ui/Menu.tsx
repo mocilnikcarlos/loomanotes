@@ -3,6 +3,7 @@
 import { cn } from "@/utils/cn";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useLayoutEffect } from "react";
 
 type MenuPosition =
   | "top-start"
@@ -48,7 +49,9 @@ export function Menu({
   const triggerRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+    null
+  );
 
   const GAP = 8;
 
@@ -58,7 +61,7 @@ export function Menu({
       onOpenChange?.(true);
     } else {
       setRendered(true);
-      requestAnimationFrame(() => setInternalOpen(true));
+      setInternalOpen(true);
     }
   };
 
@@ -73,16 +76,14 @@ export function Menu({
   };
 
   /** Posicionamiento */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!actualOpen || !menuRef.current) return;
 
-    /** 🔹 Caso slash menu (coords externos) */
     if (externalCoords) {
       setCoords(externalCoords);
       return;
     }
 
-    /** 🔹 Caso clásico (trigger) */
     if (!triggerRef.current) return;
 
     const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -107,7 +108,6 @@ export function Menu({
         top: triggerRect.bottom + GAP,
         left: alignX.end,
       },
-
       "top-start": {
         top: triggerRect.top - menuRect.height - GAP,
         left: alignX.start,
@@ -120,7 +120,6 @@ export function Menu({
         top: triggerRect.top - menuRect.height - GAP,
         left: alignX.end,
       },
-
       right: {
         top: triggerRect.top,
         left: triggerRect.right + GAP,
@@ -179,8 +178,12 @@ export function Menu({
     triggerElement = (
       <div
         ref={triggerRef}
-        onPointerDown={(e) => e.stopPropagation()}
-        onContextMenu={
+        onPointerDown={(e) => {
+          if (e.button === 0) {
+            e.stopPropagation();
+          }
+        }}
+        onContextMenuCapture={
           openOn === "context"
             ? (e) => {
                 const target = e.target as HTMLElement;
@@ -215,17 +218,20 @@ export function Menu({
         createPortal(
           <div
             ref={menuRef}
-            data-state={actualOpen ? "open" : "closed"}
-            onPointerDown={(e) => e.stopPropagation()}
+            data-state={actualOpen && coords ? "open" : "closed"}
             className={cn(
               "fixed z-50 rounded-xl border border-border bg-menu p-2 shadow-lg",
               "transition-[opacity,transform] duration-150 ease-out",
-              actualOpen ? "visible" : "invisible",
+              !coords && "invisible",
               "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
               "data-[state=open]:opacity-100 data-[state=open]:scale-100",
               className
             )}
-            style={{ top: coords.top, left: coords.left }}
+            style={
+              coords
+                ? { top: coords.top, left: coords.left }
+                : { top: 0, left: 0 }
+            }
           >
             {children}
           </div>,
