@@ -111,8 +111,6 @@ export const BLOCKS: BlockConfig[] = [
     description: "Ítem de lista (estilo BlockNote)",
     label: "List",
     icon: List,
-
-    // TRANSFORMA el bloque actual
     insert: (editor) => {
       editor
         .chain()
@@ -123,8 +121,6 @@ export const BLOCKS: BlockConfig[] = [
         })
         .run();
     },
-
-    // INSERTA un bloque nuevo
     content: {
       type: "bulletItem",
       attrs: {
@@ -140,7 +136,6 @@ export const BLOCKS: BlockConfig[] = [
     description: "Ítem numerado",
     label: "Ordered list",
     icon: ListOrdered,
-
     insert: (editor) => {
       editor
         .chain()
@@ -151,7 +146,6 @@ export const BLOCKS: BlockConfig[] = [
         })
         .run();
     },
-
     content: {
       type: "orderedItem",
       attrs: {
@@ -197,7 +191,13 @@ export const BLOCKS: BlockConfig[] = [
     label: "Blockquote",
     icon: MessageSquareQuote,
     insert: (editor) => {
-      editor.chain().focus().toggleBlockquote().run();
+      editor
+        .chain()
+        .focus()
+        .setNode("blockquote", {
+          listType: "blockquote",
+        })
+        .run();
     },
     content: {
       type: "blockquote",

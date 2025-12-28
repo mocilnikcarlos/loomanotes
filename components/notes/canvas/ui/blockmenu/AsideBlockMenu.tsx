@@ -62,12 +62,14 @@ export function AsideBlockMenu({ editor }: Props) {
             }}
           >
             <ButtonIcon
+              size="sm"
               icon={<Plus size={14} />}
               variant="ghost"
               tabIndex={-1}
               onClick={(e) => openMenu("insert", e)}
             />
             <ButtonIcon
+              size="sm"
               icon={<GripVertical size={14} />}
               variant="ghost"
               tabIndex={-1}

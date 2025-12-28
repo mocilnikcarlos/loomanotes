@@ -1,6 +1,5 @@
 import { Command } from "@tiptap/core";
 import { TextSelection } from "prosemirror-state";
-import { findAncestorOfType } from "./findAncestorOfType";
 import { findAncestorListItem } from "../../../ui/blockmenu/helper/findAncestorListItem";
 
 const MAX_INDENT = 2;

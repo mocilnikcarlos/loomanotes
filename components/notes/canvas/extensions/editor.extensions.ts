@@ -15,18 +15,19 @@ import { BlockView } from "../nodeview/BlockView";
 // Nodes
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
-import Blockquote from "@tiptap/extension-blockquote";
-import { CodeBlockWithWrapper } from "./CodeBlockWithWrapper";
+// import Blockquote from "@tiptap/extension-blockquote";
+import { CodeBlockWithWrapper } from "./extend/CodeBlockWithWrapper";
 import { BulletItem } from "./extend/BulletItem";
 import { OrderedItem } from "./extend/OrderedItem";
 import { TaskItem } from "./extend/TaskItem";
 
 // Commands / Custom
-import { SlashCommand } from "./SlashCommand";
-import { LinkBoundaryExtension } from "./LinkBoundaryExtension";
-import { ClearMarksOnEnterExtension } from "./ClearMarksOnEnterExtension";
+import { SlashCommand } from "./extend/plugins/SlashCommand";
+import { LinkBoundaryExtension } from "./extend/plugins/LinkBoundaryExtension";
+import { ClearMarksOnEnterExtension } from "./extend/plugins/ClearMarksOnEnterExtension";
 import { BulletItemBehavior } from "./extend/commands/BulletItemBehavior";
 import { TaskItemToggleExtension } from "./extend/plugins/TaskItemToggleExtension";
+import { PlainBlockBehavior } from "./extend/commands/PlainBlockBehavior";
 
 // Marks
 import Bold from "@tiptap/extension-bold";
@@ -41,8 +42,9 @@ import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
-import { FontSize } from "./FontSizeExtensions";
-import { LinkWithTooltip } from "./LinkWithTooltip";
+import { FontSize } from "./extend/plugins/FontSizeExtensions";
+import { LinkWithTooltip } from "./extend/plugins/LinkWithTooltip";
+import { Blockquote } from "./extend/Blockquote";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Lowlight                                  */
@@ -82,11 +84,16 @@ export function createEditorExtensions() {
     }),
 
     // ------------------------------------------------------------------
+    // Custom
+    // ------------------------------------------------------------------
+    Blockquote,
+
+    // ------------------------------------------------------------------
     // Core blocks (con BlockView)
     // ------------------------------------------------------------------
     withBlockView(Paragraph),
     withBlockView(Heading),
-    withBlockView(Blockquote),
+    // withBlockView(Blockquote),
 
     // ------------------------------------------------------------------
     // Lists (✅ draggable por item, no por contenedor)
@@ -94,8 +101,6 @@ export function createEditorExtensions() {
     BulletItem,
     OrderedItem,
     TaskItem,
-    BulletItemBehavior,
-    TaskItemToggleExtension,
 
     // ------------------------------------------------------------------
     // Code
@@ -107,26 +112,51 @@ export function createEditorExtensions() {
     // ------------------------------------------------------------------
     // Misc
     // ------------------------------------------------------------------
-    HorizontalRule,
+    HorizontalRule.configure({
+      HTMLAttributes: {
+        "data-type": "horizontalRule",
+      },
+    }),
     Dropcursor,
 
     // ------------------------------------------------------------------
     // Commands
     // ------------------------------------------------------------------
     SlashCommand,
+    BulletItemBehavior,
+    TaskItemToggleExtension,
+    PlainBlockBehavior,
 
     // ------------------------------------------------------------------
     // Placeholder
     // ------------------------------------------------------------------
     Placeholder.configure({
-      placeholder: ({ node, editor }) => {
-        const { $from } = editor.state.selection;
+      placeholder: ({ node }) => {
+        switch (node.type.name) {
+          case "paragraph":
+            return "Escribe / o haz clic en el botón + para agregar contenido";
 
-        if (node.type.name === "paragraph" && $from.depth === 1) {
-          return "Escribe / o haz clic en el botón + para agregar contenido";
+          case "heading":
+            return "Escribe un título";
+
+          case "bulletItem":
+            return "Lista";
+
+          case "orderedItem":
+            return "Lista";
+
+          case "taskItem":
+            return "Nueva tarea";
+
+          case "blockquote":
+            return "Escribe una cita";
+
+          case "codeBlock":
+            return "Escribe código…";
+
+          default:
+            return "";
         }
-
-        return "";
       },
       showOnlyWhenEditable: false,
       includeChildren: true,

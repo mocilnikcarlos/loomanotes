@@ -1,6 +1,16 @@
 
 [data-type="paragraph"] {
-
     line-height: 2;
     letter-spacing: 0.05;
+}
+
+/* placeholder */
+.node-paragraph.is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
 }

@@ -25,6 +25,9 @@
     word-break: break-word;
     overflow-wrap: anywhere;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .react-renderer {
@@ -32,7 +35,7 @@
 }
 
 /* placeholder */
-.node-paragraph.is-editor-empty::before {
+/* .ProseMirror .is-editor-empty::before {
     content: attr(data-placeholder);
     color: var(--placeholder);
     pointer-events: none;
@@ -40,7 +43,7 @@
     top: 50%;
     left: 0;
     transform: translateY(-50%);
-}
+} */
 
 mark {
     border-radius: 0.4rem;

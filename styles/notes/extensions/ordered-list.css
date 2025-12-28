@@ -4,6 +4,7 @@
 
 
 [data-type="orderedItem"] {
+    margin: 0;
     display: block;
     position: relative;
 }
@@ -20,6 +21,8 @@
     counter-increment: ol-1;
     counter-reset: ol-2;
     padding-left: 48px;
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 
 [data-type="orderedItem"][indent="0"]::before {
@@ -31,6 +34,8 @@
     padding-left: 60px;
     counter-increment: ol-2;
     counter-reset: ol-3;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 [data-type="orderedItem"][indent="1"]::before {
@@ -41,6 +46,8 @@
 [data-type="orderedItem"][indent="2"] {
     padding-left: 76px;
     counter-increment: ol-3;
+    margin-top: 5px;
+    margin-bottom: 0;
 }
 
 [data-type="orderedItem"][indent="2"]::before {
@@ -48,4 +55,35 @@
         counter(ol-1) "."
         counter(ol-2) "."
         counter(ol-3);
+}
+
+/* placeholder */
+[data-type="orderedItem"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+}
+
+[data-type="orderedItem"][indent="1"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 62px;
+    transform: translateY(-50%);
+}
+
+[data-type="orderedItem"][indent="2"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 78px;
+    transform: translateY(-50%);
 }
