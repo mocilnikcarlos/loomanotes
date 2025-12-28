@@ -1,4 +1,5 @@
 "use client";
+import { useT } from "@/hooks/utils/useT";
 import { BlockMenuItem } from "./blockmenu/BlockMenuItem";
 
 type Props = {
@@ -7,14 +8,16 @@ type Props = {
 };
 
 export function SlashMenu({ items, command }: Props) {
+  const { t } = useT();
+
   return (
     <>
       {items.map((item) => (
         <BlockMenuItem
           key={item.id}
           icon={item.icon}
-          title={item.title}
-          description={item.description}
+          title={t(item.title)}
+          description={t(item.description)}
           onSelect={() => command(item)}
         />
       ))}

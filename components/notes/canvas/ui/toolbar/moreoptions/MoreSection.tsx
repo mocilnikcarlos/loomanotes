@@ -7,6 +7,7 @@ import { Menu } from "@/components/ui/Menu";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import { MoreHorizontal } from "lucide-react";
 import { TextToolbarMoreMenu } from "./TextToolbarMoreMenu";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -15,13 +16,15 @@ type Props = {
 export function MoreSection({ editor }: Props) {
   const [open, setOpen] = useState(false);
 
+  const { t } = useT();
+
   return (
     <Menu
       open={open}
       onOpenChange={setOpen}
       position="bottom-end"
       trigger={
-        <Tooltip content="Más acciones">
+        <Tooltip content={t("canvas.toolbar.more.tooltip")}>
           <ButtonIcon
             onMouseDown={(e) => e.preventDefault()}
             size="sm"

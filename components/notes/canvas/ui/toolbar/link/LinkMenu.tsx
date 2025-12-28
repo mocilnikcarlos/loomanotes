@@ -4,6 +4,7 @@ import type { Editor } from "@tiptap/react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -13,6 +14,8 @@ type Props = {
 export function LinkMenu({ editor, onClose }: Props) {
   const [url, setUrl] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { t } = useT();
 
   useEffect(() => {
     const current = editor.getAttributes("link")?.href ?? "";
@@ -56,7 +59,7 @@ export function LinkMenu({ editor, onClose }: Props) {
     >
       <Input
         ref={inputRef}
-        placeholder="https://example.com"
+        placeholder={t("canvas.toolbar.link.placeholder")}
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         onKeyDown={(e) => {
@@ -80,11 +83,11 @@ export function LinkMenu({ editor, onClose }: Props) {
             onClose();
           }}
         >
-          Quitar
+          {t("canvas.toolbar.link.buttonRemove")}
         </Button>
 
         <Button variant="brand" size="sm" onClick={applyLink}>
-          Aplicar
+          {t("canvas.toolbar.link.buttonApply")}
         </Button>
       </div>
     </div>

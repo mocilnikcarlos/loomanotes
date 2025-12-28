@@ -4,6 +4,7 @@ import type { Editor } from "@tiptap/react";
 import { Tooltip } from "@heroui/tooltip";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -15,9 +16,11 @@ export function AlignSection({ editor }: Props) {
   const isRight = editor.isActive({ textAlign: "right" });
   const isJustify = editor.isActive({ textAlign: "justify" });
 
+  const { t } = useT();
+
   return (
     <>
-      <Tooltip content="Alinear izquierda">
+      <Tooltip content={t("canvas.toolbar.align.tooltipLeft")}>
         <ButtonIcon
           aria-pressed={isLeft}
           data-active={isLeft}
@@ -27,11 +30,13 @@ export function AlignSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<AlignLeft size={14} />}
-          className={isLeft ? "bg-content2 border border-border" : undefined}
+          className={
+            isLeft ? "bg-button-hover border border-border" : undefined
+          }
         />
       </Tooltip>
 
-      <Tooltip content="Centrar">
+      <Tooltip content={t("canvas.toolbar.align.tooltipCenter")}>
         <ButtonIcon
           aria-pressed={isCenter}
           data-active={isCenter}
@@ -41,11 +46,13 @@ export function AlignSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<AlignCenter size={14} />}
-          className={isCenter ? "bg-content2 border border-border" : undefined}
+          className={
+            isCenter ? "bg-button-hover border border-border" : undefined
+          }
         />
       </Tooltip>
 
-      <Tooltip content="Alinear derecha">
+      <Tooltip content={t("canvas.toolbar.align.tooltipRight")}>
         <ButtonIcon
           aria-pressed={isRight}
           data-active={isRight}
@@ -55,11 +62,13 @@ export function AlignSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<AlignRight size={14} />}
-          className={isRight ? "bg-content2 border border-border" : undefined}
+          className={
+            isRight ? "bg-button-hover border border-border" : undefined
+          }
         />
       </Tooltip>
 
-      <Tooltip content="Justificar">
+      <Tooltip content={t("canvas.toolbar.align.tooltipJustify")}>
         <ButtonIcon
           aria-pressed={isJustify}
           data-active={isJustify}
@@ -69,7 +78,9 @@ export function AlignSection({ editor }: Props) {
           size="sm"
           variant="ghost"
           icon={<AlignJustify size={14} />}
-          className={isJustify ? "bg-content2 border border-border" : undefined}
+          className={
+            isJustify ? "bg-button-hover border border-border" : undefined
+          }
         />
       </Tooltip>
     </>

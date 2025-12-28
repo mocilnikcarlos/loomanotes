@@ -1,5 +1,7 @@
 "use client";
 
+import { useT } from "@/hooks/utils/useT";
+import { Tooltip } from "@heroui/tooltip";
 import React, { createContext, useContext } from "react";
 
 /* ------------------ Context ------------------ */
@@ -69,8 +71,7 @@ export const ColorButton = (({
             flex items-center justify-center
             border
             transition-colors
-            ${className}
-        `}
+            ${className}`}
       >
         {children}
       </button>
@@ -81,16 +82,19 @@ export const ColorButton = (({
 /* ------------------ Subcomponents ------------------ */
 
 ColorButton.Text = function Text() {
+  const { t } = useT();
   const ctx = useColorButton();
   if (!ctx) return null;
 
   return (
-    <span
-      className="text-xs font-bold relative z-10"
-      style={{ color: ctx.color }}
-    >
-      A
-    </span>
+    <Tooltip content={t("canvas.toolbar.color.tooltip")}>
+      <span
+        className="text-xs font-bold relative z-10"
+        style={{ color: ctx.color }}
+      >
+        A
+      </span>
+    </Tooltip>
   );
 };
 

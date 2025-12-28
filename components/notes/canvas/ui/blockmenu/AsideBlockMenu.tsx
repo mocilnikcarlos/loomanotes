@@ -11,6 +11,7 @@ import { MenuDrag } from "./MenuDrag";
 import { InsertMenuContent } from "./InsertMenuContent";
 import { useAsideBlockMenu } from "./hook/useAsideBlockMenu";
 import { normalizeDragHandlePos } from "./helper/normalizeDragPosToListItem";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -27,6 +28,8 @@ export function AsideBlockMenu({ editor }: Props) {
     closeMenu,
     onNodeChange,
   } = useAsideBlockMenu(editor);
+
+  const { t } = useT();
 
   return (
     <DragHandle
@@ -56,7 +59,7 @@ export function AsideBlockMenu({ editor }: Props) {
               transform: "translateY(-50%)",
               display: "flex",
               gap: 4,
-              zIndex: 9999,
+              zIndex: 10,
               pointerEvents: "auto",
               opacity: 0.9,
             }}
@@ -81,7 +84,9 @@ export function AsideBlockMenu({ editor }: Props) {
         {uiState === "insert" && coords && (
           <Menu open coords={coords} closeOnOutsideClick={false}>
             <div className="flex items-center justify-between px-2 pb-1">
-              <span className="text-xs text-muted">Insertar bloque</span>
+              <span className="text-xs text-muted">
+                {t("canvas.asideMenuPlus.titleMenu")}
+              </span>
               <ButtonIcon
                 size="sm"
                 icon={<X size={12} />}

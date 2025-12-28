@@ -5,6 +5,7 @@ import { useBlockStyleSwitcher } from "@/hooks/notes/useBlockStyleSwitcher";
 import { AsideDivider } from "@/components/dashboard/aside/ui/AsideDivider";
 import { BLOCKS } from "@/config/blocks.config";
 import { EditorMenuRow } from "../../shared/EditorMenuRow";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   editor: Editor;
@@ -25,6 +26,7 @@ const BLOCK_STYLE_IDS = [
 
 export function BlockStylePopover({ editor, onSelect }: Props) {
   const { currentBlock, setBlock } = useBlockStyleSwitcher(editor);
+  const { t } = useT();
 
   function handleSelect(type: Parameters<typeof setBlock>[0]) {
     setBlock(type);
@@ -38,7 +40,9 @@ export function BlockStylePopover({ editor, onSelect }: Props) {
       onMouseDown={(e) => e.preventDefault()}
       className="flex flex-col gap-1"
     >
-      <span className="px-2 py-1 text-xs text-foreground">Turn into</span>
+      <span className="px-2 py-1 text-xs text-foreground">
+        {t("canvas.toolbar.typeBlock.titleMenu")}
+      </span>
 
       {items.map((block) => {
         const needsDivider =
@@ -47,7 +51,7 @@ export function BlockStylePopover({ editor, onSelect }: Props) {
         return (
           <div key={block.id}>
             <EditorMenuRow
-              label={block.title}
+              label={t(block.title)}
               icon={block.icon}
               active={currentBlock === block.id}
               onClick={() => handleSelect(block.id as any)}

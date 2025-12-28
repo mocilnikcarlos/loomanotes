@@ -1,5 +1,12 @@
 # Changelog
 
+# [0.15.0](/compare/v0.14.1...v0.15.0) (2025-12-28)
+
+
+### Features
+
+* **root:** i18n on canvas system d328392
+
 ## [0.14.1](/compare/v0.14.0...v0.14.1) (2025-12-28)
 
 

@@ -59,7 +59,7 @@ const createHeadingBlock = (
   type: "heading",
   level,
   title,
-  description: "Encabezado para la sección",
+  description: "canvas.typeBlock.heading.description",
   label: "Heading",
   icon,
   insert: (editor) => {
@@ -82,8 +82,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "paragraph",
     type: "paragraph",
-    title: "Texto",
-    description: "Empieza a escribir libremente",
+    title: "canvas.typeBlock.paragraph.title",
+    description: "canvas.typeBlock.paragraph.description",
     label: "Paragraph",
     icon: CaseSensitive,
     insert: (editor) => {
@@ -97,9 +97,9 @@ export const BLOCKS: BlockConfig[] = [
   // --------------------
   // Headings
   // --------------------
-  createHeadingBlock(1, Heading1, "Título grande"),
-  createHeadingBlock(2, Heading2, "Título mediano"),
-  createHeadingBlock(3, Heading3, "Título pequeño"),
+  createHeadingBlock(1, Heading1, "canvas.typeBlock.heading.1.title"),
+  createHeadingBlock(2, Heading2, "canvas.typeBlock.heading.2.title"),
+  createHeadingBlock(3, Heading3, "canvas.typeBlock.heading.3.title"),
 
   // --------------------
   // Lists
@@ -107,8 +107,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "bulletItem",
     type: "bulletItem",
-    title: "Lista con viñetas",
-    description: "Ítem de lista",
+    title: "canvas.typeBlock.bullet.title",
+    description: "canvas.typeBlock.bullet.description",
     label: "List",
     icon: List,
     insert: (editor) => {
@@ -132,8 +132,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "orderedItem",
     type: "orderedItem",
-    title: "Lista numerada",
-    description: "Ítem numerado",
+    title: "canvas.typeBlock.ordered.title",
+    description: "canvas.typeBlock.ordered.description",
     label: "Ordered list",
     icon: ListOrdered,
     insert: (editor) => {
@@ -157,8 +157,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "taskItem",
     type: "taskItem",
-    title: "Lista de tareas",
-    description: "Ítem de tarea marcable",
+    title: "canvas.typeBlock.task.title",
+    description: "canvas.typeBlock.task.description",
     label: "Task",
     icon: CheckSquare,
     insert: (editor) => {
@@ -186,8 +186,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "blockquote",
     type: "blockquote",
-    title: "Cita",
-    description: "Creá un bloque de cita",
+    title: "canvas.typeBlock.blockquote.title",
+    description: "canvas.typeBlock.blockquote.description",
     label: "Blockquote",
     icon: MessageSquareQuote,
     insert: (editor) => {
@@ -207,8 +207,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "codeBlock",
     type: "codeBlock",
-    title: "Bloque de código",
-    description: "Escribí código con formato",
+    title: "canvas.typeBlock.codeblock.title",
+    description: "canvas.typeBlock.codeblock.description",
     label: "Code",
     icon: Code,
     insert: (editor) => {
@@ -222,7 +222,8 @@ export const BLOCKS: BlockConfig[] = [
   {
     id: "divider",
     type: "horizontalRule",
-    title: "Separador",
+    title: "canvas.typeBlock.divider.title",
+    description: "canvas.typeBlock.divider.description",
     icon: Minus,
     insert: (editor) => {
       editor
@@ -233,6 +234,7 @@ export const BLOCKS: BlockConfig[] = [
     },
     content: {
       type: "horizontalRule",
+      content: [{ type: "paragraph" }],
     },
   },
 ];
