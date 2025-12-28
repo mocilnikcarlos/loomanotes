@@ -16,9 +16,9 @@ const BLOCK_STYLE_IDS = [
   "heading_1",
   "heading_2",
   "heading_3",
-  "bulletList",
-  "orderedList",
-  "taskList",
+  "bulletItem",
+  "orderedItem",
+  "taskItem",
   "blockquote",
   "codeBlock",
 ] as const;
@@ -42,7 +42,7 @@ export function BlockStylePopover({ editor, onSelect }: Props) {
 
       {items.map((block) => {
         const needsDivider =
-          block.id === "bulletList" || block.id === "blockquote";
+          block.id === "bulletItem" || block.id === "blockquote";
 
         return (
           <div key={block.id}>

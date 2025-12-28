@@ -8,54 +8,49 @@ import { TextSelection } from "@tiptap/pm/state";
 
 type Props = {
   editor: Editor;
+  blockPos: number | null;
   onClose: () => void;
 };
 
-export function MenuDrag({ editor, onClose }: Props) {
-  function duplicateCurrentBlock() {
+export function MenuDrag({ editor, onClose, blockPos }: Props) {
+  function duplicateBlockAtPos(editor: Editor, blockPos: number) {
     const { state, view } = editor;
-    const { selection } = state;
-    const $from = selection.$from;
+    const node = state.doc.nodeAt(blockPos);
+    if (!node) return;
 
-    for (let depth = $from.depth; depth > 0; depth--) {
-      const node = $from.node(depth);
-      if (!node.isBlock) continue;
+    const insertPos = blockPos + node.nodeSize;
 
-      const pos = $from.before(depth);
-      const insertPos = pos + node.nodeSize;
+    const json = node.toJSON();
+    const newNode = state.schema.nodeFromJSON(json);
 
-      const tr = state.tr.insert(insertPos, node.copy(node.content));
+    const tr = state.tr.insert(insertPos, newNode);
 
-      tr.setSelection(TextSelection.near(tr.doc.resolve(insertPos + 1)));
+    tr.setSelection(TextSelection.near(tr.doc.resolve(insertPos + 1)));
 
-      view.dispatch(tr);
+    view.dispatch(tr);
 
-      addToast({ description: "Bloque duplicado" });
-      return;
-    }
+    requestAnimationFrame(() => {
+      editor.commands.focus();
+    });
+
+    addToast({ title: "Bloque duplicado" });
   }
 
-  function deleteCurrentBlock() {
+  function deleteBlockAtPos(editor: Editor, blockPos: number) {
     const { state, view } = editor;
-    const { selection } = state;
-    const $from = selection.$from;
+    const node = state.doc.nodeAt(blockPos);
+    if (!node) return;
 
-    for (let depth = $from.depth; depth > 0; depth--) {
-      const node = $from.node(depth);
-      if (!node.isBlock) continue;
+    const from = blockPos;
+    const to = blockPos + node.nodeSize;
 
-      const from = $from.before(depth);
-      const to = from + node.nodeSize;
+    const tr = state.tr.delete(from, to);
+    const nextPos = Math.min(from, tr.doc.content.size);
 
-      const tr = state.tr.delete(from, to);
-      const $next = tr.doc.resolve(Math.min(from, tr.doc.content.size));
+    tr.setSelection(TextSelection.near(tr.doc.resolve(nextPos)));
+    view.dispatch(tr);
 
-      tr.setSelection(TextSelection.near($next));
-      view.dispatch(tr);
-
-      addToast({ description: "Bloque eliminado" });
-      return;
-    }
+    addToast({ title: "Bloque eliminado" });
   }
 
   return (
@@ -64,7 +59,8 @@ export function MenuDrag({ editor, onClose }: Props) {
         label="Duplicar bloque"
         icon={CopyPlus}
         onClick={() => {
-          duplicateCurrentBlock();
+          if (blockPos == null) return;
+          duplicateBlockAtPos(editor, blockPos);
           onClose();
           requestAnimationFrame(() => editor.commands.focus());
         }}
@@ -75,7 +71,8 @@ export function MenuDrag({ editor, onClose }: Props) {
         icon={Trash}
         danger
         onClick={() => {
-          deleteCurrentBlock();
+          if (blockPos == null) return;
+          deleteBlockAtPos(editor, blockPos);
           onClose();
           requestAnimationFrame(() => editor.commands.focus());
         }}

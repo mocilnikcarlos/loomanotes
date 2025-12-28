@@ -1,161 +1,176 @@
+// Core
+import type { Node } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+
 import StarterKit from "@tiptap/starter-kit";
 import Dropcursor from "@tiptap/extension-dropcursor";
-
-import { ReactNodeViewRenderer } from "@tiptap/react";
-import { BlockView } from "../nodeview/BlockView";
-
-// Blocks base
-import Paragraph from "@tiptap/extension-paragraph";
-import Heading from "@tiptap/extension-heading";
-import Blockquote from "@tiptap/extension-blockquote";
-import { BulletList, OrderedList, ListItem } from "@tiptap/extension-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import HorizontalRule from "@tiptap/extension-horizontal-rule";
-import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { TaskList, TaskItem } from "@tiptap/extension-list";
 
-// lowlight (según doc oficial)
 import { all, createLowlight } from "lowlight";
-import { SlashCommand } from "./SlashCommand";
-import { LinkBoundaryExtension } from "./LinkBoundaryExtension";
-import { ClearMarksOnEnterExtension } from "./ClearMarksOnEnterExtension";
 
-// Mark
+// NodeView
+import { BlockView } from "../nodeview/BlockView";
+
+// Nodes
+import Paragraph from "@tiptap/extension-paragraph";
+import Heading from "@tiptap/extension-heading";
+// import Blockquote from "@tiptap/extension-blockquote";
+import { CodeBlockWithWrapper } from "./extend/CodeBlockWithWrapper";
+import { BulletItem } from "./extend/BulletItem";
+import { OrderedItem } from "./extend/OrderedItem";
+import { TaskItem } from "./extend/TaskItem";
+
+// Commands / Custom
+import { SlashCommand } from "./extend/plugins/SlashCommand";
+import { LinkBoundaryExtension } from "./extend/plugins/LinkBoundaryExtension";
+import { ClearMarksOnEnterExtension } from "./extend/plugins/ClearMarksOnEnterExtension";
+import { BulletItemBehavior } from "./extend/commands/BulletItemBehavior";
+import { TaskItemToggleExtension } from "./extend/plugins/TaskItemToggleExtension";
+import { PlainBlockBehavior } from "./extend/commands/PlainBlockBehavior";
+
+// Marks
 import Bold from "@tiptap/extension-bold";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
+import Underline from "@tiptap/extension-underline";
 import Code from "@tiptap/extension-code";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Highlight from "@tiptap/extension-highlight";
-import { LinkWithTooltip } from "./LinkWithTooltip";
 import TextAlign from "@tiptap/extension-text-align";
 import FontFamily from "@tiptap/extension-font-family";
-import { FontSize } from "./FontSizeExtensions";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
+import { FontSize } from "./extend/plugins/FontSizeExtensions";
+import { LinkWithTooltip } from "./extend/plugins/LinkWithTooltip";
+import { Blockquote } from "./extend/Blockquote";
 
-// =====================================================
-// Lowlight setup
-// =====================================================
+/* -------------------------------------------------------------------------- */
+/*                                  Lowlight                                  */
+/* -------------------------------------------------------------------------- */
 
 const lowlight = createLowlight(all);
 
-// =====================================================
-// Block wrappers (NodeView único)
-// =====================================================
+/* -------------------------------------------------------------------------- */
+/*                              NodeView factory                              */
+/* -------------------------------------------------------------------------- */
 
-const ParagraphWithBlock = Paragraph.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
+function withBlockView(node: Node) {
+  return node.extend({
+    draggable: false,
 
-const HeadingWithBlock = Heading.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
+    addNodeView() {
+      return ReactNodeViewRenderer(BlockView);
+    },
+  });
+}
 
-const BlockquoteWithBlock = Blockquote.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
-
-const BulletListWithBlock = BulletList.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
-
-const OrderedListWithBlock = OrderedList.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
-
-const CodeBlock = CodeBlockLowlight.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      class: {
-        default: "hljs",
-      },
-    };
-  },
-}).configure({
-  lowlight,
-});
-
-const TaskListWithBlock = TaskList.extend({
-  addNodeView() {
-    return ReactNodeViewRenderer(BlockView);
-  },
-});
-
-const TaskItemConfigured = TaskItem.configure({
-  nested: true,
-});
-
-// =====================================================
-// Factory
-// =====================================================
+/* -------------------------------------------------------------------------- */
+/*                             Extension factory                              */
+/* -------------------------------------------------------------------------- */
 
 export function createEditorExtensions() {
   return [
+    // ------------------------------------------------------------------
+    // StarterKit (desactivado selectivamente)
+    // ------------------------------------------------------------------
     StarterKit.configure({
       paragraph: false,
       heading: false,
       blockquote: false,
+      codeBlock: false,
       bulletList: false,
       orderedList: false,
-      codeBlock: false,
       horizontalRule: false,
     }),
 
-    // Core
-    ParagraphWithBlock,
-    HeadingWithBlock,
-    BlockquoteWithBlock,
+    // ------------------------------------------------------------------
+    // Custom
+    // ------------------------------------------------------------------
+    Blockquote,
 
-    // Lists
-    BulletListWithBlock,
-    OrderedListWithBlock,
-    ListItem,
-    TaskListWithBlock,
-    TaskItemConfigured,
+    // ------------------------------------------------------------------
+    // Core blocks (con BlockView)
+    // ------------------------------------------------------------------
+    withBlockView(Paragraph),
+    withBlockView(Heading),
+    // withBlockView(Blockquote),
 
+    // ------------------------------------------------------------------
+    // Lists (✅ draggable por item, no por contenedor)
+    // ------------------------------------------------------------------
+    BulletItem,
+    OrderedItem,
+    TaskItem,
+
+    // ------------------------------------------------------------------
     // Code
-    CodeBlock,
+    // ------------------------------------------------------------------
+    CodeBlockWithWrapper.configure({
+      lowlight,
+    }),
 
+    // ------------------------------------------------------------------
     // Misc
-    HorizontalRule,
+    // ------------------------------------------------------------------
+    HorizontalRule.configure({
+      HTMLAttributes: {
+        "data-type": "horizontalRule",
+      },
+    }),
     Dropcursor,
 
+    // ------------------------------------------------------------------
     // Commands
+    // ------------------------------------------------------------------
     SlashCommand,
+    BulletItemBehavior,
+    TaskItemToggleExtension,
+    PlainBlockBehavior,
 
+    // ------------------------------------------------------------------
     // Placeholder
+    // ------------------------------------------------------------------
     Placeholder.configure({
-      placeholder: ({ node, editor }) => {
-        const { $from } = editor.state.selection;
+      placeholder: ({ node }) => {
+        switch (node.type.name) {
+          case "paragraph":
+            return "Escribe / o haz clic en el botón + para agregar contenido";
 
-        // Solo paragraph raíz
-        if (node.type.name === "paragraph" && $from.depth === 1) {
-          return "Escribe / o haz clic en el botón + para agregar contenido";
+          case "heading":
+            return "Escribe un título";
+
+          case "bulletItem":
+            return "Lista";
+
+          case "orderedItem":
+            return "Lista";
+
+          case "taskItem":
+            return "Nueva tarea";
+
+          case "blockquote":
+            return "Escribe una cita";
+
+          case "codeBlock":
+            return "Escribe código…";
+
+          default:
+            return "";
         }
-
-        return "";
       },
       showOnlyWhenEditable: false,
       includeChildren: true,
     }),
 
-    // Marks (EXPLÍCITOS)
+    // ------------------------------------------------------------------
+    // Marks (explícitos)
+    // ------------------------------------------------------------------
     Bold,
     Italic,
     Strike,
+    Underline,
     Code,
     TextStyleKit,
     FontFamily,
@@ -163,9 +178,8 @@ export function createEditorExtensions() {
     Subscript,
     Superscript,
     Color,
-    Highlight.configure({
-      multicolor: true,
-    }),
+    Highlight.configure({ multicolor: true }),
+
     LinkWithTooltip.configure({
       openOnClick: true,
       autolink: true,
@@ -184,7 +198,9 @@ export function createEditorExtensions() {
       defaultAlignment: "left",
     }),
 
-    // Cleaner
+    // ------------------------------------------------------------------
+    // Cleaner / UX polish
+    // ------------------------------------------------------------------
     LinkBoundaryExtension,
     ClearMarksOnEnterExtension,
   ];

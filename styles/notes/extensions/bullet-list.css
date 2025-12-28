@@ -1,48 +1,72 @@
-
-/* Base*/
-.looma-block[data-type="bulletList"] {
+[data-type="bulletItem"] {
+    display: block;
+    padding-left: 24px;
+    white-space: pre-wrap;
+    position: relative;
     margin: 0;
-    padding-left: 25px;
 }
 
-/* Nivel 1 */
-.looma-block[data-type="bulletList"] [data-type="paragraph"] {
+[data-type="bulletItem"][indent="0"] {
     margin-top: 10px;
     margin-bottom: 5px;
+    padding-left: 24px;
 }
 
-/* Nivel 2 */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] [data-type="paragraph"] {
+[data-type="bulletItem"][indent="1"] {
     margin-top: 5px;
     margin-bottom: 5px;
+    padding-left: 44px;
 }
 
-/* Nivel 3 (nietos) */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] [data-type="paragraph"] {
+[data-type="bulletItem"][indent="2"] {
     margin-top: 5px;
     margin-bottom: 0;
+    padding-left: 64px;
 }
 
-/* Nivel 1 */
-.looma-block[data-type="bulletList"] li {
-    list-style-type: disc;
-}
-
-/* Nivel 2 */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] li {
-    list-style-type: circle;
-}
-
-/* Nivel 3 (nietos) */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] li {
-    list-style-type: none;
-}
-
-/* Nivel 3 (nietos) */
-.looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] .looma-block[data-type="bulletList"] li::marker {
-    content: "- ";
-}
-
-.looma-block[data-type="bulletList"] li::marker {
+[data-type="bulletItem"]::before{
+    content: "●";
+    margin-right: 8px;
+    font-size: 1em;
     color: var(--primary);
+
+}
+
+[data-type="bulletItem"][indent="1"]::before {
+    content: "○";
+}
+
+[data-type="bulletItem"][indent="2"]::before {
+    content: "-";
+}
+
+/* placeholder */
+[data-type="bulletItem"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 44px;
+    transform: translateY(-50%);
+}
+
+[data-type="bulletItem"][indent="1"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 64px;
+    transform: translateY(-50%);
+}
+
+[data-type="bulletItem"][indent="2"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 82px;
+    transform: translateY(-50%);
 }

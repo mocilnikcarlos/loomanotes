@@ -1,11 +1,27 @@
 
-.looma-block[data-type="blockquote"] {
+[data-type="blockquote"] {
     background-color: var(--card);
     padding: 8px 24px;
-    margin: 0.5rem 0;
     color: var(--subtitle);
-    border-radius: 24px;
     font-style: italic;
     border-left: 0.25em solid var(--primary);
-    border-right: 0.25em solid var(--primary);
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+[data-type="blockquote"] [data-type="paragraph"] {
+    pointer-events: none; 
+}
+
+
+/* placeholder */
+[data-type="blockquote"].is-empty::before {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
 }

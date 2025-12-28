@@ -21,7 +21,7 @@ export function TextToolbarMoreMenu({ editor, onClose }: Props) {
     editor.view.dom.ownerDocument.execCommand("copy");
 
     addToast({
-      description: "Copiado al portapapeles",
+      title: "Copiado al portapapeles",
     });
 
     onClose();
