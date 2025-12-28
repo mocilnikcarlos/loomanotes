@@ -9,6 +9,7 @@ export const TaskItem = Node.create({
   selectable: true,
   defining: true,
   isolating: true,
+  draggable: false,
 
   addAttributes() {
     return {

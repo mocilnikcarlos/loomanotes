@@ -1,6 +1,6 @@
 import { Extension } from "@tiptap/core";
 import Suggestion from "@tiptap/suggestion";
-import { openSlashMenu } from "../helpers/slashMenuBridge";
+import { openSlashMenu } from "../../../helpers/slashMenuBridge";
 
 export const SlashCommand = Extension.create({
   name: "slash-command",

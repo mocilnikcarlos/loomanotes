@@ -9,8 +9,6 @@ pre.hljs {
 pre.hljs code {
     display: block;
     color: var(--subtitle);
-
-    /* 🔥 la magia */
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere;

@@ -1,11 +1,9 @@
 [data-type="taskItem"] {
-    margin: 10px 0;
-}
-
-[data-type="taskItem"] {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin: 0;
+    position: relative;
 }
 
 [data-type="taskItem"] .task-checkbox {
@@ -42,10 +40,50 @@
     color: var(--subtitle);
 }
 
+[data-type="taskItem"][indent="0"] {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
 [data-type="taskItem"][indent="1"] {
     padding-left: 24px;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 [data-type="taskItem"][indent="2"] {
     padding-left: 44px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+/* placeholder */
+[data-type="taskItem"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
+}
+
+[data-type="taskItem"][indent="1"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+}
+
+[data-type="taskItem"][indent="2"].is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 71px;
+    transform: translateY(-50%);
 }

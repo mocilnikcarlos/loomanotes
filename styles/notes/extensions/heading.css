@@ -2,6 +2,7 @@
 .looma-block[data-type="heading"][data-level="1"] {
     font-size: 28px;
     font-weight: 700;
+    margin-top: 10px;
     margin-bottom: 10px;
 }
 
@@ -17,4 +18,15 @@
     font-weight: 700;
     margin-top: 10px;
     margin-bottom: 5px;
+}
+
+/* placeholder */
+.node-heading.is-empty::after {
+    content: attr(data-placeholder);
+    color: var(--placeholder);
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
 }

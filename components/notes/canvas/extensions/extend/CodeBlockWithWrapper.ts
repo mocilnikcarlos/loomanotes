@@ -1,6 +1,8 @@
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 export const CodeBlockWithWrapper = CodeBlockLowlight.extend({
+  draggable: false,
+
   addNodeView() {
     return ({ HTMLAttributes }) => {
       // wrapper

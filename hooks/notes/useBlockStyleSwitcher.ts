@@ -12,9 +12,9 @@ export type BlockStyle =
   | "heading_1"
   | "heading_2"
   | "heading_3"
-  | "bulletList"
-  | "orderedList"
-  | "taskList"
+  | "bulletItem"
+  | "orderedItem"
+  | "taskItem"
   | "blockquote"
   | "codeBlock";
 
@@ -36,11 +36,18 @@ const BLOCK_ACTIONS: Record<BlockStyle, BlockAction> = {
   heading_3: (editor) =>
     editor.chain().focus().setNode("heading", { level: 3 }).run(),
 
-  bulletList: (editor) => editor.chain().focus().toggleBulletList().run(),
+  bulletItem: (editor) =>
+    editor.chain().focus().setNode("bulletItem", { indent: 0 }).run(),
 
-  orderedList: (editor) => editor.chain().focus().toggleOrderedList().run(),
+  orderedItem: (editor) =>
+    editor.chain().focus().setNode("orderedItem", { indent: 0 }).run(),
 
-  taskList: (editor) => editor.chain().focus().toggleTaskList().run(),
+  taskItem: (editor) =>
+    editor
+      .chain()
+      .focus()
+      .setNode("taskItem", { indent: 0, checked: false })
+      .run(),
 
   blockquote: (editor) => editor.chain().focus().toggleBlockquote().run(),
 
@@ -85,9 +92,9 @@ function getCurrentBlock(editor: Editor): BlockStyle {
   if (editor.isActive("heading", { level: 1 })) return "heading_1";
   if (editor.isActive("heading", { level: 2 })) return "heading_2";
   if (editor.isActive("heading", { level: 3 })) return "heading_3";
-  if (editor.isActive("bulletList")) return "bulletList";
-  if (editor.isActive("orderedList")) return "orderedList";
-  if (editor.isActive("taskList")) return "taskList";
+  if (editor.isActive("bulletItem")) return "bulletItem";
+  if (editor.isActive("orderedItem")) return "orderedItem";
+  if (editor.isActive("taskItem")) return "taskItem";
   if (editor.isActive("blockquote")) return "blockquote";
   if (editor.isActive("codeBlock")) return "codeBlock";
 

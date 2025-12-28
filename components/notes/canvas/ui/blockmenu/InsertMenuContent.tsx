@@ -28,7 +28,7 @@ export function InsertMenuContent({ editor, onClose, blockPos }: Props) {
   }
 
   return (
-    <div className="max-h-[320px] w-64 overflow-y-auto">
+    <div className="max-h-[320px] w-[320px] overflow-y-auto">
       {BLOCKS.map((block) => (
         <BlockMenuItem
           key={block.id}
