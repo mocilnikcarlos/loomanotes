@@ -1,5 +1,23 @@
 # Changelog
 
+# [0.14.0](/compare/v0.13.0...v0.14.0) (2025-12-28)
+
+
+### Bug Fixes
+
+* **root:** css ordered 3adf304
+* **root:** fix and refactor aside menu and blockCode 11e643e
+* **root:** menu drag fdab9d6
+* **root:** siwtch show menu aside 509498f
+* **root:** toolbar added underline + size button closed 565c1b3
+
+
+### Features
+
+* **root:** added block TaskItem 19544ce
+* **root:** css bullet 6025160
+* **root:** css bullet b7b302c
+
 # [0.13.0](/compare/v0.12.0...v0.13.0) (2025-12-25)
 
 
