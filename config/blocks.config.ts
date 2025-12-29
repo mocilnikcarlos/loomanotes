@@ -260,5 +260,9 @@ export const BLOCKS: BlockConfig[] = [
         })
         .run();
     },
+    content: {
+      type: "imageBlock",
+      content: [{ type: "paragraph" }],
+    },
   },
 ];

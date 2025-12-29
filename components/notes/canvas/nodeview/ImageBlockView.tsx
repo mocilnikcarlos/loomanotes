@@ -1,61 +1,27 @@
 "use client";
 
 import { NodeViewWrapper } from "@tiptap/react";
-import { useRef, useState } from "react";
-import { useUploadAsset } from "@/hooks/assets/useUploadAsset";
+import { ImageUploader } from "../ui/files/image/ImageUploader";
+import { useImageUpload } from "../ui/files/hooks/useImageUpload";
+import { FilePreview } from "../ui/files/FilePreview";
+import { getFileMeta } from "../ui/files/helper/getFileMeta";
 
 export function ImageBlockView({ node, updateAttributes }: any) {
-  const { src, path } = node.attrs;
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { upload, loading } = useUploadAsset("notes");
-  const [error, setError] = useState<string | null>(null);
+  const { src } = node.attrs;
 
-  const onPickFile = () => {
-    inputRef.current?.click();
-  };
-
-  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setError(null);
-
-    try {
-      const { path, url } = await upload(file);
-      updateAttributes({
-        path,
-        src: url,
-      });
-    } catch {
-      setError("upload_failed");
+  const { inputRef, pickFile, onFileChange, loading, error } = useImageUpload(
+    ({ path, url }) => {
+      updateAttributes({ path, src: url });
     }
-  };
+  );
 
   return (
     <NodeViewWrapper className="looma-block" data-type="imageBlock">
       <div className="w-full">
         {src ? (
-          <img
-            src={src}
-            alt=""
-            className="max-w-full rounded-md"
-            draggable={false}
-          />
+          <FilePreview file={getFileMeta(undefined, src)!} />
         ) : (
-          <div className="flex h-32 w-full flex-col items-center justify-center gap-2 rounded-md border border-dashed text-sm text-muted">
-            <button
-              type="button"
-              onClick={onPickFile}
-              disabled={loading}
-              className="rounded-md px-3 py-1 hover:bg-muted"
-            >
-              {loading ? "Subiendo…" : "Subir imagen"}
-            </button>
-
-            {error && (
-              <span className="text-xs text-danger">Error al subir</span>
-            )}
-          </div>
+          <ImageUploader loading={loading} error={error} onPick={pickFile} />
         )}
 
         <input
