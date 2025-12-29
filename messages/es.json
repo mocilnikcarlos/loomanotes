@@ -88,6 +88,10 @@
       "divider": {
         "title": "Separador",
         "description": "Intoduce un separador"
+      },
+      "image": {
+        "title": "Imagen",
+        "description": "Intoduce una imagen"
       }
     },
     "toolbar": {

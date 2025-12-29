@@ -7,6 +7,7 @@ const DRAGGABLE_BLOCK_TYPES = new Set([
   "blockquote",
   "codeBlock",
   "horizontalRule",
+  "imageBlock",
 ]);
 
 export function findDraggableBlock(el: Element | null): HTMLElement | null {

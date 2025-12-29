@@ -45,6 +45,8 @@ import Superscript from "@tiptap/extension-superscript";
 import { FontSize } from "./extend/plugins/FontSizeExtensions";
 import { LinkWithTooltip } from "./extend/plugins/LinkWithTooltip";
 import { Blockquote } from "./extend/Blockquote";
+import { ImageBlock } from "./extend/ImageBlock";
+import { ImageBlockView } from "../nodeview/ImageBlockView";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Lowlight                                  */
@@ -97,6 +99,11 @@ export function createEditorExtensions(placeholders: {
     // Custom
     // ------------------------------------------------------------------
     Blockquote,
+    ImageBlock.extend({
+      addNodeView() {
+        return ReactNodeViewRenderer(ImageBlockView);
+      },
+    }),
 
     // ------------------------------------------------------------------
     // Core blocks (con BlockView)
@@ -122,11 +129,6 @@ export function createEditorExtensions(placeholders: {
     // ------------------------------------------------------------------
     // Misc
     // ------------------------------------------------------------------
-    // HorizontalRule.configure({
-    //   HTMLAttributes: {
-    //     "data-type": "horizontalRule",
-    //   },
-    // }),
     Dropcursor,
 
     // ------------------------------------------------------------------

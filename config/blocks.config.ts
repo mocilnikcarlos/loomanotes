@@ -9,6 +9,7 @@ import {
   Minus,
   Code,
   CheckSquare,
+  Image,
 } from "lucide-react";
 
 import type { Editor, JSONContent } from "@tiptap/core";
@@ -26,7 +27,8 @@ export type BlockType =
   | "taskItem"
   | "blockquote"
   | "codeBlock"
-  | "horizontalRule";
+  | "horizontalRule"
+  | "imageBlock";
 
 export type BlockConfig = {
   id: string;
@@ -235,6 +237,28 @@ export const BLOCKS: BlockConfig[] = [
     content: {
       type: "horizontalRule",
       content: [{ type: "paragraph" }],
+    },
+  },
+  {
+    id: "image",
+    type: "imageBlock",
+    title: "canvas.typeBlock.image.title",
+    description: "canvas.typeBlock.image.description",
+    label: "Image",
+    icon: Image,
+    insert: (editor) => {
+      // placeholder: se inserta vacío
+      editor
+        .chain()
+        .focus()
+        .insertContent({
+          type: "imageBlock",
+          attrs: {
+            path: null,
+            src: null,
+          },
+        })
+        .run();
     },
   },
 ];
