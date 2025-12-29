@@ -15,11 +15,14 @@ import { BlockView } from "../nodeview/BlockView";
 // Nodes
 import Paragraph from "@tiptap/extension-paragraph";
 import Heading from "@tiptap/extension-heading";
-// import Blockquote from "@tiptap/extension-blockquote";
 import { CodeBlockWithWrapper } from "./extend/CodeBlockWithWrapper";
 import { BulletItem } from "./extend/BulletItem";
 import { OrderedItem } from "./extend/OrderedItem";
 import { TaskItem } from "./extend/TaskItem";
+import { Blockquote } from "./extend/Blockquote";
+import { ImageBlock } from "./extend/ImageBlock";
+import { ImageBlockView } from "../nodeview/ImageBlockView";
+import { PasteImageExtension } from "./extend/PasteImageExtension";
 
 // Commands / Custom
 import { SlashCommand } from "./extend/plugins/SlashCommand";
@@ -44,9 +47,6 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import { FontSize } from "./extend/plugins/FontSizeExtensions";
 import { LinkWithTooltip } from "./extend/plugins/LinkWithTooltip";
-import { Blockquote } from "./extend/Blockquote";
-import { ImageBlock } from "./extend/ImageBlock";
-import { ImageBlockView } from "../nodeview/ImageBlockView";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Lowlight                                  */
@@ -104,6 +104,7 @@ export function createEditorExtensions(placeholders: {
         return ReactNodeViewRenderer(ImageBlockView);
       },
     }),
+    PasteImageExtension,
 
     // ------------------------------------------------------------------
     // Core blocks (con BlockView)

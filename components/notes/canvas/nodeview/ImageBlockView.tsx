@@ -1,6 +1,7 @@
 "use client";
 
 import { NodeViewWrapper } from "@tiptap/react";
+import { useEffect } from "react";
 import { ImageUploader } from "../ui/files/image/ImageUploader";
 import { useImageUpload } from "../ui/files/hooks/useImageUpload";
 import { FilePreview } from "../ui/files/FilePreview";
@@ -14,6 +15,21 @@ export function ImageBlockView({ node, updateAttributes }: any) {
       updateAttributes({ path, src: url });
     }
   );
+
+  useEffect(() => {
+    if (src) return;
+
+    const pastedFile = (window as any).__PASTED_IMAGE__;
+    if (!pastedFile) return;
+
+    delete (window as any).__PASTED_IMAGE__;
+
+    const fakeEvent = {
+      target: { files: [pastedFile] },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+
+    onFileChange(fakeEvent);
+  }, [src, onFileChange]);
 
   return (
     <NodeViewWrapper className="looma-block" data-type="imageBlock">

@@ -11,15 +11,10 @@ export const ImageBlock = Node.create({
 
   addAttributes() {
     return {
-      path: {
-        default: null,
-      },
-      src: {
-        default: null, // solo runtime (URL firmada)
-      },
-      alt: {
-        default: null,
-      },
+      path: { default: null },
+      src: { default: null },
+      alt: { default: null },
+      uploading: { default: false },
     };
   },
 
