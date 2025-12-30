@@ -1,8 +1,8 @@
 "use client";
 
 import { NodeViewWrapper } from "@tiptap/react";
-import { useEffect, useState } from "react";
-import { Trash, Download, Expand } from "lucide-react";
+import { useEffect } from "react";
+import { Trash, Download } from "lucide-react";
 
 import { ImageUploader } from "../ui/files/image/ImageUploader";
 import { useImageUpload } from "../ui/files/hooks/useImageUpload";
@@ -10,6 +10,8 @@ import { FilePreview } from "../ui/files/FilePreview";
 import { getFileMeta } from "../ui/files/helper/getFileMeta";
 import { downloadFile } from "../ui/files/helper/downloadFile";
 import FeedbackBanner from "../ui/files/FeedbackBanner";
+import { useImageResize } from "../ui/files/hooks/useImageResize";
+import { useT } from "@/hooks/utils/useT";
 
 export function ImageBlockView({ node, updateAttributes, editor }: any) {
   const { src, missing, width } = node.attrs;
@@ -22,43 +24,12 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
     }
   );
 
-  const [tempWidth, setTempWidth] = useState<string | null>(null);
+  const resize = useImageResize({
+    width,
+    onCommit: (next) => updateAttributes({ width: next }),
+  });
 
-  const onResizeStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const startX = e.clientX;
-    const startWidth = (e.currentTarget.parentElement as HTMLElement)
-      .offsetWidth;
-
-    const parentWidth =
-      e.currentTarget.closest(".looma-block")?.parentElement?.offsetWidth ??
-      startWidth;
-
-    let nextWidth = width;
-
-    const onMouseMove = (ev: MouseEvent) => {
-      const delta = ev.clientX - startX;
-      const nextPx = startWidth + delta;
-
-      const percent = Math.min(100, Math.max(30, (nextPx / parentWidth) * 100));
-
-      nextWidth = `${percent}%`;
-      setTempWidth(nextWidth);
-    };
-
-    const onMouseUp = () => {
-      updateAttributes({ width: nextWidth });
-      setTempWidth(null);
-
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  };
+  const { t } = useT();
 
   /**
    * Auto-upload (paste / drag)
@@ -104,8 +75,10 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
         className="group relative looma-block"
         data-type="imageBlock"
       >
-        <FeedbackBanner leading="🥺​">
-          Este archivo fue eliminado
+        <FeedbackBanner
+          leading={t("canvas.imageBlock.errors.missingBlock.leading")}
+        >
+          {t("canvas.imageBlock.errors.missingBlock.description")}
         </FeedbackBanner>
       </NodeViewWrapper>
     );
@@ -120,21 +93,21 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
         {src && meta ? (
           <FilePreview
             file={meta}
-            width={tempWidth ?? width}
+            width={resize.width}
             showToolbar
-            onResizeStart={onResizeStart}
+            onResizeStart={resize.onResizeStart}
             toolbarActions={[
               {
                 id: "download",
                 icon: <Download size={14} />,
-                label: "Descargar",
+                label: t("canvas.imageBlock.toolbarActions.download"),
                 onClick: () =>
                   downloadFile(src, `${meta.name}.${meta.extension}`),
               },
               {
                 id: "delete",
                 icon: <Trash size={14} />,
-                label: "Quitar imagen",
+                label: t("canvas.imageBlock.toolbarActions.delete"),
                 onClick: deleteBlock,
               },
             ]}

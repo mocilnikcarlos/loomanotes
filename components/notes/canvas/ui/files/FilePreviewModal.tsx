@@ -1,10 +1,11 @@
 "use client";
 
-import { X, Download } from "lucide-react";
+import { X, Download, FileWarning } from "lucide-react";
 import { FILE_THEME } from "./helper/fileTheme";
 import { ButtonIcon } from "@/components/ui/ButtonIcon";
 import type { FileMeta } from "@/components/notes/canvas/ui/files/helper/type";
 import { downloadFile } from "./helper/downloadFile";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   file: FileMeta;
@@ -17,9 +18,10 @@ export function FilePreviewModal({ file, open, onClose }: Props) {
 
   const theme = FILE_THEME[file.type];
   const Icon = theme.icon;
+  const { t } = useT();
 
   return (
-    <div className="fixed inset-0 z-50 bg-card/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
       {/* header */}
       <div className="flex items-center justify-between px-6 py-4 bg-card border-b border-border">
         <div className="flex items-center gap-3">
@@ -29,8 +31,8 @@ export function FilePreviewModal({ file, open, onClose }: Props) {
 
           <div className="flex flex-col">
             <span className="font-medium">{file.name}</span>
-            <span className="text-xs uppercase text-muted">
-              .{file.extension}
+            <span className="text-xs uppercase text-subtitle">
+              {file.extension}
             </span>
           </div>
         </div>
@@ -58,7 +60,10 @@ export function FilePreviewModal({ file, open, onClose }: Props) {
             className="max-h-full max-w-full rounded-md"
           />
         ) : (
-          <div className="text-foreground text-sm">No preview disponible</div>
+          <div className="flex flex-col gap-4 items-center justify-center">
+            <FileWarning size={64} className="text-primary" />
+            {t("canvas.imageBlock.errors.modal.errorDescription")}
+          </div>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@
 import Loader from "@/components/ui/Loader";
 import { FileWarning, Image } from "lucide-react";
 import FeedbackBanner from "../FeedbackBanner";
+import { useT } from "@/hooks/utils/useT";
 
 type Props = {
   loading: boolean;
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export function ImageUploader({ loading, error, onPick }: Props) {
+  const { t } = useT();
+
   return (
     <div className="flex items-start">
       <button
@@ -25,14 +28,13 @@ export function ImageUploader({ loading, error, onPick }: Props) {
           </div>
         ) : (
           <>
-            <Image /> <span>Subir imagen</span>
+            <Image /> <span>{t("canvas.imageBlock.updateBlock.update")}</span>
           </>
         )}
       </button>
-
       {error && (
         <FeedbackBanner leading={<FileWarning />}>
-          Error al subir. Eliminá este bloque y volvé a intentar
+          {t("canvas.imageBlock.errors.errorUpdate.errorDescription")}
         </FeedbackBanner>
       )}
     </div>
