@@ -47,6 +47,7 @@ import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 import { FontSize } from "./extend/plugins/FontSizeExtensions";
 import { LinkWithTooltip } from "./extend/plugins/LinkWithTooltip";
+import { DragDropImageExtension } from "./extend/DragDropImageExtension";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Lowlight                                  */
@@ -105,6 +106,7 @@ export function createEditorExtensions(placeholders: {
       },
     }),
     PasteImageExtension,
+    DragDropImageExtension,
 
     // ------------------------------------------------------------------
     // Core blocks (con BlockView)
