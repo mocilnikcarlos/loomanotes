@@ -9,11 +9,10 @@ import { useImageUpload } from "../ui/files/hooks/useImageUpload";
 import { FilePreview } from "../ui/files/FilePreview";
 import { getFileMeta } from "../ui/files/helper/getFileMeta";
 import { downloadFile } from "../ui/files/helper/downloadFile";
-import { BlockToolbar } from "../ui/files/image/BlockToolbar";
+import FeedbackBanner from "../ui/files/FeedbackBanner";
 
 export function ImageBlockView({ node, updateAttributes, editor }: any) {
-  const { src, missing } = node.attrs;
-  const [resizeMode, setResizeMode] = useState(false);
+  const { src, missing, width } = node.attrs;
 
   const meta = getFileMeta(undefined, src ?? undefined);
 
@@ -22,6 +21,44 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
       updateAttributes({ path, src: url, missing: false });
     }
   );
+
+  const [tempWidth, setTempWidth] = useState<string | null>(null);
+
+  const onResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const startX = e.clientX;
+    const startWidth = (e.currentTarget.parentElement as HTMLElement)
+      .offsetWidth;
+
+    const parentWidth =
+      e.currentTarget.closest(".looma-block")?.parentElement?.offsetWidth ??
+      startWidth;
+
+    let nextWidth = width;
+
+    const onMouseMove = (ev: MouseEvent) => {
+      const delta = ev.clientX - startX;
+      const nextPx = startWidth + delta;
+
+      const percent = Math.min(100, Math.max(30, (nextPx / parentWidth) * 100));
+
+      nextWidth = `${percent}%`;
+      setTempWidth(nextWidth);
+    };
+
+    const onMouseUp = () => {
+      updateAttributes({ width: nextWidth });
+      setTempWidth(null);
+
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  };
 
   /**
    * Auto-upload (paste / drag)
@@ -67,21 +104,9 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
         className="group relative looma-block"
         data-type="imageBlock"
       >
-        <BlockToolbar
-          actions={[
-            {
-              id: "delete",
-              icon: <Trash size={14} />,
-              label: "Eliminar bloque",
-              onClick: deleteBlock,
-            },
-          ]}
-        />
-
-        <div className="flex items-center gap-3 rounded-md border border-dashed border-border bg-muted/30 p-4 text-sm text-muted">
-          <span>🗑️</span>
-          <span>Este archivo fue eliminado</span>
-        </div>
+        <FeedbackBanner leading="🥺​">
+          Este archivo fue eliminado
+        </FeedbackBanner>
       </NodeViewWrapper>
     );
   }
@@ -90,39 +115,30 @@ export function ImageBlockView({ node, updateAttributes, editor }: any) {
    * RENDER normal
    */
   return (
-    <NodeViewWrapper
-      className="group relative looma-block"
-      data-type="imageBlock"
-    >
-      {src && meta && (
-        <BlockToolbar
-          actions={[
-            {
-              id: "download",
-              icon: <Download size={14} />,
-              label: "Descargar",
-              onClick: () =>
-                downloadFile(src, `${meta.name}.${meta.extension}`),
-            },
-            {
-              id: "resize",
-              icon: <Expand size={14} />,
-              label: "Redimensionar",
-              onClick: () => setResizeMode(true),
-            },
-            {
-              id: "delete",
-              icon: <Trash size={14} />,
-              label: "Eliminar bloque",
-              onClick: deleteBlock,
-            },
-          ]}
-        />
-      )}
-
+    <NodeViewWrapper className="relative looma-block" data-type="imageBlock">
       <div className="w-full">
-        {src ? (
-          <FilePreview file={meta!} />
+        {src && meta ? (
+          <FilePreview
+            file={meta}
+            width={tempWidth ?? width}
+            showToolbar
+            onResizeStart={onResizeStart}
+            toolbarActions={[
+              {
+                id: "download",
+                icon: <Download size={14} />,
+                label: "Descargar",
+                onClick: () =>
+                  downloadFile(src, `${meta.name}.${meta.extension}`),
+              },
+              {
+                id: "delete",
+                icon: <Trash size={14} />,
+                label: "Quitar imagen",
+                onClick: deleteBlock,
+              },
+            ]}
+          />
         ) : (
           <ImageUploader loading={loading} error={error} onPick={pickFile} />
         )}

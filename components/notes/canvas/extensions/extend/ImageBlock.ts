@@ -16,7 +16,9 @@ export const ImageBlock = Node.create({
       alt: { default: null },
       uploading: { default: false },
       missing: { default: false },
-      width: { default: "auto" },
+      width: {
+        default: "100%",
+      },
     };
   },
 

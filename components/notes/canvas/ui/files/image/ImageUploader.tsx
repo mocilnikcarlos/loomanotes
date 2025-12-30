@@ -1,6 +1,8 @@
 "use client";
 
-import { Image } from "lucide-react";
+import Loader from "@/components/ui/Loader";
+import { FileWarning, Image } from "lucide-react";
+import FeedbackBanner from "../FeedbackBanner";
 
 type Props = {
   loading: boolean;
@@ -17,11 +19,22 @@ export function ImageUploader({ loading, error, onPick }: Props) {
         disabled={loading}
         className="flex gap-4 px-6 py-4 bg-card hover:bg-card-hover cursor-pointer w-full rounded-md"
       >
-        <Image />
-        {loading ? "Subiendo…" : "Subir imagen"}
+        {loading ? (
+          <div className="flex items-center justify-center w-full">
+            <Loader />
+          </div>
+        ) : (
+          <>
+            <Image /> <span>Subir imagen</span>
+          </>
+        )}
       </button>
 
-      {error && <span className="text-xs text-danger">Error al subir</span>}
+      {error && (
+        <FeedbackBanner leading={<FileWarning />}>
+          Error al subir. Eliminá este bloque y volvé a intentar
+        </FeedbackBanner>
+      )}
     </div>
   );
 }
