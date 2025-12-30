@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import "@/styles/looma-blocks.css";
+import "@/styles/loader.css";
 import { Metadata } from "next";
 import clsx from "clsx";
 import { Providers } from "./providers";

@@ -2,6 +2,7 @@ import { withAuth } from "@/lib/api/withAuth";
 import { NextResponse } from "next/server";
 import { createRouteHandlerSupabase } from "@/lib/supabase/route";
 import { UpdateNoteSchema } from "@/lib/schemas/notes";
+import { hydrateEditorContent } from "@/lib/services/notes/hydrateEditorContent";
 
 export const PATCH = withAuth(
   async ({ req, user, body, params }) => {
@@ -46,16 +47,30 @@ export const DELETE = withAuth(async ({ req, params }) => {
 export const GET = withAuth(async ({ req, user, params }) => {
   const supabase = createRouteHandlerSupabase(req);
 
-  const { data, error } = await supabase
-    .from("notes")
-    .select("*")
-    .eq("id", params.id)
-    .eq("user_id", user.id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("notes")
+      .select("*")
+      .eq("id", params.id)
+      .eq("user_id", user.id)
+      .single();
 
-  if (error || !data) {
-    return NextResponse.json({ message: "Note not found" }, { status: 404 });
+    if (error || !data) {
+      return NextResponse.json({ message: "Note not found" }, { status: 404 });
+    }
+
+    const hydratedContent = await hydrateEditorContent(data.content, supabase);
+
+    return NextResponse.json({
+      ...data,
+      content: hydratedContent,
+    });
+  } catch (err) {
+    console.error("GET /notes/:id failed", err);
+
+    return NextResponse.json(
+      { message: "Failed to load note content" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(data);
 });
