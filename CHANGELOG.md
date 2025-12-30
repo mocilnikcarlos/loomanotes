@@ -1,5 +1,21 @@
 # Changelog
 
+# [0.16.0](/compare/v0.15.1...v0.16.0) (2025-12-30)
+
+
+### Bug Fixes
+
+* **root:** scroll screen e41f70e
+
+
+### Features
+
+* **root:** added imageblock 7124bf3
+* **root:** added resize function 86484e9
+* **root:** added toolbar image a56739e
+* **root:** imageBlock fefd3c8
+* **root:** paste image ccc19f6
+
 ## [0.15.1](/compare/v0.15.0...v0.15.1) (2025-12-28)
 
 

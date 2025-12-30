@@ -88,6 +88,10 @@
       "divider": {
         "title": "Separador",
         "description": "Intoduce un separador"
+      },
+      "image": {
+        "title": "Imagen",
+        "description": "Intoduce una imagen"
       }
     },
     "toolbar": {
@@ -150,6 +154,27 @@
       "task": "Nueva tarea",
       "blockquote": "Escribí una cita",
       "code": "Escribí código…"
+    },
+    "imageBlock": {
+      "errors": {
+        "missingBlock": {
+          "leading": "🥺",
+          "description": "Este archivo fue eliminado"
+        },
+        "errorUpdate": {
+          "errorDescription": "Error al subir. Eliminá este bloque y volvé a intentar"
+        },
+        "modal": {
+          "errorDescription": "Al parecer no hay una vista previa del archivo. Intentá abrirlo de nuevo."
+        }
+      },
+      "toolbarActions": {
+        "download": "Descargar",
+        "delete": "Quitar imagen"
+      },
+      "updateBlock": {
+        "update": "Subir imagen"
+      }
     }
   }
 }

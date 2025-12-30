@@ -147,6 +147,33 @@ export function useAsideBlockMenu(editor: Editor) {
     return () => cancelAnimationFrame(raf);
   }, [activeBlockRect]);
 
+  useEffect(() => {
+    if (!activeBlockRect) return;
+
+    const threshold = 90;
+    const maxSpeed = 10;
+
+    function onMouseMove(e: MouseEvent) {
+      const y = e.clientY;
+      const vh = window.innerHeight;
+
+      if (y < threshold) {
+        const d = threshold - y;
+        const intensity = Math.pow(d / threshold, 1.5);
+        window.scrollBy({ top: -maxSpeed * intensity });
+      }
+
+      if (vh - y < threshold) {
+        const d = threshold - (vh - y);
+        const intensity = Math.pow(d / threshold, 1.5);
+        window.scrollBy({ top: maxSpeed * intensity });
+      }
+    }
+
+    document.addEventListener("mousemove", onMouseMove);
+    return () => document.removeEventListener("mousemove", onMouseMove);
+  }, [activeBlockRect]);
+
   function onNodeChange(pos: number | null) {
     if (pos == null) {
       activeNodeRef.current = null;
